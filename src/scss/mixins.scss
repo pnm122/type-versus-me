@@ -1,0 +1,6 @@
+@mixin container {
+  --max-width: 1280px;
+  --side-padding: 24px;
+  width: min(var(--max-width), calc(100% - (2 * var(--side-padding))));
+  margin-inline: auto;
+}

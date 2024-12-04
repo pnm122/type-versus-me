@@ -1,2 +1,3 @@
-@import 'defaults';
-@import 'reset';
+@forward 'defaults';
+@forward 'reset';
+@forward 'variables';

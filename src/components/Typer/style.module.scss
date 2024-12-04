@@ -1,0 +1,34 @@
+.typer {
+  &:focus-visible {
+    outline: none;
+  }
+
+  .word {
+    display: inline;
+    font-size: 2rem;
+  
+    &--incorrect {
+      text-decoration: underline red;
+    }
+  
+    span {
+      display: inline;
+    }
+  
+    .original-only {
+      color: gray;
+    }
+  
+    .typed-only {
+      color: darkred;
+    }
+  
+    .match {
+      color: black;
+    }
+  
+    .no-match {
+      color: red;
+    }
+  }
+}

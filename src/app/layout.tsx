@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import '@/scss/index.scss'
 
 export const metadata: Metadata = {
   title: "Typing Race",

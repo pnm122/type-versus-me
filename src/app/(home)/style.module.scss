@@ -1,0 +1,6 @@
+@use '@/scss/mixins' as *;
+
+.main {
+  @include container;
+  padding-top: 24px;
+}
