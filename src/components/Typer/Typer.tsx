@@ -1,5 +1,5 @@
 import createClasses from "@/utils/createClasses"
-import { KeyboardEvent, useEffect } from "react"
+import { Fragment, KeyboardEvent, useEffect, useLayoutEffect, useRef } from "react"
 import styles from './style.module.scss'
 
 interface Props {
@@ -20,6 +20,9 @@ export default function Typer({
   typed,
   onChange
 }: Props) {
+  const typer = useRef<HTMLDivElement>(null)
+  const cursor = useRef<HTMLDivElement>(null)
+
   function onKeyDown(e: KeyboardEvent<HTMLDivElement>) {
     e.preventDefault()
 
@@ -93,8 +96,33 @@ export default function Typer({
     
   }
 
+  function getDisplayedText() {
+    return getTextRegions(text, typed).map(w => w.regions.map(r => r.text).join('')).join(' ')
+  }
+
+  function getCursorPosition() {
+    const typedWords = typed.split(' ')
+    return getDisplayedText().split(' ').reduce((acc, word, index) => {
+      if(index >= typedWords.length) return acc
+      if(index === typedWords.length - 1) return acc + typedWords.at(-1)!.length
+
+      // add 1 to account for space between words
+      return acc + word.length + 1
+    }, 0)
+  }
+
   useEffect(() => {
-    console.log(getTextRegions(text, typed).slice(0, 2).map(r => r.regions.map(x => x.text)))
+    // console.log(getTextRegions(text, typed).slice(0, 2).map(r => r.regions.map(x => x.text)))
+  }, [text, typed])
+
+  useLayoutEffect(() => {
+    if(!typer.current || !cursor.current) return
+
+    const typedElements = typer.current.querySelectorAll(`.${styles['character']}`)
+    const { left: typerLeft, top: typerTop } = typer.current!.getBoundingClientRect()
+    const { left: charLeft, top: charTop } = Array.from(typedElements!).at(getCursorPosition())!.getBoundingClientRect()
+
+    cursor.current.style.transform = `translate(${charLeft - typerLeft}px, ${charTop - typerTop}px)`
   }, [text, typed])
 
   return (
@@ -102,31 +130,35 @@ export default function Typer({
       <div
         onKeyDown={onKeyDown}
         tabIndex={0}
-        className={styles['typer']}>
-        {getTextRegions(text, typed).map((textRegion, index) => (
-          <>
+        className={styles['typer']}
+        ref={typer}>
+        <div className={styles['cursor']} ref={cursor}></div>
+        {getTextRegions(text, typed).map((textRegion, index, arr) => (
+          <Fragment key={index}>
             <span
-              key={index}
               className={createClasses({
                 [styles['word']]: true,
                 [styles['word--incorrect']]: textRegion.incorrect
               })}
             >
-              {textRegion.regions.map((wordRegion, index) => (
-                <span
-                  key={index}
-                  className={createClasses({
-                    [styles[wordRegion.type]]: true
-                  })}
-                >
-                  {wordRegion.text}
-                </span>
+              {textRegion.regions.map(wordRegion => (
+                Array.from(wordRegion.text).map((char, index) => (
+                  <span
+                    key={index}
+                    className={createClasses({
+                      [styles['character']]: true,
+                      [styles[wordRegion.type]]: true
+                    })}
+                  >
+                    {char}
+                  </span>
+                ))
               ))}
             </span>
-            <span className={styles['word']}>
+            <span className={styles['character']}>
               {' '}
             </span>
-          </>
+          </Fragment>
         ))}
       </div>
     </>

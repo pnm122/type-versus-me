@@ -1,18 +1,41 @@
 .typer {
+  font-size: 2rem;
+  line-height: 1.5;
+  position: relative;
+
   &:focus-visible {
     outline: none;
   }
 
+  .cursor {
+    height: 1.1em;
+    width: 0.1em;
+    background-color: indigo;
+    position: absolute;
+    top: 0;
+    left: -0.05em;
+    // line height is 1.5em, height of cursor is 1.1em
+    // this centers the cursor vertically on the line
+    margin-top: 0.2em;
+    transition: transform 0.1s cubic-bezier(0.215, 0.610, 0.355, 1);
+    animation: blink 1s infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% {
+      opacity: 1;
+    }
+
+    50% {
+      opacity: 0;
+    }
+  }
+
   .word {
     display: inline;
-    font-size: 2rem;
   
     &--incorrect {
       text-decoration: underline red;
-    }
-  
-    span {
-      display: inline;
     }
   
     .original-only {
@@ -30,5 +53,9 @@
     .no-match {
       color: red;
     }
+  }
+
+  .character {
+    display: inline;
   }
 }
