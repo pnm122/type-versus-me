@@ -22,6 +22,7 @@ export default function Typer({
 }: Props) {
   const typer = useRef<HTMLDivElement>(null)
   const cursor = useRef<HTMLDivElement>(null)
+  const cursorBlinkingTimeout = useRef<NodeJS.Timeout | null>(null)
 
   function onKeyDown(e: KeyboardEvent<HTMLDivElement>) {
     e.preventDefault()
@@ -111,10 +112,7 @@ export default function Typer({
     }, 0)
   }
 
-  useEffect(() => {
-    // console.log(getTextRegions(text, typed).slice(0, 2).map(r => r.regions.map(x => x.text)))
-  }, [text, typed])
-
+  // Move the cursor to the current letter when typed text changes
   useLayoutEffect(() => {
     if(!typer.current || !cursor.current) return
 
@@ -123,6 +121,16 @@ export default function Typer({
     const { left: charLeft, top: charTop } = Array.from(typedElements!).at(getCursorPosition())!.getBoundingClientRect()
 
     cursor.current.style.transform = `translate(${charLeft - typerLeft}px, ${charTop - typerTop}px)`
+    cursor.current.classList.remove(styles['cursor--blinking'])
+    // Stop the previous timer if it exists
+    if(cursorBlinkingTimeout.current) {
+      clearTimeout(cursorBlinkingTimeout.current)
+    }
+    // Wait until after cursor transform transition is done to start blinking again
+    cursorBlinkingTimeout.current = setTimeout(() => {
+      cursor.current?.classList.add(styles['cursor--blinking'])
+      cursorBlinkingTimeout.current = null
+    }, 100)
   }, [text, typed])
 
   return (

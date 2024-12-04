@@ -18,16 +18,19 @@
     // this centers the cursor vertically on the line
     margin-top: 0.2em;
     transition: transform 0.1s cubic-bezier(0.215, 0.610, 0.355, 1);
-    animation: blink 1s infinite;
-  }
 
-  @keyframes blink {
-    0%, 100% {
-      opacity: 1;
+    &--blinking {
+      animation: blink 1.25s infinite;
     }
 
-    50% {
-      opacity: 0;
+    @keyframes blink {
+      0%, 15%, 85%, 100% {
+        opacity: 1;
+      }
+  
+      50% {
+        opacity: 0;
+      }
     }
   }
 
