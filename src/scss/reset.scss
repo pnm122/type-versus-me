@@ -1,0 +1,84 @@
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+}
+
+button,
+input,
+textarea {
+	font: inherit;
+}
+
+button,
+input,
+textarea,
+menu {
+	padding: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+dl,
+dd,
+blockquote,
+menu,
+figure,
+p,
+pre {
+	margin: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	/* Low browser support but not incredibly important */
+	text-wrap: balance;
+}
+
+a,
+button,
+input,
+textarea,
+label,
+img,
+span {
+	display: block;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+img,
+svg {
+	vertical-align: middle;
+}
+
+button {
+	background: none;
+	border: none;
+	cursor: pointer;
+}
+
+a {
+	text-decoration: none;
+	color: inherit;
+	width: fit-content;
+}
+
+hr {
+	width: 100%;
+}
