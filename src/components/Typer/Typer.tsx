@@ -10,8 +10,21 @@ interface Props {
 
 type WordRegionType = 'match' | 'no-match' | 'original-only' | 'typed-only'
 
+interface Word {
+  /** Whether this word was typed and submitted correctly */
+  correct: boolean
+  /** Regions within the current word */
+  regions: WordRegion[]
+  /** Start index of the word, based on text displayed to user */
+  start: number
+  /** Distance to word currently being typed. Positive if before, 0 if current, and negative if after. */
+  distanceToCurrent: number
+}
+
 interface WordRegion {
+  /** Type for this region */
   type: WordRegionType
+  /** Text within the region */
   text: string
 }
 
@@ -24,13 +37,19 @@ export default function Typer({
   const cursor = useRef<HTMLDivElement>(null)
   const cursorBlinkingTimeout = useRef<NodeJS.Timeout | null>(null)
 
-  const textRegions = text.split(' ').map((word, index) => {
-    const compareWords = typed.split(' ')
-    return {
-      incorrect: index < compareWords.length - 1 && word !== compareWords[index],
-      regions: getWordRegions(word, compareWords[index])
-    }
-  })
+  const textRegions = text.split(' ').reduce<Word[]>((acc, word, index) => {
+    const typedWords = typed.split(' ')
+    return [
+      ...acc,
+      {
+        correct: index < typedWords.length - 1 && word === typedWords[index],
+        regions: getWordRegions(word, typedWords[index]),
+        // Add one to account for spaces between words
+        start: acc.reduce((a, curr) => a + getWordLength(curr) + 1, 0),
+        distanceToCurrent: typedWords.length - 1 - index
+      }
+    ]
+  }, [])
 
   const displayedText = textRegions.map(w => w.regions.map(r => r.text).join('')).join(' ')
 
@@ -43,10 +62,18 @@ export default function Typer({
     return acc + word.length + 1
   }, 0)
 
+  const cursorAtStartOfWord = !!textRegions.find(w => w.start === cursorPosition)
+
   function onKeyDown(e: KeyboardEvent<HTMLDivElement>) {
     e.preventDefault()
 
-    if(typed.length !== 0 && (e.key === 'Backspace' || e.key === 'Delete')) {
+    const previousWordCorrect = textRegions.find(w => w.distanceToCurrent === 1)?.correct
+
+    if((e.key === 'Backspace' || e.key === 'Delete')) {
+      if(typed.length === 0 || (previousWordCorrect && cursorAtStartOfWord)) {
+        return
+      }
+      
       onChange(typed.slice(0, -1))
     }
 
@@ -55,6 +82,14 @@ export default function Typer({
     }
 
     onChange(`${typed}${e.key}`)
+  }
+
+  function getWordLength(word: Word) {
+    return word.regions.reduce((acc, region) => acc + region.text.length, 0)
+  }
+
+  function getTextFromWord(word: Word) {
+    return word.regions.map(r => r.text).join('')
   }
 
   function getCharacterType(original: string | undefined, compare: string | undefined): WordRegionType {
@@ -111,8 +146,6 @@ export default function Typer({
     const { left: typerLeft, top: typerTop } = typer.current!.getBoundingClientRect()
     const { left: charLeft, top: charTop } = Array.from(typedElements!).at(cursorPosition)!.getBoundingClientRect()
 
-    console.log(cursorPosition)
-
     cursor.current.style.transform = `translate(${charLeft - typerLeft}px, ${charTop - typerTop}px)`
     cursor.current.classList.remove(styles['cursor--blinking'])
     // Stop the previous timer if it exists
@@ -144,15 +177,15 @@ export default function Typer({
         className={styles['typer']}
         ref={typer}>
         <div className={styles['cursor']} ref={cursor}></div>
-        {textRegions.map((textRegion, index) => (
+        {textRegions.map((word, index) => (
           <Fragment key={index}>
             <span
               className={createClasses({
                 [styles['word']]: true,
-                [styles['word--incorrect']]: textRegion.incorrect
+                [styles['word--incorrect']]: !word.correct && word.distanceToCurrent > 0
               })}
             >
-              {textRegion.regions.map(wordRegion => (
+              {word.regions.map(wordRegion => (
                 Array.from(wordRegion.text).map((char, index) => (
                   <span
                     key={index}
