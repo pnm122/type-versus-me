@@ -3,15 +3,13 @@
   line-height: 1.5;
   position: relative;
   
-  &--finished .cursor {
+  &--finished .cursor,
+  &:not(:focus) .cursor {
     opacity: 0;
+    animation: none;
   }
 
-  &:not(.typer--finished) .cursor--blinking {
-    animation: blink 1.25s infinite;
-  }
-
-  &:focus-visible {
+  &:focus {
     outline: none;
   }
 
@@ -28,6 +26,10 @@
     transition:
       transform 0.1s cubic-bezier(0.215, 0.610, 0.355, 1),
       opacity 0.5s;
+    
+    &--blinking {
+      animation: blink 1.25s infinite;
+    }
 
     @keyframes blink {
       0%, 15%, 85%, 100% {
