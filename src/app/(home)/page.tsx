@@ -24,7 +24,7 @@ export default function Home() {
   return (
     <div className={styles['main']}>
       <Typer
-        text='Hello world lots of text woo hoo yay'
+        text='Living valley had silent eat merits esteem bed. In last an or went wise as left. Visited civilly am demesne so colonel he calling.'
         finished={finished}
         onChange={onChange}
         onStart={onStart}

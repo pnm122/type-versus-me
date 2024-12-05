@@ -278,12 +278,56 @@ export default function Typer({
     }, [])
   }
 
+  /**
+   * Get information about the lines of text as they appear in the DOM
+   * @returns the position of each line relative to the top of the typer, as well as the line the cursor is currently on
+   */
+  function getLineInfo() {
+    const inner = typer.current!.querySelector<HTMLElement>(`.${styles['typer__inner']}`)!
+    const initialTransform = inner.style.transform
+    inner.style.transform = ''
+
+    const charElements = typer.current!.querySelectorAll(`.${styles['character']}`)
+    const { top: typerTop } = typer.current!.getBoundingClientRect()
+    const { top: charTop } = Array.from(charElements!).at(cursorPosition)!.getBoundingClientRect()
+
+    // Get a list of all lines' distance to the top of the typer
+    const lines = Array.from(charElements).reduce<number[]>((acc, elem) => {
+      const top = elem.getBoundingClientRect().top - typerTop
+      if(acc.includes(top)) {
+        return acc
+      } else {
+        return [...acc, top]
+      }
+    }, [])
+    const currentLine = lines.findIndex(l => charTop - typerTop === l)
+
+    inner.style.transform = initialTransform
+
+    return {
+      lines,
+      currentLine
+    }
+  }
+
   function setCursorPosition() {
     if(!typer.current || !cursor.current) return
 
-    const typedElements = typer.current.querySelectorAll(`.${styles['character']}`)
+    const inner = typer.current.querySelector<HTMLElement>(`.${styles['typer__inner']}`)!
+
+    // Calculate line info and translate before moving the cursor, so that all characters are in their final place
+    const { lines, currentLine } = getLineInfo()
+
+    // Move the text of the typer so that the middle line is always where the cursor is, beginning with the second line
+    if(currentLine > 1) {
+      inner.style.transform = `translateY(-${lines[currentLine - 1]}px)`
+    } else {
+      inner.style.transform = ''
+    }
+
+    const charElements = typer.current.querySelectorAll(`.${styles['character']}`)
     const { left: typerLeft, top: typerTop } = typer.current!.getBoundingClientRect()
-    const { left: charLeft, top: charTop } = Array.from(typedElements!).at(cursorPosition)!.getBoundingClientRect()
+    const { left: charLeft, top: charTop } = Array.from(charElements!).at(cursorPosition)!.getBoundingClientRect()
 
     cursor.current.style.transform = `translate(${charLeft - typerLeft}px, ${charTop - typerTop}px)`
     cursor.current.classList.remove(styles['cursor--blinking'])
@@ -324,33 +368,42 @@ export default function Typer({
         })}
         ref={typer}>
         <div className={styles['cursor']} ref={cursor}></div>
-        {textRegions.map((word, index) => (
-          <Fragment key={index}>
-            <span
-              className={createClasses({
-                [styles['word']]: true,
-                [styles['word--incorrect']]: !word.correct && word.distanceToCurrent > 0
-              })}
-            >
-              {word.regions.map(wordRegion => (
-                Array.from(wordRegion.text).map((char, index) => (
-                  <span
-                    key={index}
-                    className={createClasses({
-                      [styles['character']]: true,
-                      [styles[wordRegion.type]]: true
-                    })}
-                  >
-                    {char}
-                  </span>
-                ))
-              ))}
-            </span>
-            <span className={styles['character']}>
-              {' '}
-            </span>
-          </Fragment>
-        ))}
+        {/*
+          Need extra nested divs:
+            * text is the container with a set height and no overflow, sibling to cursor so the cursor isn't cut off
+            * inner is moved as needed to keep the cursor on the middle line
+        */}
+        <div className={styles['typer__text']}>
+          <div className={styles['typer__inner']}>
+            {textRegions.map((word, index) => (
+              <Fragment key={index}>
+                <span
+                  className={createClasses({
+                    [styles['word']]: true,
+                    [styles['word--incorrect']]: !word.correct && word.distanceToCurrent > 0
+                  })}
+                >
+                  {word.regions.map(wordRegion => (
+                    Array.from(wordRegion.text).map((char, index) => (
+                      <span
+                        key={index}
+                        className={createClasses({
+                          [styles['character']]: true,
+                          [styles[wordRegion.type]]: true
+                        })}
+                      >
+                        {char}
+                      </span>
+                    ))
+                  ))}
+                </span>
+                <span className={styles['character']}>
+                  {' '}
+                </span>
+              </Fragment>
+            ))}
+          </div>
+        </div>
       </div>
     </>
   )
