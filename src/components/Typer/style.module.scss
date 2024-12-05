@@ -2,12 +2,6 @@
   font-size: 2rem;
   line-height: 1.5;
   position: relative;
-  
-  &--finished .cursor,
-  &:not(:focus) .cursor {
-    opacity: 0;
-    animation: none;
-  }
 
   &:focus {
     outline: none;
@@ -40,6 +34,12 @@
         opacity: 0;
       }
     }
+  }
+
+  &--finished .cursor,
+  &:not(:focus) .cursor {
+    opacity: 0;
+    animation: none;
   }
 
   .word {
