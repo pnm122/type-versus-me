@@ -2,6 +2,14 @@
   font-size: 2rem;
   line-height: 1.5;
   position: relative;
+  
+  &--finished .cursor {
+    opacity: 0;
+  }
+
+  &:not(.typer--finished) .cursor--blinking {
+    animation: blink 1.25s infinite;
+  }
 
   &:focus-visible {
     outline: none;
@@ -17,11 +25,9 @@
     // line height is 1.5em, height of cursor is 1.1em
     // this centers the cursor vertically on the line
     margin-top: 0.2em;
-    transition: transform 0.1s cubic-bezier(0.215, 0.610, 0.355, 1);
-
-    &--blinking {
-      animation: blink 1.25s infinite;
-    }
+    transition:
+      transform 0.1s cubic-bezier(0.215, 0.610, 0.355, 1),
+      opacity 0.5s;
 
     @keyframes blink {
       0%, 15%, 85%, 100% {

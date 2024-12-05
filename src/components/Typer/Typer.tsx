@@ -1,11 +1,13 @@
 import createClasses from "@/utils/createClasses"
-import { Fragment, KeyboardEvent, useCallback, useEffect, useLayoutEffect, useRef } from "react"
+import { Fragment, KeyboardEvent, useLayoutEffect, useRef } from "react"
 import styles from './style.module.scss'
 
 interface Props {
   text: string
   typed: string
+  finished: boolean
   onChange: (s: string) => void
+  onFinish: () => void
 }
 
 type WordRegionType = 'match' | 'no-match' | 'original-only' | 'typed-only'
@@ -15,7 +17,7 @@ interface Word {
   correct: boolean
   /** Regions within the current word */
   regions: WordRegion[]
-  /** Start index of the word, based on text displayed to user */
+  /** Index of the first character of the word, based on text displayed to user */
   start: number
   /** Distance to word currently being typed. Positive if before, 0 if current, and negative if after. */
   distanceToCurrent: number
@@ -31,18 +33,22 @@ interface WordRegion {
 export default function Typer({
   text,
   typed,
-  onChange
+  finished,
+  onChange,
+  onFinish
 }: Props) {
   const typer = useRef<HTMLDivElement>(null)
   const cursor = useRef<HTMLDivElement>(null)
   const cursorBlinkingTimeout = useRef<NodeJS.Timeout | null>(null)
 
-  const textRegions = text.split(' ').reduce<Word[]>((acc, word, index) => {
-    const typedWords = typed.split(' ')
+  const textRegions = words(text).reduce<Word[]>((acc, word, index, arr) => {
+    const typedWords = words(typed)
+    const isNotLastWordAndCorrect = index < typedWords.length - 1 && word === typedWords[index]
+    const isLastWordAndCorrect = index === arr.length - 1 && word === typedWords[index]
     return [
       ...acc,
       {
-        correct: index < typedWords.length - 1 && word === typedWords[index],
+        correct: isNotLastWordAndCorrect || isLastWordAndCorrect,
         regions: getWordRegions(word, typedWords[index]),
         // Add one to account for spaces between words
         start: acc.reduce((a, curr) => a + getWordLength(curr) + 1, 0),
@@ -53,8 +59,8 @@ export default function Typer({
 
   const displayedText = textRegions.map(w => w.regions.map(r => r.text).join('')).join(' ')
 
-  const cursorPosition = displayedText.split(' ').reduce((acc, word, index) => {
-    const typedWords = typed.split(' ')
+  const cursorPosition = words(displayedText).reduce((acc, word, index) => {
+    const typedWords = words(typed)
     if(index >= typedWords.length) return acc
     if(index === typedWords.length - 1) return acc + typedWords.at(-1)!.length
 
@@ -81,7 +87,35 @@ export default function Typer({
       return
     }
 
-    onChange(`${typed}${e.key}`)
+    if(e.key === ' ' && cursorAtStartOfWord) {
+      return
+    }
+
+    const newTyped = `${typed}${e.key}`
+
+    if(finishedWithCorrectLastWord(text, newTyped)) {
+      onFinish()
+    }
+
+    if(e.key === ' ' && words(text).length === words(typed).length) {
+      return onFinish()
+    }
+
+    onChange(newTyped)
+  }
+
+  function finishedWithCorrectLastWord(testText: string, testTyped: string) {
+    const textWords = words(testText)
+    const typedWords = words(testTyped)
+
+    return textWords.length === typedWords.length && textWords.at(-1) === typedWords.at(-1)
+  }
+
+  /**
+   * Split a piece of text into words
+   */
+  function words(str: string) {
+    return str.split(' ')
   }
 
   function getWordLength(word: Word) {
@@ -173,8 +207,11 @@ export default function Typer({
     <>
       <div
         onKeyDown={onKeyDown}
-        tabIndex={0}
-        className={styles['typer']}
+        tabIndex={finished ? -1 : 0}
+        className={createClasses({
+          [styles['typer']]: true,
+          [styles['typer--finished']]: finished
+        })}
         ref={typer}>
         <div className={styles['cursor']} ref={cursor}></div>
         {textRegions.map((word, index) => (
