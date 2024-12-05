@@ -310,12 +310,11 @@ export default function Typer({
     }
   }
 
-  function setCursorPosition() {
+  function setLinePosition() {
     if(!typer.current || !cursor.current) return
 
     const inner = typer.current.querySelector<HTMLElement>(`.${styles['typer__inner']}`)!
 
-    // Calculate line info and translate before moving the cursor, so that all characters are in their final place
     const { lines, currentLine } = getLineInfo()
 
     // Move the text of the typer so that the middle line is always where the cursor is, beginning with the second line
@@ -324,6 +323,10 @@ export default function Typer({
     } else {
       inner.style.transform = ''
     }
+  }
+
+  function setCursorPosition() {
+    if(!typer.current || !cursor.current) return
 
     const charElements = typer.current.querySelectorAll(`.${styles['character']}`)
     const { left: typerLeft, top: typerTop } = typer.current!.getBoundingClientRect()
@@ -344,11 +347,16 @@ export default function Typer({
   
   // Move the cursor to the current letter when typed text changes
   useLayoutEffect(() => {
-    window.addEventListener('resize', setCursorPosition)
-    setCursorPosition()
+    function setLineAndCursorPositions() {
+      setLinePosition()
+      setCursorPosition()
+    }
+
+    window.addEventListener('resize', setLineAndCursorPositions)
+    setLineAndCursorPositions()
 
     return () => {
-      window.removeEventListener('resize', setCursorPosition)
+      window.removeEventListener('resize', setLineAndCursorPositions)
     }
   }, [text, typed])
 
