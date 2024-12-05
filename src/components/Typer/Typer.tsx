@@ -1,20 +1,40 @@
 import createClasses from "@/utils/createClasses"
-import { Fragment, KeyboardEvent, useEffect, useLayoutEffect, useRef } from "react"
+import { Fragment, KeyboardEvent, useEffect, useLayoutEffect, useRef, useState } from "react"
 import styles from './style.module.scss'
+
+export type TyperStats = Stats & {
+  perWordStats: Stats[]
+}
+
+interface Stats {
+  errorsMade: number
+  errorsLeft: number
+  correct: number
+  startTime: number
+  endTime: number
+  rawWPM: number
+  netWPM: number
+}
 
 interface Props {
   /** Text to display in the Typer */
   text: string
-  /** Text typed by the user */
-  typed: string
   /** Whether the test has been finished */
   finished: boolean
-  /** Callback for when a user input should cause the typed text to change */
-  onChange: (s: string) => void
-  /** Callback for when the first onChange event is fired after initialization/reset */
+  /**
+   * Callback for when a user input should cause the typed text to change
+   **/
+  onChange: (stats: TyperStats) => void
+  /**
+   * Callback for when the first onChange event is fired after initialization/reset
+   * @param t time when starting the test
+   **/
   onStart: (t: number) => void
-  /** Callback for when the test is finished by either correctly typing the last word or pressing Space/Enter on the last word */
-  onFinish: (t: number) => void
+  /**
+   * Callback for when the test is finished by either correctly typing the last word or pressing Space/Enter on the last word.
+   * @param stats statistics from the test
+   **/
+  onFinish: (stats: TyperStats) => void
 }
 
 type WordRegionType = 'match' | 'no-match' | 'original-only' | 'typed-only'
@@ -39,33 +59,37 @@ interface WordRegion {
 
 export default function Typer({
   text,
-  typed,
   finished,
   onChange,
   onStart,
   onFinish
 }: Props) {
+
+  function getInitialStats(numWords = 0): TyperStats {
+    const INIT: Stats = {
+      errorsMade: 0,
+      errorsLeft: 0,
+      correct: 0,
+      startTime: -1,
+      endTime: -1,
+      rawWPM: -1,
+      netWPM: -1,
+    }
+
+    return {
+      ...INIT,
+      perWordStats: Array<Stats>(numWords).fill(INIT)
+    }
+  }
+
   const typer = useRef<HTMLDivElement>(null)
   const cursor = useRef<HTMLDivElement>(null)
   const cursorBlinkingTimeout = useRef<NodeJS.Timeout | null>(null)
-  const startTime = useRef<number | null>(null)
-  const timeToFinish = useRef<number | null>(null)
+  const stats = useRef<TyperStats>(getInitialStats())
 
-  const textRegions = words(text).reduce<Word[]>((acc, word, index, arr) => {
-    const typedWords = words(typed)
-    const isNotLastWordAndCorrect = index < typedWords.length - 1 && word === typedWords[index]
-    const isLastWordAndCorrect = index === arr.length - 1 && word === typedWords[index]
-    return [
-      ...acc,
-      {
-        correct: isNotLastWordAndCorrect || isLastWordAndCorrect,
-        regions: getWordRegions(word, typedWords[index]),
-        // Add one to account for spaces between words
-        start: acc.reduce((a, curr) => a + getWordLength(curr) + 1, 0),
-        distanceToCurrent: typedWords.length - 1 - index
-      }
-    ]
-  }, [])
+  const [typed, setTyped] = useState('')
+
+  const textRegions = getTextRegions(text, typed)
 
   const displayedText = textRegions.map(w => w.regions.map(r => r.text).join('')).join(' ')
 
@@ -80,45 +104,113 @@ export default function Typer({
 
   const cursorAtStartOfWord = !!textRegions.find(w => w.start === cursorPosition)
 
+  function getTextRegions(tempText: string, tempTyped: string) {
+    return words(tempText).reduce<Word[]>((acc, word, index, arr) => {
+      const typedWords = words(tempTyped)
+      const isNotLastWordAndCorrect = index < typedWords.length - 1 && word === typedWords[index]
+      const isLastWordAndCorrect = index === arr.length - 1 && word === typedWords[index]
+      return [
+        ...acc,
+        {
+          correct: isNotLastWordAndCorrect || isLastWordAndCorrect,
+          regions: getWordRegions(word, typedWords[index]),
+          // Add one to account for spaces between words
+          start: acc.reduce((a, curr) => a + getWordLength(curr) + 1, 0),
+          distanceToCurrent: typedWords.length - 1 - index
+        }
+      ]
+    }, [])
+  }
+
   function onKeyDown(e: KeyboardEvent<HTMLDivElement>) {
     e.preventDefault()
 
-    const previousWordCorrect = textRegions.find(w => w.distanceToCurrent === 1)?.correct
-
-    if((e.key === 'Backspace' || e.key === 'Delete')) {
-      if(typed.length === 0 || (previousWordCorrect && cursorAtStartOfWord)) {
-        return
-      }
-      
-      onChange(typed.slice(0, -1))
+    if(finished) {
+      return
     }
 
     if(e.key === ' ' && cursorAtStartOfWord) {
       return
     }
 
-    if((e.key === ' ' || e.key === 'Enter') && words(text).length === words(typed).length) {
-      timeToFinish.current = Date.now() - startTime.current!
-      return onFinish(timeToFinish.current)
+    if(e.key.length > 1 && !['Backspace', 'Delete'].includes(e.key)) {
+      return
     }
 
-    if(e.key.length > 1) {
-      return
+    const previousWordCorrect = textRegions.find(w => w.distanceToCurrent === 1)?.correct
+
+    if(['Backspace', 'Delete'].includes(e.key)) {
+      if(typed.length === 0 || (previousWordCorrect && cursorAtStartOfWord)) {
+        return
+      }
+      
+      return handleChange(typed.slice(0, -1))
+    }
+
+    if((e.key === ' ' || e.key === 'Enter') && words(text).length === words(typed).length) {
+      return handleFinish()
     }
 
     const newTyped = `${typed}${e.key}`
 
     if(finishedWithCorrectLastWord(text, newTyped)) {
-      timeToFinish.current = Date.now() - startTime.current!
-      onFinish(timeToFinish.current)
+      handleFinish()
     }
 
-    if(!startTime.current && typed.length === 0) {
-      startTime.current = Date.now()
-      onStart(startTime.current)
+    if(stats.current.startTime === -1 && typed.length === 0) {
+      handleStart()
     }
 
-    onChange(newTyped)
+    handleChange(newTyped)
+  }
+
+  function getNumberOfErrorsTotal(regions: Word[]) {
+    return regions.reduce((acc, w) => (
+      acc + w.regions.reduce((acc, r) => (
+        r.type === 'no-match' || r.type === 'typed-only'
+          ? acc + r.text.length
+          : acc
+      ), 0)
+    ), 0)
+  }
+
+  function getNumberOfCorrectTotal(regions: Word[]) {
+    return regions.reduce((acc, w) => (
+      acc + w.regions.reduce((acc, r) => (
+        r.type === 'match'
+          ? acc + r.text.length
+          : acc
+      ), w.distanceToCurrent > 0 ? 1 : 0)
+    ), 0)
+  }
+
+  function handleChange(newTyped: string) {
+    const newRegions = getTextRegions(text, newTyped)
+    const newErrorsLeft = getNumberOfErrorsTotal(newRegions)
+    const oldErrorsLeft = getNumberOfErrorsTotal(textRegions)
+    const correct = getNumberOfCorrectTotal(newRegions)
+    
+    stats.current = {
+      ...stats.current,
+      errorsMade: newErrorsLeft > oldErrorsLeft ? stats.current.errorsMade + 1 : stats.current.errorsMade,
+      errorsLeft: newErrorsLeft,
+      correct,
+      netWPM: (correct / 5) / ((Date.now() - stats.current.startTime) / 60000),
+      rawWPM: ((correct + newErrorsLeft) / 5) / ((Date.now() - stats.current.startTime) / 60000)
+    }
+
+    setTyped(newTyped)
+    onChange(stats.current)
+  }
+
+  function handleStart() {
+    stats.current.startTime = Date.now()
+    onStart(stats.current.startTime)
+  }
+
+  function handleFinish() {
+    stats.current.endTime = Date.now()
+    onFinish(stats.current)
   }
 
   function finishedWithCorrectLastWord(testText: string, testTyped: string) {
@@ -137,10 +229,6 @@ export default function Typer({
 
   function getWordLength(word: Word) {
     return word.regions.reduce((acc, region) => acc + region.text.length, 0)
-  }
-
-  function getTextFromWord(word: Word) {
-    return word.regions.map(r => r.text).join('')
   }
 
   function getCharacterType(original: string | undefined, compare: string | undefined): WordRegionType {
@@ -221,8 +309,7 @@ export default function Typer({
   }, [text, typed])
 
   useEffect(() => {
-    startTime.current = null
-    timeToFinish.current = null
+    stats.current = getInitialStats(words(text).length)
   }, [text])
 
   return (
