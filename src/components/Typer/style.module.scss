@@ -1,17 +1,21 @@
 .typer {
-  --typer-padding: 0px;
+  --_typer-correct-letter-color: var(--typer-correct-letter-color, black);
+  --_typer-wrong-letter-color: var(--typer-wrong-letter-color, red);
+  --_typer-extra-letter-color: var(--typer-extra-letter-color, darkred);
+  --_typer-untyped-letter-color: var(--typer-extra-letter-color, gray);
+  --_typer-cursor-color: var(--typer-cursor-color, indigo);
+  --_typer-wrong-word-decoration: var(--typer-wrong-word-decoration, underline red);
 
   font-size: 2rem;
   line-height: 1.5;
   position: relative;
-  padding: var(--typer-padding);
 
   &:focus {
     outline: none;
   }
 
   &__text {
-    height: calc(9rem + (var(--typer-padding) * 2));
+    height: 9rem;
     overflow: hidden;
   }
 
@@ -22,7 +26,7 @@
   .cursor {
     height: 1.1em;
     width: 0.1em;
-    background-color: indigo;
+    background-color: var(--_typer-cursor-color);
     position: absolute;
     top: 0;
     left: -0.05em;
@@ -58,23 +62,23 @@
     display: inline;
   
     &--incorrect {
-      text-decoration: underline red;
+      text-decoration: var(--_typer-wrong-word-decoration);
     }
   
     .original-only {
-      color: gray;
+      color: var(--_typer-untyped-letter-color);
     }
   
     .typed-only {
-      color: darkred;
+      color: var(--_typer-extra-letter-color);
     }
   
     .match {
-      color: black;
+      color: var(--_typer-correct-letter-color);
     }
   
     .no-match {
-      color: red;
+      color: var(--_typer-wrong-letter-color);
     }
   }
 
