@@ -1,13 +1,20 @@
 import createClasses from "@/utils/createClasses"
-import { Fragment, KeyboardEvent, useLayoutEffect, useRef } from "react"
+import { Fragment, KeyboardEvent, useEffect, useLayoutEffect, useRef } from "react"
 import styles from './style.module.scss'
 
 interface Props {
+  /** Text to display in the Typer */
   text: string
+  /** Text typed by the user */
   typed: string
+  /** Whether the test has been finished */
   finished: boolean
+  /** Callback for when a user input should cause the typed text to change */
   onChange: (s: string) => void
-  onFinish: () => void
+  /** Callback for when the first onChange event is fired after initialization/reset */
+  onStart: (t: number) => void
+  /** Callback for when the test is finished by either correctly typing the last word or pressing Space/Enter on the last word */
+  onFinish: (t: number) => void
 }
 
 type WordRegionType = 'match' | 'no-match' | 'original-only' | 'typed-only'
@@ -35,11 +42,14 @@ export default function Typer({
   typed,
   finished,
   onChange,
+  onStart,
   onFinish
 }: Props) {
   const typer = useRef<HTMLDivElement>(null)
   const cursor = useRef<HTMLDivElement>(null)
   const cursorBlinkingTimeout = useRef<NodeJS.Timeout | null>(null)
+  const startTime = useRef<number | null>(null)
+  const timeToFinish = useRef<number | null>(null)
 
   const textRegions = words(text).reduce<Word[]>((acc, word, index, arr) => {
     const typedWords = words(typed)
@@ -83,22 +93,29 @@ export default function Typer({
       onChange(typed.slice(0, -1))
     }
 
-    if(e.key.length > 1) {
+    if(e.key === ' ' && cursorAtStartOfWord) {
       return
     }
 
-    if(e.key === ' ' && cursorAtStartOfWord) {
+    if((e.key === ' ' || e.key === 'Enter') && words(text).length === words(typed).length) {
+      timeToFinish.current = Date.now() - startTime.current!
+      return onFinish(timeToFinish.current)
+    }
+
+    if(e.key.length > 1) {
       return
     }
 
     const newTyped = `${typed}${e.key}`
 
     if(finishedWithCorrectLastWord(text, newTyped)) {
-      onFinish()
+      timeToFinish.current = Date.now() - startTime.current!
+      onFinish(timeToFinish.current)
     }
 
-    if(e.key === ' ' && words(text).length === words(typed).length) {
-      return onFinish()
+    if(!startTime.current && typed.length === 0) {
+      startTime.current = Date.now()
+      onStart(startTime.current)
     }
 
     onChange(newTyped)
@@ -202,6 +219,11 @@ export default function Typer({
       window.removeEventListener('resize', setCursorPosition)
     }
   }, [text, typed])
+
+  useEffect(() => {
+    startTime.current = null
+    timeToFinish.current = null
+  }, [text])
 
   return (
     <>
