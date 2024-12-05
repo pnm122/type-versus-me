@@ -310,6 +310,7 @@ export default function Typer({
 
   useEffect(() => {
     stats.current = getInitialStats(words(text).length)
+    setTyped('')
   }, [text])
 
   return (
