@@ -3,7 +3,12 @@ import { Fragment, KeyboardEvent, useEffect, useLayoutEffect, useRef, useState }
 import styles from './style.module.scss'
 
 export type TyperStats = Stats & {
-  perWordStats: Stats[]
+  perWordStats: PerWordStats[]
+}
+
+type PerWordStats = Stats & {
+  aggregateRawWPM: number
+  aggregateNetWPM: number
 }
 
 interface Stats {
@@ -31,7 +36,7 @@ interface Props {
    **/
   onStart: (t: number) => void
   /**
-   * Callback for when the test is finished by either correctly typing the last word or pressing Space/Enter on the last word.
+   * Callback for when the test is finished by correctly typing the entire text
    * @param stats statistics from the test
    **/
   onFinish: (stats: TyperStats) => void
@@ -78,7 +83,11 @@ export default function Typer({
 
     return {
       ...INIT,
-      perWordStats: Array<Stats>(numWords).fill(INIT)
+      perWordStats: Array<PerWordStats>(numWords).fill({
+        ...INIT,
+        aggregateRawWPM: -1,
+        aggregateNetWPM: -1
+      })
     }
   }
 
@@ -137,23 +146,13 @@ export default function Typer({
       return
     }
 
-    const previousWordCorrect = textRegions.find(w => w.distanceToCurrent === 1)?.correct
-
-    if(['Backspace', 'Delete'].includes(e.key)) {
-      if(typed.length === 0 || (previousWordCorrect && cursorAtStartOfWord)) {
-        return
-      }
-      
+    if(['Backspace', 'Delete'].includes(e.key) && typed.length !== 0) {
       return handleChange(typed.slice(0, -1))
-    }
-
-    if((e.key === ' ' || e.key === 'Enter') && words(text).length === words(typed).length) {
-      return handleFinish()
     }
 
     const newTyped = `${typed}${e.key}`
 
-    if(finishedWithCorrectLastWord(text, newTyped)) {
+    if(text === newTyped) {
       handleFinish()
     }
 
@@ -211,13 +210,6 @@ export default function Typer({
   function handleFinish() {
     stats.current.endTime = Date.now()
     onFinish(stats.current)
-  }
-
-  function finishedWithCorrectLastWord(testText: string, testTyped: string) {
-    const textWords = words(testText)
-    const typedWords = words(testTyped)
-
-    return textWords.length === typedWords.length && textWords.at(-1) === typedWords.at(-1)
   }
 
   /**
