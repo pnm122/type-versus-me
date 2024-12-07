@@ -24,7 +24,7 @@ export default function Home() {
   return (
     <div className={styles['main']}>
       <Typer
-        text='Living valley had silent eat merits esteem bed. In last an or went wise as left. Visited civilly am demesne so colonel he calling.'
+        text='So if on advanced addition absolute received replying throwing he. Delighted consisted newspaper of unfeeling as neglected so. Tell size come hard mrs and four fond are. Of in commanded earnestly resources it.'
         finished={finished}
         onChange={onChange}
         onStart={onStart}
@@ -34,6 +34,7 @@ export default function Home() {
         <div style={{ marginTop: 24 }}>
           <p>Net WPM: {stats.netWPM.toFixed(2)}</p>
           <p>Raw WPM: {stats.rawWPM.toFixed(2)}</p>
+          <p>Accuracy: {stats.accuracy.toFixed(2)}</p>
         </div>
       )}
     </div>

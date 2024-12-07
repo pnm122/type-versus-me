@@ -12,13 +12,22 @@ type PerWordStats = Stats & {
 }
 
 interface Stats {
+  /** Errors made while typing */
   errorsMade: number
+  /** Errors still left in typed text */
   errorsLeft: number
+  /** Number of correct keystrokes made while typing */
   correct: number
+  /** Start time in ms since epoch */
   startTime: number
+  /** End time in ms since epoch */
   endTime: number
+  /** Words per minute without accounting for errors. (Keystrokes / 5) / (Elapsed time in minutes) */
   rawWPM: number
+  /** Words for minute, counting only correct keystrokes. (Correct keystrokes / 5) / (Elapsed time in minutes) */
   netWPM: number
+  /** Percentage of correct keystrokes. (Correct keystrokes) / (Total keystrokes) */
+  accuracy: number
 }
 
 interface Props {
@@ -79,6 +88,7 @@ export default function Typer({
       endTime: -1,
       rawWPM: -1,
       netWPM: -1,
+      accuracy: 0
     }
 
     return {
@@ -142,12 +152,19 @@ export default function Typer({
       return
     }
 
+    // Disallow pressing space on the last word
+    if(e.key === ' ' && textRegions.at(-1)?.distanceToCurrent === 0) {
+      return
+    }
+
     if(e.key.length > 1 && !['Backspace', 'Delete'].includes(e.key)) {
       return
     }
 
-    if(['Backspace', 'Delete'].includes(e.key) && typed.length !== 0) {
-      return handleChange(typed.slice(0, -1))
+    if(['Backspace', 'Delete'].includes(e.key)) {
+      if(typed.length === 0) return
+
+      return handleChange(typed.slice(0, -1), e.key)
     }
 
     const newTyped = `${typed}${e.key}`
@@ -160,42 +177,60 @@ export default function Typer({
       handleStart()
     }
 
-    handleChange(newTyped)
+    handleChange(newTyped, e.key)
   }
 
-  function getNumberOfErrorsTotal(regions: Word[]) {
+  function isIncorrect(word: Word) {
+    return !word.correct && word.distanceToCurrent > 0
+  }
+
+  function getTotalCorrectAndErrors(regions: Word[]) {
+    interface CorrectAndErrors {
+      correct: number
+      errors: number
+    }
+
+    function sum(a: CorrectAndErrors, b: CorrectAndErrors) {
+      return {
+        correct: a.correct + b.correct,
+        errors: a.errors + b.errors
+      }
+    }
+
     return regions.reduce((acc, w) => (
-      acc + w.regions.reduce((acc, r) => (
-        r.type === 'no-match' || r.type === 'typed-only'
-          ? acc + r.text.length
-          : acc
-      ), 0)
-    ), 0)
+      sum(
+        acc,
+        w.regions.reduce((acc, r) => (
+          r.type === 'no-match' || r.type === 'typed-only'
+            ? { ...acc, errors: acc.errors + r.text.length }
+            : r.type === 'match'
+              ? { ...acc, correct: acc.correct + r.text.length }
+              : acc
+        ), { correct: 0, errors: 0 })
+      )
+    ), { correct: 0, errors: 0 })
   }
 
-  function getNumberOfCorrectTotal(regions: Word[]) {
-    return regions.reduce((acc, w) => (
-      acc + w.regions.reduce((acc, r) => (
-        r.type === 'match'
-          ? acc + r.text.length
-          : acc
-      ), w.distanceToCurrent > 0 ? 1 : 0)
-    ), 0)
-  }
-
-  function handleChange(newTyped: string) {
+  function handleChange(newTyped: string, key: string) {
     const newRegions = getTextRegions(text, newTyped)
-    const newErrorsLeft = getNumberOfErrorsTotal(newRegions)
-    const oldErrorsLeft = getNumberOfErrorsTotal(textRegions)
-    const correct = getNumberOfCorrectTotal(newRegions)
+    const { correct: newCorrect, errors: newErrors } = getTotalCorrectAndErrors(newRegions)
+    const { correct: oldCorrect, errors: oldErrors } = getTotalCorrectAndErrors(textRegions)
+
+    // Need to check if space was pressed in the incorrect location because it isn't accounted for by errors
+    // Word before current must be valid (i.e. >= 2 words) because space is not allowed on final word
+    const incorrectSpace = key === ' ' && isWordWrongLength(newRegions.find(w => w.distanceToCurrent === 1)!)
     
+    const errorsMade = newErrors > oldErrors || incorrectSpace ? stats.current.errorsMade + 1 : stats.current.errorsMade
+    const correct = newCorrect > oldCorrect ? stats.current.correct + 1 : stats.current.correct
+
     stats.current = {
       ...stats.current,
-      errorsMade: newErrorsLeft > oldErrorsLeft ? stats.current.errorsMade + 1 : stats.current.errorsMade,
-      errorsLeft: newErrorsLeft,
+      errorsMade,
+      errorsLeft: newErrors,
       correct,
       netWPM: (correct / 5) / ((Date.now() - stats.current.startTime) / 60000),
-      rawWPM: ((correct + newErrorsLeft) / 5) / ((Date.now() - stats.current.startTime) / 60000)
+      rawWPM: ((correct + errorsMade) / 5) / ((Date.now() - stats.current.startTime) / 60000),
+      accuracy: correct * 100 / (correct + errorsMade)
     }
 
     setTyped(newTyped)
@@ -217,6 +252,10 @@ export default function Typer({
    */
   function words(str: string) {
     return str.split(' ')
+  }
+
+  function isWordWrongLength(word: Word) {
+    return !!word.regions.find(r => r.type === 'typed-only' || r.type === 'original-only')
   }
 
   function getWordLength(word: Word) {
@@ -380,7 +419,7 @@ export default function Typer({
                 <span
                   className={createClasses({
                     [styles['word']]: true,
-                    [styles['word--incorrect']]: !word.correct && word.distanceToCurrent > 0
+                    [styles['word--incorrect']]: isIncorrect(word)
                   })}
                 >
                   {word.regions.map(wordRegion => (
