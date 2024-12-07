@@ -164,7 +164,7 @@ export default function Typer({
     if(['Backspace', 'Delete'].includes(e.key)) {
       if(typed.length === 0) return
 
-      return handleChange(typed.slice(0, -1), e.key)
+      return handleChange(typed.slice(0, -1))
     }
 
     const newTyped = `${typed}${e.key}`
@@ -177,7 +177,7 @@ export default function Typer({
       handleStart()
     }
 
-    handleChange(newTyped, e.key)
+    handleChange(newTyped)
   }
 
   function isIncorrect(word: Word) {
@@ -199,7 +199,12 @@ export default function Typer({
 
     return regions.reduce((acc, w) => (
       sum(
-        acc,
+        {
+          // Correctly placed spaces count as correct keystrokes
+          correct: isSubmitted(w) && isRightLength(w) ? acc.correct + 1 : acc.correct,
+          // Incorrectly placed spaces count as incorrect keystrokes
+          errors: isSubmitted(w) && !isRightLength(w) ? acc.errors + 1 : acc.errors,
+        },
         w.regions.reduce((acc, r) => (
           r.type === 'no-match' || r.type === 'typed-only'
             ? { ...acc, errors: acc.errors + r.text.length }
@@ -211,16 +216,12 @@ export default function Typer({
     ), { correct: 0, errors: 0 })
   }
 
-  function handleChange(newTyped: string, key: string) {
+  function handleChange(newTyped: string) {
     const newRegions = getTextRegions(text, newTyped)
     const { correct: newCorrect, errors: newErrors } = getTotalCorrectAndErrors(newRegions)
     const { correct: oldCorrect, errors: oldErrors } = getTotalCorrectAndErrors(textRegions)
 
-    // Need to check if space was pressed in the incorrect location because it isn't accounted for by errors
-    // Word before current must be valid (i.e. >= 2 words) because space is not allowed on final word
-    const incorrectSpace = key === ' ' && isWordWrongLength(newRegions.find(w => w.distanceToCurrent === 1)!)
-    
-    const errorsMade = newErrors > oldErrors || incorrectSpace ? stats.current.errorsMade + 1 : stats.current.errorsMade
+    const errorsMade = newErrors > oldErrors ? stats.current.errorsMade + 1 : stats.current.errorsMade
     const correct = newCorrect > oldCorrect ? stats.current.correct + 1 : stats.current.correct
 
     stats.current = {
@@ -254,8 +255,12 @@ export default function Typer({
     return str.split(' ')
   }
 
-  function isWordWrongLength(word: Word) {
-    return !!word.regions.find(r => r.type === 'typed-only' || r.type === 'original-only')
+  function isSubmitted(word: Word) {
+    return word.distanceToCurrent > 0
+  }
+
+  function isRightLength(word: Word) {
+    return word.regions.every(r => r.type === 'match' || r.type === 'no-match')
   }
 
   function getWordLength(word: Word) {
