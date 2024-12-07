@@ -9,11 +9,9 @@ export default function Home() {
   const [stats, setStats] = useState<TyperStats | null>(null)
 
   function onStart(t: number) {
-    console.log(new Date(t))
   }
 
   function onFinish(stats: TyperStats) {
-    console.log((stats.endTime - stats.startTime) / 1000)
     setFinished(true)
   }
 

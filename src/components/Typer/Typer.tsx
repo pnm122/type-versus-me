@@ -12,12 +12,14 @@ type PerWordStats = Stats & {
 }
 
 interface Stats {
-  /** Errors made while typing */
+  /** Number of errors made while typing */
   errorsMade: number
-  /** Errors still left in typed text */
+  /** Number of errors still left in typed text */
   errorsLeft: number
   /** Number of correct keystrokes made while typing */
-  correct: number
+  correctMade: number
+  /** Number of correct keystrokes left in typed text */
+  correctLeft: number
   /** Start time in ms since epoch */
   startTime: number
   /** End time in ms since epoch */
@@ -83,7 +85,8 @@ export default function Typer({
     const INIT: Stats = {
       errorsMade: 0,
       errorsLeft: 0,
-      correct: 0,
+      correctMade: 0,
+      correctLeft: 0,
       startTime: -1,
       endTime: -1,
       rawWPM: -1,
@@ -169,15 +172,16 @@ export default function Typer({
 
     const newTyped = `${typed}${e.key}`
 
-    if(text === newTyped) {
-      handleFinish()
-    }
-
     if(stats.current.startTime === -1 && typed.length === 0) {
       handleStart()
     }
 
     handleChange(newTyped)
+
+    // Finish event AFTER change event to ensure all stats are updated
+    if(text === newTyped) {
+      handleFinish()
+    }
   }
 
   function isIncorrect(word: Word) {
@@ -222,16 +226,17 @@ export default function Typer({
     const { correct: oldCorrect, errors: oldErrors } = getTotalCorrectAndErrors(textRegions)
 
     const errorsMade = newErrors > oldErrors ? stats.current.errorsMade + 1 : stats.current.errorsMade
-    const correct = newCorrect > oldCorrect ? stats.current.correct + 1 : stats.current.correct
+    const correctMade = newCorrect > oldCorrect ? stats.current.correctMade + 1 : stats.current.correctMade
 
     stats.current = {
       ...stats.current,
       errorsMade,
       errorsLeft: newErrors,
-      correct,
-      netWPM: (correct / 5) / ((Date.now() - stats.current.startTime) / 60000),
-      rawWPM: ((correct + errorsMade) / 5) / ((Date.now() - stats.current.startTime) / 60000),
-      accuracy: correct * 100 / (correct + errorsMade)
+      correctMade,
+      correctLeft: newCorrect,
+      netWPM: (correctMade / 5) / ((Date.now() - stats.current.startTime) / 60000),
+      rawWPM: ((correctMade + errorsMade) / 5) / ((Date.now() - stats.current.startTime) / 60000),
+      accuracy: correctMade * 100 / (correctMade + errorsMade)
     }
 
     setTyped(newTyped)
