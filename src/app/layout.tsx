@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import '@/scss/index.scss'
+import { ThemeProvider } from "@/context/Theme";
 
 export const metadata: Metadata = {
   title: "Typing Race",
@@ -14,7 +15,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {children}
+        <ThemeProvider>
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );
