@@ -1,6 +1,22 @@
-@use 'variables';
-
 body {
-  color-scheme: light dark;
   font-family: system-ui;
+  background-color: var(--background);
+  color: var(--text);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--heading);
+}
+
+::placeholder {
+  color: var(--placeholder);
+}
+
+hr {
+  border-top: 2px solid var(--border);
 }

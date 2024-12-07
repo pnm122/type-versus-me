@@ -1,10 +1,10 @@
 .typer {
-  --_typer-correct-letter-color: var(--typer-correct-letter-color, black);
-  --_typer-wrong-letter-color: var(--typer-wrong-letter-color, red);
-  --_typer-extra-letter-color: var(--typer-extra-letter-color, darkred);
-  --_typer-untyped-letter-color: var(--typer-extra-letter-color, gray);
-  --_typer-cursor-color: var(--typer-cursor-color, indigo);
-  --_typer-wrong-word-decoration: var(--typer-wrong-word-decoration, underline red);
+  --_typer-correct-letter-color: var(--typer-correct-letter-color, var(--correct));
+  --_typer-wrong-letter-color: var(--typer-wrong-letter-color, var(--error));
+  --_typer-extra-letter-color: var(--typer-extra-letter-color, var(--extra));
+  --_typer-untyped-letter-color: var(--typer-untyped-letter-color, var(--untyped));
+  --_typer-cursor-color: var(--typer-cursor-color, var(--cursor-blue));
+  --_typer-wrong-word-decoration: var(--typer-wrong-word-decoration, underline var(--error));
 
   font-size: 2rem;
   line-height: 1.5;
