@@ -1,0 +1,17 @@
+{
+  "name": "realtime",
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "npx tsx watch src/index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Pierce Martin <pnmartin02@gmail.com> (https://github.com/pnm122)",
+  "license": "MIT",
+  "description": "",
+  "devDependencies": {
+    "tsx": "^4.19.2"
+  },
+  "dependencies": {
+    "socket.io": "^4.8.1"
+  }
+}
