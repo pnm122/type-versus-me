@@ -1,11 +1,13 @@
-import { Cursor } from "@/types/Cursor"
+import { Cursor, CursorPosition } from "@/types/Cursor"
 import { useEffect, useRef } from "react"
 import styles from './style.module.scss'
 import typerStyles from '../Typer/style.module.scss'
 import createClasses from "@/utils/createClasses"
 
+
+
 type Props = Cursor & {
-  currentCursorPosition: number
+  currentCursorPosition: CursorPosition
   typer: React.RefObject<HTMLDivElement>
   opponent?: boolean
 }
@@ -32,15 +34,26 @@ export default function TyperCursor({
   }
 
   function setCursorPosition() {
-    if(!typer.current || !cursor.current) return
+    if(!typer.current || !cursor.current || position.word < 0 || position.letter < 0) {
+      return hideCursor()
+    }
     
-    const charElements = typer.current.querySelectorAll(`.${typerStyles['character']}`)!
-    const charAtCursor = Array.from(charElements).at(position)
+    const wordElement = typer.current.querySelectorAll(`.${typerStyles['word']}`).item(position.word)
+    if(!wordElement) return hideCursor()
+    const charElements = [
+      ...Array.from(wordElement.querySelectorAll(`.${typerStyles['character']}`)),
+      // Include the space after the word since the cursor can be attached to it too
+      wordElement.nextSibling as Element
+    ]
+    const charAtCursor = charElements[
+      position.letter >= charElements.length
+        ? charElements.length - 1
+        : position.letter
+    ]
     
     // hide cursor if an invalid position
-    if(!charAtCursor || position < 0) {
-      hideCursor()
-      return
+    if(!charAtCursor) {
+      return hideCursor()
     }
 
     showCursor()

@@ -31,15 +31,24 @@ export default function Home() {
         cursors={[{
           id: 1,
           color: 'red',
-          position
+          position: {
+            word: 2,
+            letter: 3
+          }
         }, {
           id: 2,
           color: 'green',
-          position: 5
+          position: {
+            word: 1,
+            letter: 0
+          }
         }, {
           id: 3,
           color: 'pink',
-          position: 20
+          position: {
+            word: 4,
+            letter: 6
+          }
         }]}
       />
       <input

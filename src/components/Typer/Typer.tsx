@@ -1,7 +1,7 @@
 import createClasses from "@/utils/createClasses"
 import { Fragment, KeyboardEvent, useEffect, useLayoutEffect, useRef, useState } from "react"
 import styles from './style.module.scss'
-import { Cursor, CursorColor } from "@/types/Cursor"
+import { Cursor, CursorColor, CursorPosition } from "@/types/Cursor"
 import TyperCursor from "../TyperCursor/TyperCursor"
 
 export type TyperStats = Stats & {
@@ -131,16 +131,16 @@ export default function Typer({
 
   const displayedText = textRegions.map(w => w.regions.map(r => r.text).join('')).join(' ')
 
-  const cursorPosition = words(displayedText).reduce((acc, word, index) => {
-    const typedWords = words(typed)
-    if(index >= typedWords.length) return acc
-    if(index === typedWords.length - 1) return acc + typedWords.at(-1)!.length
+  const cursorPosition = getCursorPosition(typed)
 
-    // add 1 to account for space between words
-    return acc + word.length + 1
-  }, 0)
+  const cursorAtStartOfWord = cursorPosition.letter === 0
 
-  const cursorAtStartOfWord = !!textRegions.find(w => w.start === cursorPosition)
+  function getCursorPosition(typed: string) {
+    return {
+      word: Math.max(words(typed).length - 1, 0),
+      letter: typed === '' ? 0 : words(typed).at(-1)!.length
+    }
+  }
 
   function getTextRegions(tempText: string, tempTyped: string) {
     return words(tempText).reduce<Word[]>((acc, word, index, arr) => {
@@ -339,17 +339,24 @@ export default function Typer({
    * Get information about the lines of text as they appear in the DOM
    * @returns the position of each line relative to the top of the typer, as well as the line the cursor is currently on
    */
-  function getLineInfo(cursorPosition: number): LineInfo {
+  function getLineInfo(cursorPosition: CursorPosition): LineInfo {
     const inner = typer.current!.querySelector<HTMLElement>(`.${styles['typer__inner']}`)!
     const initialTransform = inner.style.transform
     inner.style.transform = ''
 
-    const charElements = typer.current!.querySelectorAll(`.${styles['character']}`)
+    const currentWordElement = typer.current!.querySelectorAll(`.${styles['word']}`).item(cursorPosition.word)
+    const currentWordCharElements = [
+      ...Array.from(currentWordElement.querySelectorAll(`.${styles['character']}`)),
+      // Include the space after the word since the cursor can be attached to it too
+      currentWordElement.nextSibling as Element
+    ]
     const { top: typerTop } = inner.getBoundingClientRect()
-    const { top: charTop } = Array.from(charElements!).at(cursorPosition)!.getBoundingClientRect()
+    const { top: charTop } = currentWordCharElements[cursorPosition.letter].getBoundingClientRect()
+
+    const allCharElements = typer.current!.querySelectorAll(`.${styles['character']}`)
 
     // Get a list of all lines' distance to the top of the typer
-    const lines = Array.from(charElements).reduce<number[]>((acc, elem) => {
+    const lines = Array.from(allCharElements).reduce<number[]>((acc, elem) => {
       const top = elem.getBoundingClientRect().top - typerTop
       if(acc.includes(top)) {
         return acc
