@@ -24,6 +24,7 @@
 
   .word {
     display: inline;
+    word-wrap: break-word;
   
     &--incorrect {
       text-decoration: var(--_typer-wrong-word-decoration);

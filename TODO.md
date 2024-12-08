@@ -3,4 +3,4 @@
 [x] generate random tests
 [x] calculate statistics for whole test
 [ ] calculate statistics in realtime as the user types
-[ ] fix text going offscreen in Typer
+[x] fix text going offscreen in Typer
