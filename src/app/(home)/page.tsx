@@ -7,6 +7,7 @@ import { useState } from 'react'
 export default function Home() {
   const [finished, setFinished] = useState(false)
   const [stats, setStats] = useState<TyperStats | null>(null)
+  const [position, setPosition] = useState(12)
 
   function onStart(t: number) {
   }
@@ -27,6 +28,26 @@ export default function Home() {
         onChange={onChange}
         onStart={onStart}
         onFinish={onFinish}
+        cursors={[{
+          id: 1,
+          color: 'red',
+          position
+        }, {
+          id: 2,
+          color: 'green',
+          position: 5
+        }, {
+          id: 3,
+          color: 'pink',
+          position: 20
+        }]}
+      />
+      <input
+        type='range'
+        min='0'
+        max='200'
+        value={position}
+        onChange={e => setPosition(parseInt(e.target.value))}
       />
       {stats && (
         <div style={{ marginTop: 24 }}>

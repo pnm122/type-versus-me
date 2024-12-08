@@ -8,53 +8,18 @@
 
   font: var(--font-body-32);
   position: relative;
+  // Cut off cursors and text so only 3 lines show
+  overflow: hidden;
+  height: 9rem;
+  // Extra padding to ensure cursors are fully visible
+  padding: 0.1em;
 
   &:focus {
     outline: none;
   }
 
-  &__text {
-    height: 9rem;
-    overflow: hidden;
-  }
-
   &__inner {
     display: block;
-  }
-
-  .cursor {
-    height: 1.1em;
-    width: 0.1em;
-    background-color: var(--_typer-cursor-color);
-    position: absolute;
-    top: 0;
-    left: -0.05em;
-    // Makes the cursor look roughly centered vertically
-    // Pretty sure this is dependent on font, oh well
-    margin-top: 0.1em;
-    transition:
-      transform 0.1s cubic-bezier(0.215, 0.610, 0.355, 1),
-      opacity 0.5s;
-    
-    &--blinking {
-      animation: blink 1.25s infinite;
-    }
-
-    @keyframes blink {
-      0%, 15%, 85%, 100% {
-        opacity: 1;
-      }
-  
-      50% {
-        opacity: 0;
-      }
-    }
-  }
-
-  &--finished .cursor,
-  &:not(:focus) .cursor {
-    opacity: 0;
-    animation: none;
   }
 
   .word {

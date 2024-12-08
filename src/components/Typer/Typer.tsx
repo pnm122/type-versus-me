@@ -1,6 +1,8 @@
 import createClasses from "@/utils/createClasses"
 import { Fragment, KeyboardEvent, useEffect, useLayoutEffect, useRef, useState } from "react"
 import styles from './style.module.scss'
+import { Cursor, CursorColor } from "@/types/Cursor"
+import TyperCursor from "../TyperCursor/TyperCursor"
 
 export type TyperStats = Stats & {
   perWordStats: PerWordStats[]
@@ -32,6 +34,13 @@ interface Stats {
   accuracy: number
 }
 
+interface LineInfo {
+  /** Lines and their distance from the top of the Typer */
+  lines: number[]
+  /** Line the cursor is currently on */
+  currentLine: number,
+}
+
 interface Props {
   /** Text to display in the Typer */
   text: string
@@ -51,6 +60,10 @@ interface Props {
    * @param stats statistics from the test
    **/
   onFinish: (stats: TyperStats) => void
+  /**
+   * Other players' cursors to show within the Typer
+   */
+  cursors?: Cursor[]
 }
 
 type WordRegionType = 'match' | 'no-match' | 'original-only' | 'typed-only'
@@ -78,9 +91,9 @@ export default function Typer({
   finished,
   onChange,
   onStart,
-  onFinish
+  onFinish,
+  cursors
 }: Props) {
-
   function getInitialStats(numWords = 0): TyperStats {
     const INIT: Stats = {
       errorsMade: 0,
@@ -104,9 +117,12 @@ export default function Typer({
     }
   }
 
+  // TODO: Replace with context
+  const cursorColor: CursorColor = 'blue'
+  // TODO: Replace with context
+  const userID = 0
+
   const typer = useRef<HTMLDivElement>(null)
-  const cursor = useRef<HTMLDivElement>(null)
-  const cursorBlinkingTimeout = useRef<NodeJS.Timeout | null>(null)
   const stats = useRef<TyperStats>(getInitialStats())
 
   const [typed, setTyped] = useState('')
@@ -323,13 +339,13 @@ export default function Typer({
    * Get information about the lines of text as they appear in the DOM
    * @returns the position of each line relative to the top of the typer, as well as the line the cursor is currently on
    */
-  function getLineInfo() {
+  function getLineInfo(cursorPosition: number): LineInfo {
     const inner = typer.current!.querySelector<HTMLElement>(`.${styles['typer__inner']}`)!
     const initialTransform = inner.style.transform
     inner.style.transform = ''
 
     const charElements = typer.current!.querySelectorAll(`.${styles['character']}`)
-    const { top: typerTop } = typer.current!.getBoundingClientRect()
+    const { top: typerTop } = inner.getBoundingClientRect()
     const { top: charTop } = Array.from(charElements!).at(cursorPosition)!.getBoundingClientRect()
 
     // Get a list of all lines' distance to the top of the typer
@@ -352,11 +368,11 @@ export default function Typer({
   }
 
   function setLinePosition() {
-    if(!typer.current || !cursor.current) return
+    if(!typer.current) return
 
     const inner = typer.current.querySelector<HTMLElement>(`.${styles['typer__inner']}`)!
 
-    const { lines, currentLine } = getLineInfo()
+    const { lines, currentLine } = getLineInfo(cursorPosition)
 
     // Move the text of the typer so that the middle line is always where the cursor is, beginning with the second line
     if(currentLine > 1) {
@@ -366,38 +382,12 @@ export default function Typer({
     }
   }
 
-  function setCursorPosition() {
-    if(!typer.current || !cursor.current) return
-
-    const charElements = typer.current.querySelectorAll(`.${styles['character']}`)
-    const { left: typerLeft, top: typerTop } = typer.current!.getBoundingClientRect()
-    const { left: charLeft, top: charTop } = Array.from(charElements!).at(cursorPosition)!.getBoundingClientRect()
-
-    cursor.current.style.transform = `translate(${charLeft - typerLeft}px, ${charTop - typerTop}px)`
-    cursor.current.classList.remove(styles['cursor--blinking'])
-    // Stop the previous timer if it exists
-    if(cursorBlinkingTimeout.current) {
-      clearTimeout(cursorBlinkingTimeout.current)
-    }
-    // Wait until after cursor transform transition is done to start blinking again
-    cursorBlinkingTimeout.current = setTimeout(() => {
-      cursor.current?.classList.add(styles['cursor--blinking'])
-      cursorBlinkingTimeout.current = null
-    }, 100)
-  }
-  
-  // Move the cursor to the current letter when typed text changes
   useLayoutEffect(() => {
-    function setLineAndCursorPositions() {
-      setLinePosition()
-      setCursorPosition()
-    }
-
-    window.addEventListener('resize', setLineAndCursorPositions)
-    setLineAndCursorPositions()
+    window.addEventListener('resize', setLinePosition)
+    setLinePosition()
 
     return () => {
-      window.removeEventListener('resize', setLineAndCursorPositions)
+      window.removeEventListener('resize', setLinePosition)
     }
   }, [text, typed])
 
@@ -416,42 +406,59 @@ export default function Typer({
           [styles['typer--finished']]: finished
         })}
         ref={typer}>
-        <div className={styles['cursor']} ref={cursor}></div>
+        {!finished && (
+          <>
+            <TyperCursor
+              id={userID}
+              color={cursorColor}
+              position={cursorPosition}
+              currentCursorPosition={cursorPosition}
+              typer={typer}
+            />
+            {cursors?.map(c => (
+              <TyperCursor
+                key={c.id}
+                typer={typer}
+                opponent={true}
+                currentCursorPosition={cursorPosition}
+                {...c}
+              />
+            ))}
+          </>
+        )}
         {/*
           Need extra nested divs:
             * text is the container with a set height and no overflow, sibling to cursor so the cursor isn't cut off
             * inner is moved as needed to keep the cursor on the middle line
         */}
-        <div className={styles['typer__text']}>
-          <div className={styles['typer__inner']}>
-            {textRegions.map((word, index) => (
-              <Fragment key={index}>
-                <span
-                  className={createClasses({
-                    [styles['word']]: true,
-                    [styles['word--incorrect']]: isIncorrect(word)
-                  })}
-                >
-                  {word.regions.map(wordRegion => (
-                    Array.from(wordRegion.text).map((char, index) => (
-                      <span
-                        key={index}
-                        className={createClasses({
-                          [styles['character']]: true,
-                          [styles[wordRegion.type]]: true
-                        })}
-                      >
-                        {char}
-                      </span>
-                    ))
-                  ))}
-                </span>
-                <span className={styles['character']}>
-                  {' '}
-                </span>
-              </Fragment>
-            ))}
-          </div>
+        <div className={styles['typer__inner']}>
+          {textRegions.map((word, index) => (
+            <Fragment key={index}>
+              <span
+                className={createClasses({
+                  [styles['word']]: true,
+                  [styles['word--incorrect']]: isIncorrect(word)
+                })}
+              >
+                {word.regions.map(wordRegion => (
+                  Array.from(wordRegion.text).map((char, index) => (
+                    <span
+                      key={index}
+                      className={createClasses({
+                        [styles['character']]: true,
+                        [styles[wordRegion.type]]: true
+                      })}
+                    >
+                      {char}
+                    </span>
+                  ))
+                ))}
+              </span>
+              <span className={styles['character']}>
+                {' '}
+              </span>
+            </Fragment>
+          ))}
         </div>
       </div>
     </>
