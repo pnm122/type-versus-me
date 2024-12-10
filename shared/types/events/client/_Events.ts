@@ -1,22 +1,29 @@
-const ClientEvents = {
-  /** Request a connection to the WebSocket */
-  CONNECT: 'connection',
-  /** Disconnect from the WebSocket */
-  DISCONNECT: 'disconnect',
+import { RegisterPayload, RegisterCallback } from './Register'
+import { CreateRoomPayload, CreateRoomCallback } from './CreateRoom'
+import { ClientJoinRoomPayload, ClientJoinRoomCallback } from './JoinRoom'
+import { ChangeUsernamePayload, ChangeUsernameCallback } from './ChangeUsername'
+import { RequestColorPayload, RequestColorCallback } from './RequestColor'
+import { ChangeUserStatePayload, ChangeUserStateCallback } from './ChangeUserState'
+import { ChangeUserScorePayload, ChangeUserScoreCallback } from './ChangeUserScore'
+import { LeaveRoomCallback } from './LeaveRoom'
+
+interface ClientEvents {
+  /** Register a user and get a User object */
+  'register': (value: RegisterPayload, callback: RegisterCallback) => Promise<void>
   /** Request to create a game room */
-  CREATE_ROOM: 'create-room',
+  'create-room': (value: CreateRoomPayload, callback: CreateRoomCallback) => Promise<void>
   /** Request to join a game room */
-  JOIN_ROOM: 'join-room',
+  'join-room': (value: ClientJoinRoomPayload, callback: ClientJoinRoomCallback) => Promise<void>
   /** Request to change username */
-  CHANGE_USERNAME: 'change-username',
+  'change-username': (value: ChangeUsernamePayload, callback: ChangeUsernameCallback) => Promise<void>
   /** Request to change color */
-  REQUEST_COLOR: 'request-color',
+  'request-color': (value: RequestColorPayload, callback: RequestColorCallback) => Promise<void>
   /** Request to change state */
-  CHANGE_USER_STATE: 'change-user-state',
+  'change-user-state': (value: ChangeUserStatePayload, callback: ChangeUserStateCallback) => Promise<void>
   /** Request to change score */
-  CHANGE_USER_SCORE: 'change-user-score',
+  'change-user-score': (value: ChangeUserScorePayload, callback: ChangeUserScoreCallback) => Promise<void>
   /** Request to leave a room */
-  LEAVE_ROOM: 'leave-room'
-} as const
+  'leave-room': (_: any, callback: LeaveRoomCallback) => Promise<void>
+}
 
 export default ClientEvents

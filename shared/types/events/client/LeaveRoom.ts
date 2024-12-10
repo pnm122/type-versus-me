@@ -1,10 +1,12 @@
 import { Return } from "../../Return"
 
-type Callback = Return<
-  null,
-  | 'user-not-in-room'
->
+type Callback = (
+  value: Return<
+    null,
+    | 'user-not-in-room'
+  >
+) => void
 
-export {
-  Callback as ChangeUserStateCallback
+export type {
+  Callback as LeaveRoomCallback
 }

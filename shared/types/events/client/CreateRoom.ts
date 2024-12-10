@@ -4,16 +4,18 @@ import { Return } from '../../Return'
 
 type Payload = User
 
-type Callback = Return<
-  Room,
-  | 'invalid-user-id'
-  | 'username-not-provided'
-  | 'color-not-provided'
-  | 'user-in-room-already'
-  | 'max-rooms-created'
->
+type Callback = (
+  value: Return<
+    Room,
+    | 'invalid-user-id'
+    | 'username-not-provided'
+    | 'color-not-provided'
+    | 'user-in-room-already'
+    | 'max-rooms-created'
+  >
+) => void
 
-export {
+export type {
   Payload as CreateRoomPayload,
   Callback as CreateRoomCallback
 }

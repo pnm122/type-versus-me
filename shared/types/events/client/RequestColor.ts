@@ -3,16 +3,18 @@ import { Return } from '../../Return'
 
 type Payload = Pick<User, 'id' | 'color'>
 
-type Callback = Return<
-  null,
-  | 'invalid-user-id'
-  | 'color-not-provided'
-  | 'invalid-color'
-  | 'color-taken'
-  | 'user-not-in-room'
->
+type Callback = (
+  value: Return<
+    null,
+    | 'invalid-user-id'
+    | 'color-not-provided'
+    | 'invalid-color'
+    | 'color-taken'
+    | 'user-not-in-room'
+  >
+) => void
 
-export {
+export type {
   Payload as RequestColorPayload,
   Callback as RequestColorCallback
 }

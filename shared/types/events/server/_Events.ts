@@ -1,12 +1,17 @@
-const ServerEvents = {
+import { ServerJoinRoomPayload } from './JoinRoom'
+import { ChangeUserDataPayload } from './ChangeUserData'
+import { ChangeRoomDataPayload } from './ChangeRoomData'
+import { ServerLeaveRoomPayload } from './LeaveRoom'
+
+interface ServerEvents {
   /** A user has joined the room */
-  JOIN_ROOM: 'join-room',
+  'join-room': (value: ServerJoinRoomPayload) => void,
   /** A user's data has changed */
-  CHANGE_USER_DATA: 'change-user-data',
+  'change-user-data': (value: ChangeUserDataPayload) => void,
   /** The room's data has changed */
-  CHANGE_ROOM_DATA: 'change-room-test',
+  'change-room-data': (value: ChangeRoomDataPayload) => void,
   /** A user has left the room */
-  LEAVE_ROOM: 'leave-room'
-} as const
+  'leave-room': (value: ServerLeaveRoomPayload) => void,
+}
 
 export default ServerEvents

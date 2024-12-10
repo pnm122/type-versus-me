@@ -2,6 +2,6 @@ import { User } from '../../User'
 
 type Payload = User
 
-export {
+export type {
   Payload as ServerJoinRoomPayload
 }

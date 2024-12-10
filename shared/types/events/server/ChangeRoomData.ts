@@ -2,6 +2,6 @@ import { RoomMetadata } from '../../Room'
 
 type Payload = Partial<Omit<RoomMetadata, 'id'>>
 
-export {
-  Payload as ChangeRoomStatePayload
+export type {
+  Payload as ChangeRoomDataPayload
 }

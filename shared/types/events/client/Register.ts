@@ -3,11 +3,13 @@ import { User } from '../../User'
 
 type Payload = Partial<Pick<User, 'username' | 'color'>>
 
-type Callback = Return<
-  User
->
+type Callback = (
+  value: Return<
+    User
+  >
+) => void
 
-export {
-  Payload as ConnectPayload,
-  Callback as ConnectCallback
+export type {
+  Payload as RegisterPayload,
+  Callback as RegisterCallback
 }

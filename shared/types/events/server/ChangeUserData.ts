@@ -2,6 +2,6 @@ import { User } from '../../User'
 
 type Payload = Partial<User> & Pick<User, 'id'>
 
-export {
+export type {
   Payload as ChangeUserDataPayload
 }
