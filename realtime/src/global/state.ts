@@ -1,4 +1,3 @@
-import { Return } from "$shared/types/Return";
 import { Room, RoomMetadata } from "$shared/types/Room";
 import { User } from "$shared/types/User";
 import generateTest from "@/utils/generateTest";

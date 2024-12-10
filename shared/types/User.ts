@@ -4,8 +4,8 @@ export interface User {
   id: string
   username: string
   color: CursorColor
-  score: TestScore
-  state: UserState
+  score?: TestScore
+  state?: UserState
 }
 
 export interface TestScore {

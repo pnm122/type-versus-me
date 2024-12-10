@@ -1,4 +1,6 @@
-export type CursorColor = 'red' | 'orange' | 'yellow' | 'green' | 'blue' | 'purple' | 'pink'
+import CursorColors from '../utils/CursorColors'
+
+export type CursorColor = typeof CursorColors[number]
 
 export interface CursorPosition {
   word: number

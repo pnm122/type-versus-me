@@ -5,7 +5,9 @@ type Payload = Partial<Pick<User, 'username' | 'color'>>
 
 type Callback = (
   value: Return<
-    User
+    User,
+    | 'invalid-username'
+    | 'invalid-color'
   >
 ) => void
 

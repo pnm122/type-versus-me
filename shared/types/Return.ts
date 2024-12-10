@@ -18,4 +18,6 @@ export type ErrorReason =
   | 'user-in-room-already'
   | 'user-not-in-room'
   | 'max-rooms-created'
+  | 'invalid-username'
+  | 'invalid-color'
   | string & {}

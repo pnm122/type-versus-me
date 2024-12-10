@@ -1,9 +1,8 @@
-import { Server } from "socket.io";
+import io from "./global/server";
+import Register from "./events/Register";
 
-const io = new Server();
+io.on('connect', (socket) => {
+  socket.on('register', (...args) => Register(socket, ...args))
+})
 
-io.on("connection", (socket) => {
-  console.log(socket)
-});
-
-io.listen(5000);
+io.listen(5000)
