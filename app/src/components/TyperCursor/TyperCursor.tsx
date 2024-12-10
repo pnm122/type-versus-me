@@ -1,8 +1,9 @@
-import { Cursor, CursorPosition } from "@/types/Cursor"
+import { Cursor } from "@/types/Cursor"
 import { useEffect, useRef } from "react"
 import styles from './style.module.scss'
 import typerStyles from '../Typer/style.module.scss'
 import createClasses from "@/utils/createClasses"
+import { CursorPosition } from "$shared/types/Cursor"
 
 
 

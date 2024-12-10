@@ -1,8 +1,9 @@
 import createClasses from "@/utils/createClasses"
 import { Fragment, KeyboardEvent, useEffect, useLayoutEffect, useRef, useState } from "react"
 import styles from './style.module.scss'
-import { Cursor, CursorColor, CursorPosition } from "@/types/Cursor"
+import { Cursor } from "@/types/Cursor"
 import TyperCursor from "../TyperCursor/TyperCursor"
+import { CursorColor, CursorPosition } from "$shared/types/Cursor"
 
 export type TyperStats = Stats & {
   perWordStats: PerWordStats[]

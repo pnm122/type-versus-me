@@ -14,9 +14,10 @@
     "jsx": "preserve",
     "incremental": true,
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "$shared/*": ["../shared/*"]
     }
   },
-  "include": ["**/*.ts"],
+  "include": ["**/*.ts", "../shared/types/Return.ts"],
   "exclude": ["node_modules"]
 }
