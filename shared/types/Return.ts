@@ -17,4 +17,5 @@ export type ErrorReason =
   | 'color-not-provided'
   | 'user-in-room-already'
   | 'user-not-in-room'
+  | 'max-rooms-created'
   | string & {}

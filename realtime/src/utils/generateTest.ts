@@ -1001,7 +1001,7 @@ const WORDS = [
   'neck',
 ] as const
 
-export default function generatePuzzle(numWords: number) {
+export default function generateTest(numWords: number) {
   return Array(numWords).fill(null).map(() => (
     WORDS[Math.round(Math.random() * (WORDS.length - 1))]
   )).join(' ')
