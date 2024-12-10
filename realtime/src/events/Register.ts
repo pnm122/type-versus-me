@@ -10,10 +10,12 @@ export default function Register(
   value: RegisterPayload,
   callback: RegisterCallback
 ) {
+  if(typeof callback !== 'function') return
+
   const newUser: User = {
     id: socket.id,
-    username: isValidUsername(value.username) ? value.username! : generateUsername(),
-    color: isValidColor(value.color) ? value.color! : generateColor()
+    username: isValidUsername(value && value.username) ? value.username! : generateUsername(),
+    color: isValidColor(value && value.color) ? value.color! : generateColor()
   }
 
   callback({

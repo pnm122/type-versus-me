@@ -13,9 +13,10 @@ type Callback = (
       user: User,
       room: Room
     },
+    | 'no-argument-provided'
     | 'invalid-user-id'
-    | 'username-not-provided'
-    | 'color-not-provided'
+    | 'invalid-username'
+    | 'invalid-color'
     | 'user-in-room-already'
     | 'room-does-not-exist'
     | 'game-in-progress'

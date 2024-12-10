@@ -6,8 +6,9 @@ type Payload = Pick<User, 'id' | 'color'>
 type Callback = (
   value: Return<
     null,
+    | 'no-argument-provided'
     | 'invalid-user-id'
-    | 'color-not-provided'
+    | 'invalid-color'
     | 'invalid-color'
     | 'color-taken'
     | 'user-not-in-room'

@@ -73,6 +73,7 @@ class State {
         ]
       } : r
     ))
+    return this.getRoom(id)
   }
 
   removeUserFromRoom(roomId: Room['id'], userId: User['id']) {
@@ -89,6 +90,12 @@ class State {
       acc ? acc : r.users.find(u => u.id === userId),
       undefined
     )
+  }
+
+  getRoomFromUser(userId: User['id']) {
+    return this.rooms.find(r => (
+      !!r.users.find(u => u.id === userId)
+    ))
   }
 }
 

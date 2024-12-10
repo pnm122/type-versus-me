@@ -6,10 +6,14 @@ type Payload = User
 
 type Callback = (
   value: Return<
-    Room,
+    {
+      room: Room,
+      user: User
+    },
+    | 'no-argument-provided'
     | 'invalid-user-id'
-    | 'username-not-provided'
-    | 'color-not-provided'
+    | 'invalid-username'
+    | 'invalid-color'
     | 'user-in-room-already'
     | 'max-rooms-created'
   >
