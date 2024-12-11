@@ -1,6 +1,5 @@
 import { ErrorReason, Return } from "$shared/types/Return";
 import { User } from "$shared/types/User";
-import { isValidColor, isValidUsername } from "$shared/utils/validators";
 import CustomSocket from "@/types/CustomSocket";
 
 /**

@@ -3,12 +3,15 @@
   "version": "0.1.0",
   "scripts": {
     "dev": "npx tsx watch src/index.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "author": "Pierce Martin <pnmartin02@gmail.com> (https://github.com/pnm122)",
   "license": "MIT",
   "description": "",
   "devDependencies": {
+    "@types/jest": "^29.5.14",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.5",
     "tsx": "^4.19.2"
   },
   "dependencies": {
