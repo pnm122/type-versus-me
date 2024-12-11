@@ -26,15 +26,15 @@ class State {
     )).join('')
   }
 
-  getRooms() {
+  getRooms(): readonly Room[] {
     return this.rooms
   }
 
-  getRoom(id: Room['id']) {
+  getRoom(id: Room['id']): Readonly<Room | undefined> {
     return this.rooms.find(r => r.id === id)
   }
 
-  createRoom() {
+  createRoom(): Readonly<Room> {
     const newRoom: Room = {
       id: this.generateRoomId(),
       test: generateTest(50),
@@ -47,23 +47,24 @@ class State {
     return newRoom
   }
 
-  removeRoom(id: Room['id']) {
+  removeRoom(id: Room['id']): Readonly<Room | undefined> {
     const room = this.rooms.find(r => r.id === id)
     this.rooms = this.rooms.filter(r => r.id !== id)
 
     return room
   }
 
-  updateRoom(id: Room['id'], data: Partial<Omit<RoomMetadata, 'id'>>) {
+  updateRoom(id: Room['id'], data: Partial<Omit<RoomMetadata, 'id'>>): Readonly<Room | undefined> {
     this.rooms = this.rooms.map(r => (
       r.id === id ? {
         ...r,
         ...data
       } : r
     ))
+    return this.getRoom(id)
   }
 
-  addUserToRoom(id: Room['id'], user: User) {
+  addUserToRoom(id: Room['id'], user: User): Readonly<Room | undefined> {
     this.rooms = this.rooms.map(r => (
       r.id === id ? {
         ...r,
@@ -76,26 +77,31 @@ class State {
     return this.getRoom(id)
   }
 
-  removeUserFromRoom(roomId: Room['id'], userId: User['id']) {
+  removeUserFromRoom(roomId: Room['id'], userId: User['id']): Readonly<Room | undefined> {
     this.rooms = this.rooms.map(r => (
       r.id === roomId ? {
         ...r,
         users: r.users.filter(u => u.id !== userId)
       } : r
     ))
+    return this.getRoom(roomId)
   }
 
-  getUserInRoom(roomId: Room['id'], userId: User['id']) {
+  getUserInRoom(roomId: Room['id'], userId: User['id']): Readonly<User | undefined> {
     return this.rooms.reduce<User | undefined>((acc, r) => 
-      acc ? acc : r.users.find(u => u.id === userId),
+      acc || r.id !== roomId ? acc : r.users.find(u => u.id === userId),
       undefined
     )
   }
 
-  getRoomFromUser(userId: User['id']) {
+  getRoomFromUser(userId: User['id']): Readonly<Room | undefined> {
     return this.rooms.find(r => (
       !!r.users.find(u => u.id === userId)
     ))
+  }
+
+  reset() {
+    this.rooms = []
   }
 }
 

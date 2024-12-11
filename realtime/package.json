@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "scripts": {
     "dev": "npx tsx watch src/index.ts",
-    "test": "jest"
+    "test": "jest --watch",
+    "coverage": "jest --coverage"
   },
   "author": "Pierce Martin <pnmartin02@gmail.com> (https://github.com/pnm122)",
   "license": "MIT",
