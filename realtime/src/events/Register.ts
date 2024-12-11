@@ -1,7 +1,7 @@
 import { RegisterCallback, RegisterPayload } from "$shared/types/events/client/Register";
 import { User } from "$shared/types/User";
 import CustomSocket from "@/types/CustomSocket";
-import generateColor from "@/utils/generateColor";
+import { generateColor } from "@/utils/generateColor";
 import generateUsername from "@/utils/generateUsername";
 import { isValidUsername, isValidColor } from '$shared/utils/validators'
 

@@ -4,67 +4,31 @@ import { isValidColor, isValidUsername } from "$shared/utils/validators";
 import { INITIAL_USER_SCORE, INITIAL_USER_STATE, MAX_ROOMS } from "@/constants";
 import state from "@/global/state";
 import CustomSocket from "@/types/CustomSocket";
+import { check, isValidEventAndPayload } from "@/utils/eventUtils";
 
 export default function CreateRoom(
   socket: CustomSocket,
   value: CreateRoomPayload,
   callback: CreateRoomCallback
 ) {
-  if(typeof callback !== 'function') return
-
-  if(!value) {
-    return callback({
-      value: null,
-      error: {
-        reason: 'no-argument-provided'
-      }
-    })
+  if(!isValidEventAndPayload(socket, callback, value?.id, value)) {
+    return
   }
 
-  if(socket.id !== value.id) {
-    return callback({
-      value: null,
-      error: {
-        reason: 'invalid-user-id',
-        details: value.id
-      }
-    })
+  if(check(!isValidUsername(value.username), 'invalid-username', callback)) {
+    return
   }
 
-  if(!isValidUsername(value.username)) {
-    return callback({
-      value: null,
-      error: {
-        reason: 'invalid-username'
-      }
-    })
+  if(check(!isValidColor(value.color), 'invalid-color', callback)) {
+    return
   }
 
-  if(!isValidColor(value.color)) {
-    return callback({
-      value: null,
-      error: {
-        reason: 'invalid-color'
-      }
-    })
+  if(check(state.getRoomFromUser(value.id), 'user-in-room-already', callback)) {
+    return
   }
 
-  if(state.getRoomFromUser(value.id)) {
-    return callback({
-      value: null,
-      error: {
-        reason: 'user-in-room-already'
-      }
-    })
-  }
-
-  if(state.getRooms().length >= MAX_ROOMS) {
-    return callback({
-      value: null,
-      error: {
-        reason: 'max-rooms-created'
-      }
-    })
+  if(check(state.getRooms().length >= MAX_ROOMS, 'max-rooms-created', callback)) {
+    return
   }
 
   const initialRoom = state.createRoom()
@@ -73,7 +37,6 @@ export default function CreateRoom(
     ...value,
     state: INITIAL_USER_STATE,
     score: INITIAL_USER_SCORE
-    
   }
   const room = state.addUserToRoom(initialRoom.id, initialUser)!
   socket.join(initialRoom.id)

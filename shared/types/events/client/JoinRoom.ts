@@ -13,7 +13,7 @@ type Callback = (
       user: User,
       room: Room
     },
-    | 'no-argument-provided'
+    | 'missing-argument'
     | 'invalid-user-id'
     | 'invalid-username'
     | 'invalid-color'

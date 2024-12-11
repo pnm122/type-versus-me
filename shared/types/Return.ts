@@ -12,7 +12,7 @@ export type Error<R extends ErrorReason, Details = any> = {
 // Provide some shared reasons to try and use the same names for the same things,
 // But allow any string
 export type ErrorReason =
-  | 'no-argument-provided'
+  | 'missing-argument'
   | 'invalid-user-id'
   | 'invalid-username'
   | 'invalid-color'

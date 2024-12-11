@@ -7,7 +7,7 @@ type Payload = Pick<User, 'id' | 'username'>
 type Callback = (
   value: Return<
     null,
-    | 'no-argument-provided'
+    | 'missing-argument'
     | 'invalid-user-id'
     | 'invalid-username'
     | 'username-taken'

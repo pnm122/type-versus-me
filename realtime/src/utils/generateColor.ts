@@ -10,6 +10,18 @@ const COLORS: CursorColor[] = [
   'pink'
 ]
 
-export default function generateColor(): CursorColor {
-  return COLORS[Math.round(Math.random() * (COLORS.length - 1))]
+export function generateColor(colors: CursorColor[] = COLORS): CursorColor {
+  return colors[Math.round(Math.random() * (colors.length - 1))]
+}
+
+export function generateColorFromPreference(preferred: CursorColor, taken: CursorColor[]): CursorColor {
+  const available = COLORS.reduce<CursorColor[]>((acc, color) => (
+    taken.includes(color)
+      ? acc
+      : [...acc, color]
+  ),
+  [])
+
+  if(available.includes(preferred)) return preferred
+  else return generateColor(available)
 }
