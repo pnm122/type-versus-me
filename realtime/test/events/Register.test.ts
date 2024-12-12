@@ -1,10 +1,7 @@
-import { User } from "$shared/types/User"
 import Register from "@/events/Register"
-import CustomSocket from "@/types/CustomSocket"
+import { mockSocket } from "../test-utils"
 
-const socket = {
-  id: 'test'
-} as CustomSocket
+const socket = mockSocket()
 
 describe('Register', () => {
   it('runs without failing if callback not provided', () => {

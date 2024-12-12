@@ -1,10 +1,6 @@
 import state from "@/global/state"
 
 describe('state', () => {
-  beforeEach(() => {
-    state.reset()
-  })
-
   describe('createRoom', () => {
     it('adds a room to the room list', () => {
       state.createRoom()
