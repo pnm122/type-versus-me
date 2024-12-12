@@ -1,6 +1,6 @@
 import { ClientJoinRoomCallback, ClientJoinRoomPayload } from "$shared/types/events/client/JoinRoom"
 import { User } from "$shared/types/User"
-import { MAX_USERS_PER_ROOM } from "@/constants"
+import { INITIAL_USER_SCORE, INITIAL_USER_STATE, MAX_USERS_PER_ROOM } from "@/constants"
 import state from "@/global/state"
 import CustomSocket from "@/types/CustomSocket"
 import { check, isValidEventAndPayload } from "@/utils/eventUtils"
@@ -53,7 +53,9 @@ export default function JoinRoom(
 
   const userToAdd: User = {
     ...user,
-    color: generateColorFromPreference(user.color, takenColors)
+    color: generateColorFromPreference(user.color, takenColors),
+    score: INITIAL_USER_SCORE,
+    state: INITIAL_USER_STATE
   }
 
   const room = state.addUserToRoom(roomId, userToAdd)!
