@@ -1,5 +1,4 @@
 import { createRoomForTesting, mockSocket, mockUser } from "../test-utils";
-import JoinRoom from "@/events/JoinRoom";
 import RequestColor from "@/events/RequestColor";
 import state from "@/global/state";
 
@@ -56,10 +55,9 @@ describe('RequestColor', () => {
     it('gives the correct error if the color is taken', () => {
       const callback = jest.fn()
       const { user, room } = createRoomForTesting(mockUser({ color: 'red' })).value!
-      JoinRoom(
-        mockSocket('userB'),
-        { roomId: room.id, user: mockUser({ id: 'userB', color: 'green' }) },
-        () => {}
+      state.addUserToRoom(
+        room.id,
+        mockUser({ id: 'userB', color: 'green' })
       )
 
       RequestColor(socket, { id: user.id, color: 'green' }, callback)

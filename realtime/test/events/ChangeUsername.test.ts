@@ -1,6 +1,5 @@
 import ChangeUsername from "@/events/ChangeUsername";
 import { createRoomForTesting, mockSocket, mockUser } from "../test-utils";
-import JoinRoom from "@/events/JoinRoom";
 import state from "@/global/state";
 
 const socket = mockSocket()
@@ -69,7 +68,7 @@ describe('ChangeUsername', () => {
       const socketB = mockSocket('userB')
 
       const { room: { id: roomId } } = createRoomForTesting(userA, socketA).value!
-      JoinRoom(socketB, { roomId, user: userB }, () => {})
+      state.addUserToRoom(roomId, userB)
 
       const callback = jest.fn()
       ChangeUsername(socketB, { ...userB, username: 'Pierce' }, callback)
