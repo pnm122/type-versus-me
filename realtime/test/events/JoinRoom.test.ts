@@ -6,6 +6,7 @@ import { INITIAL_USER_SCORE, INITIAL_USER_STATE, MAX_USERS_PER_ROOM } from "@/co
 const socket = mockSocket()
 const validUser = mockUser()
 
+/** Create a room and return the user, room, and socket */
 function initRoom(userId = 'abcdef') {
   const socket = mockSocket(userId)
   const { value } = createRoomForTesting(
@@ -179,5 +180,33 @@ describe('JoinRoom', () => {
       'join-room',
       callback.mock.lastCall[0].value.user
     )
+  })
+
+  it('gives the user a color that is not taken', () => {
+    const { room, user } = initRoom('userA')
+
+    const newUser = mockUser({
+      id: 'userB',
+      color: user.color
+    })
+    const newUserSocket = mockSocket('userB')
+    const callback = jest.fn()
+
+    JoinRoom(newUserSocket, { roomId: room.id, user: newUser }, callback)
+
+    expect(callback.mock.lastCall[0]).toMatchObject({
+      value: {
+        user: {
+          id: 'userB'
+        }
+      }
+    })
+    expect(callback.mock.lastCall[0]).not.toMatchObject({
+      value: {
+        user: {
+          color: user.color
+        }
+      }
+    })
   })
 })
