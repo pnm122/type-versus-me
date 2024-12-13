@@ -39,13 +39,15 @@ describe('ChangeUsername', () => {
 
     it('gives the correct error if a user in the same room has the same username', () => {
       const userA = mockUser({ id: 'userA', username: 'Pierce' })
+      const socketA = mockSocket('userA')
       const userB = mockUser({ id: 'userB', username: 'John' })
+      const socketB = mockSocket('userB')
 
-      const { user: { username }, room: { id: roomId } } = createRoomForTesting(userA).value!
-      JoinRoom(socket, { roomId, user: userB }, () => {})
+      const { room: { id: roomId } } = createRoomForTesting(userA, socketA).value!
+      JoinRoom(socketB, { roomId, user: userB }, () => {})
 
       const callback = jest.fn()
-      ChangeUsername(socket, { ...userB, username: 'Pierce' }, callback)
+      ChangeUsername(socketB, { ...userB, username: 'Pierce' }, callback)
 
       expect(callback).toHaveBeenCalledWith({
         value: null,
@@ -67,13 +69,17 @@ describe('ChangeUsername', () => {
   it('emits a change username event to all sockets except the sender', () => {
     const user = mockUser()
     const socket = mockSocket()
-    const userAfterChange = { ...user, username: 'Pierce' }
+    
+    const { user: userAfterCreateRoom, room: { id: roomId } } = createRoomForTesting(user).value!
+    const userAfterChange = { ...userAfterCreateRoom, username: 'Pierce' }
 
-    const { room: { id: roomId } } = createRoomForTesting(user).value!
-    ChangeUsername(socket, userAfterChange, () => {})
+    ChangeUsername(socket, { id: user.id, username: userAfterChange.username }, () => {})
 
     expect(socket.broadcast.to).toHaveBeenCalledWith(roomId)
-    expect(socket.broadcast.to(roomId).emit).toHaveBeenCalledWith(userAfterChange)
+    expect(socket.broadcast.to(roomId).emit).toHaveBeenCalledWith(
+      'change-user-data',
+      userAfterChange
+    )
   })
 
   it('calls the callback with the new username', () => {
@@ -84,6 +90,6 @@ describe('ChangeUsername', () => {
     createRoomForTesting(user).value!
     ChangeUsername(socket, userAfterChange, callback)
 
-    expect(callback).toHaveBeenCalledWith(userAfterChange)
+    expect(callback.mock.lastCall[0].value).toMatchObject(userAfterChange)
   })
 })
