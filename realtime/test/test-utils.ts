@@ -35,7 +35,7 @@ export function mockUser(u?: Partial<User>): User {
   }
 }
 
-export function createRoomForTesting(user: User, socket = mockSocket()) {
+export function createRoomForTesting(user = mockUser(), socket = mockSocket()) {
   let res: Parameters<CreateRoomCallback>[0]
   
   CreateRoom(socket, user, (arg: typeof res) => { res = arg })

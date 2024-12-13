@@ -2,7 +2,7 @@ import { User } from "$shared/types/User"
 import { INITIAL_USER_SCORE, INITIAL_USER_STATE, MAX_ROOMS } from "@/constants"
 import CreateRoom from "@/events/CreateRoom"
 import state from "@/global/state"
-import { mockSocket } from "../test-utils"
+import { mockSocket, mockUser } from "../test-utils"
 
 const socket = mockSocket()
 
@@ -26,6 +26,18 @@ describe('CreateRoom', () => {
   })
 
   describe('errors', () => {
+    it('gives the correct error if the user ID does not match the session ID', () => {
+      const callback = jest.fn()
+      CreateRoom(mockSocket('userA'), mockUser({ id: 'userB' }), callback)
+
+      expect(callback).toHaveBeenCalledWith({
+        value: null,
+        error: {
+          reason: 'invalid-user-id'
+        }
+      })
+    })
+
     it('gives the correct error when no value is passed', () => {
       const callback = jest.fn()
 

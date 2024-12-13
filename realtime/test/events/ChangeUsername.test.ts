@@ -13,6 +13,18 @@ describe('ChangeUsername', () => {
   })
 
   describe('errors', () => {
+    it('gives the correct error if the user ID does not match the session ID', () => {
+      const callback = jest.fn()
+      ChangeUsername(mockSocket('userA'), mockUser({ id: 'userB' }), callback)
+
+      expect(callback).toHaveBeenCalledWith({
+        value: null,
+        error: {
+          reason: 'invalid-user-id'
+        }
+      })
+    })
+
     it('gives the correct error if the user is not in a room', () => {
       const callback = jest.fn()
       ChangeUsername(socket, mockUser(), callback)

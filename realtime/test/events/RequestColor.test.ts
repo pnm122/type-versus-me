@@ -13,6 +13,20 @@ describe('RequestColor', () => {
   })
 
   describe('errors', () => {
+    it('gives the correct error if the user ID does not match the session ID', () => {
+      const callback = jest.fn()
+      const { user } = createRoomForTesting(mockUser()).value!
+      // @ts-ignore
+      RequestColor(mockSocket('INVALID_ID'), { id: user.id, color: 'red' }, callback)
+
+      expect(callback).toHaveBeenCalledWith({
+        value: null,
+        error: {
+          reason: 'invalid-user-id'
+        }
+      })
+    })
+
     it('gives the correct error if the user is not in a room', () => {
       const callback = jest.fn()
       RequestColor(socket, { id: 'test', color: 'red' }, callback)

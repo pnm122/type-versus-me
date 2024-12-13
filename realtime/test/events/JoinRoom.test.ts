@@ -25,6 +25,20 @@ describe('JoinRoom', () => {
   })
 
   describe('errors', () => {
+    it('gives the correct error if the user ID does not match the session ID', () => {
+      const { room: { id: roomId } } = createRoomForTesting(mockUser()).value!
+      
+      const callback = jest.fn()
+      JoinRoom(mockSocket('userA'), { roomId, user: mockUser({ id: 'userB' }) }, callback)
+
+      expect(callback).toHaveBeenCalledWith({
+        value: null,
+        error: {
+          reason: 'invalid-user-id'
+        }
+      })
+    })
+    
     it('gives the correct error when no roomId is provided', () => {
       const callback = jest.fn()
       // @ts-ignore
