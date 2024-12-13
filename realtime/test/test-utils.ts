@@ -26,13 +26,13 @@ export function mockSocket(id = 'test') {
   } as CustomSocket
 }
 
-export function mockUser(u?: Partial<User>): User {
+export function mockUser<T extends Partial<User> = Partial<User>>(u?: T): User & T {
   return {
     id: 'test',
     username: 'Test',
     color: 'blue',
     ...u
-  }
+  } as User & T
 }
 
 export function createRoomForTesting(user = mockUser(), socket = mockSocket()) {
