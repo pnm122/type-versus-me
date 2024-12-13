@@ -174,8 +174,8 @@ describe('JoinRoom', () => {
     const callback = jest.fn()
     JoinRoom(socket, { roomId, user: validUser }, callback)
 
-    expect(socket.in).toHaveBeenCalledWith(roomId)
-    expect(socket.in(roomId).emit).toHaveBeenCalledWith(
+    expect(socket.broadcast.to).toHaveBeenCalledWith(roomId)
+    expect(socket.broadcast.to(roomId).emit).toHaveBeenCalledWith(
       'join-room',
       callback.mock.lastCall[0].value.user
     )

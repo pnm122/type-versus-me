@@ -60,7 +60,7 @@ export default function JoinRoom(
 
   const room = state.addUserToRoom(roomId, userToAdd)!
   
-  socket.in(roomId).emit('join-room', userToAdd)
+  socket.broadcast.to(roomId).emit('join-room', userToAdd)
   socket.join(roomId)
 
   callback({
