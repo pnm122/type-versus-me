@@ -1,4 +1,5 @@
 import state from "@/global/state"
+import { mockUser } from "../test-utils"
 
 describe('state', () => {
   describe('createRoom', () => {
@@ -348,6 +349,32 @@ describe('state', () => {
       const roomFromUser = state.getRoomFromUser('INVALID_ID')
       
       expect(roomFromUser).toBeUndefined()
+    })
+  })
+
+  describe('updateUser', () => {
+    it('updates the user correctly', () => {
+      const initialUser = mockUser()
+      const room = state.createRoom()
+      state.addUserToRoom(room.id, initialUser)
+      state.updateUser(initialUser.id, { username: 'Pierce' })
+      expect(state.getUserInRoom(room.id, initialUser.id)).toEqual({ ...initialUser, username: 'Pierce' })
+    })
+
+    it('returns the updated user', () => {
+      const initialUser = mockUser()
+      const room = state.createRoom()
+      state.addUserToRoom(room.id, initialUser)
+      const newUser = state.updateUser(initialUser.id, { username: 'Pierce' })
+      expect(newUser).toEqual({ ...initialUser, username: 'Pierce' })
+    })
+
+    it('returns nothing if the user is not in a room', () => {
+      const user = mockUser()
+      const room = state.createRoom()
+      state.addUserToRoom(room.id, user)
+      const newUser = state.updateUser('INVALID_ID', { username: 'Pierce' })
+      expect(newUser).toBeUndefined()
     })
   })
 })

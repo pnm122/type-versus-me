@@ -100,6 +100,19 @@ class State {
     ))
   }
 
+  updateUser(userId: User['id'], user: Partial<Omit<User, 'id'>>): Readonly<User | undefined> {
+    this.rooms = this.rooms.map(r => ({
+      ...r,
+      users: r.users.map(u => (
+        u.id === userId
+          ? { ...u, ...user }
+          : u
+      ))
+    }))
+    const roomId = this.getRoomFromUser(userId)?.id
+    return roomId ? this.getUserInRoom(roomId, userId) : undefined
+  }
+
   reset() {
     this.rooms = []
   }
