@@ -10,11 +10,19 @@ export function mockSocket(id = 'test') {
     emit: inEmit
   } as any)) as CustomSocket['in']
 
+  const broadcastToEmit = jest.fn() as CustomSocket['emit']
+  const broadcastTo = jest.fn((room: string | string[]) => ({
+    emit: broadcastToEmit
+  } as any)) as CustomSocket['broadcast']['to']
+
   return {
     id,
     join: jest.fn() as CustomSocket['join'],
     emit: jest.fn() as CustomSocket['emit'],
-    in: socketIn
+    in: socketIn,
+    broadcast: {
+      to: broadcastTo
+    }
   } as CustomSocket
 }
 
