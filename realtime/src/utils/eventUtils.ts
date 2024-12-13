@@ -21,7 +21,7 @@ export function isValidEventAndPayload<
   if(typeof callback !== 'function') return false
 
   const anyFailed = expectedValues.findIndex(value => {
-    return check(!value, 'missing-argument', callback)
+    return check(value === null || value === undefined, 'missing-argument', callback)
   }) !== -1
 
   if(anyFailed) return false
