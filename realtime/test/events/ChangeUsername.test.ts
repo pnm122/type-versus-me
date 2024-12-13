@@ -82,7 +82,7 @@ describe('ChangeUsername', () => {
     )
   })
 
-  it('calls the callback with the new username', () => {
+  it('calls the callback with only the new username', () => {
     const user = mockUser()
     const callback = jest.fn()
     const userAfterChange = { ...user, username: 'Pierce' }
@@ -90,6 +90,6 @@ describe('ChangeUsername', () => {
     createRoomForTesting(user).value!
     ChangeUsername(socket, userAfterChange, callback)
 
-    expect(callback.mock.lastCall[0].value).toMatchObject(userAfterChange)
+    expect(callback.mock.lastCall[0].value).toEqual({ username: 'Pierce' })
   })
 })

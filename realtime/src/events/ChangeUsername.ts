@@ -34,7 +34,7 @@ export default function ChangeUsername(
   socket.broadcast.to(room!.id).emit('change-user-data', newUser)
 
   callback({
-    value: newUser,
+    value: { username },
     error: null
   })
 }
