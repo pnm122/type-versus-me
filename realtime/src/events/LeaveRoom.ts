@@ -21,6 +21,14 @@ export default function LeaveRoom(
     { id: socket.id }
   )
 
+  if(state.getRoom(room!.id)!.users.length === 0) {
+    state.removeRoom(room!.id)
+    return callback({
+      value: null,
+      error: null
+    })
+  }
+
   const allUsersReady = state.getRoom(room!.id)!.users.every(u => u.state === 'ready')
   if(allUsersReady) {
     setRoomToInProgress(room!.id, socket)

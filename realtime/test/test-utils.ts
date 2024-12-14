@@ -22,7 +22,8 @@ export function mockSocket(id = 'test') {
     in: socketIn,
     broadcast: {
       to: broadcastTo
-    }
+    },
+    leave: jest.fn() as CustomSocket['leave']
   } as CustomSocket
 }
 
