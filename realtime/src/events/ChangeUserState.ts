@@ -46,7 +46,7 @@ export default function ChangeUserState(
   const allUsersReady = room!.users.every(u => u.id === value.id || u.state === 'ready') && value.state === 'ready'
   if(allUsersReady) {
     state.updateRoom(room!.id, { state: 'in-progress' })
-    socket.broadcast.to(room!.id).emit(
+    socket.in(room!.id).emit(
       'change-room-data',
       { state: 'in-progress' }
     )
@@ -54,7 +54,7 @@ export default function ChangeUserState(
     room!.users.forEach(u => {
       state.updateUser(u.id, { score: INITIAL_USER_SCORE, state: 'in-progress' })
     })
-    socket.broadcast.to(room!.id).emit(
+    socket.in(room!.id).emit(
       'change-all-user-data',
       { score: INITIAL_USER_SCORE, state: 'in-progress' }
     )
@@ -65,7 +65,7 @@ export default function ChangeUserState(
     (value.state === 'complete' || value.state === 'failed')
   if(allUsersDone) {
     state.updateRoom(room!.id, { state: 'complete' })
-    socket.broadcast.to(room!.id).emit(
+    socket.in(room!.id).emit(
       'change-room-data',
       { state: 'complete' }
     )
@@ -77,7 +77,7 @@ export default function ChangeUserState(
   if(restart) {
     const test = generateTest()
     state.updateRoom(room!.id, { test, state: 'waiting' })
-    socket.broadcast.to(room!.id).emit(
+    socket.in(room!.id).emit(
       'change-room-data',
       { test, state: 'waiting' }
     )

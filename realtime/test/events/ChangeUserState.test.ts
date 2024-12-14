@@ -125,8 +125,8 @@ describe('ChangeUserState', () => {
       const socket = mockSocket('userB')
       const { room } = init(socket)
 
-      expect(socket.broadcast.to).toHaveBeenCalledWith(room.id)
-      expect(socket.broadcast.to(room.id).emit).toHaveBeenCalledWith(
+      expect(socket.in).toHaveBeenCalledWith(room.id)
+      expect(socket.in(room.id).emit).toHaveBeenCalledWith(
         'change-room-data',
         { state: 'in-progress' }
       )
@@ -148,8 +148,8 @@ describe('ChangeUserState', () => {
       const socket = mockSocket('userB')
       const { room } = init(socket)
 
-      expect(socket.broadcast.to).toHaveBeenCalledWith(room.id)
-      expect(socket.broadcast.to(room.id).emit).toHaveBeenCalledWith(
+      expect(socket.in).toHaveBeenCalledWith(room.id)
+      expect(socket.in(room.id).emit).toHaveBeenCalledWith(
         'change-all-user-data',
         { state: 'in-progress', score: INITIAL_USER_SCORE }
       )
@@ -178,8 +178,8 @@ describe('ChangeUserState', () => {
       const socket = mockSocket('userB')
       const { room } = init(socket)
 
-      expect(socket.broadcast.to).toHaveBeenCalledWith(room.id)
-      expect(socket.broadcast.to(room.id).emit).toHaveBeenCalledWith(
+      expect(socket.in).toHaveBeenCalledWith(room.id)
+      expect(socket.in(room.id).emit).toHaveBeenCalledWith(
         'change-room-data',
         { state: 'complete' }
       )
@@ -216,8 +216,8 @@ describe('ChangeUserState', () => {
 
       const { test: updatedTest } = state.getRoom(room.id)!
 
-      expect(socket.broadcast.to).toHaveBeenCalledWith(room.id)
-      expect(socket.broadcast.to(room.id).emit).toHaveBeenCalledWith(
+      expect(socket.in).toHaveBeenCalledWith(room.id)
+      expect(socket.in(room.id).emit).toHaveBeenCalledWith(
         'change-room-data',
         { state: 'waiting', test: updatedTest }
       )
