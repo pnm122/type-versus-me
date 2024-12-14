@@ -4,7 +4,7 @@ import { UserState } from "$shared/types/User";
 import { INITIAL_USER_SCORE } from "@/constants";
 import state from "@/global/state";
 import CustomSocket from "@/types/CustomSocket";
-import { check, isValidEventAndPayload } from "@/utils/eventUtils";
+import { check, isValidEventAndPayload, setRoomToInProgress } from "@/utils/eventUtils";
 import generateTest from "@/utils/generateTest";
 
 export default function ChangeUserState(
@@ -45,19 +45,7 @@ export default function ChangeUserState(
 
   const allUsersReady = room!.users.every(u => u.id === value.id || u.state === 'ready') && value.state === 'ready'
   if(allUsersReady) {
-    state.updateRoom(room!.id, { state: 'in-progress' })
-    socket.in(room!.id).emit(
-      'change-room-data',
-      { state: 'in-progress' }
-    )
-
-    room!.users.forEach(u => {
-      state.updateUser(u.id, { score: INITIAL_USER_SCORE, state: 'in-progress' })
-    })
-    socket.in(room!.id).emit(
-      'change-all-user-data',
-      { score: INITIAL_USER_SCORE, state: 'in-progress' }
-    )
+    setRoomToInProgress(room!.id, socket)
   }
 
   const allUsersDone =

@@ -1,5 +1,7 @@
 import { ErrorReason, Return } from "$shared/types/Return";
 import { User } from "$shared/types/User";
+import { INITIAL_USER_SCORE } from "@/constants";
+import state from "@/global/state";
 import CustomSocket from "@/types/CustomSocket";
 
 /**
@@ -59,4 +61,30 @@ export function check<
   }
 
   return false
+}
+
+/**
+ * Set a room to in-progress. Does the following:
+ *  1. Sets the room state to in-progress in the state
+ *  2. Emits an event to the clients to set the room state to in-progress
+ *  3. Sets every user in the room's score to 0's and their state to in-progress
+ *  4. Emits an event to the clients to update every user accordingly
+ */
+export function setRoomToInProgress(
+  roomId: string,
+  socket: CustomSocket
+) {
+  state.updateRoom(roomId, { state: 'in-progress' })
+  socket.in(roomId).emit(
+    'change-room-data',
+    { state: 'in-progress' }
+  )
+
+  state.getRoom(roomId)!.users.forEach(u => {
+    state.updateUser(u.id, { score: INITIAL_USER_SCORE, state: 'in-progress' })
+  })
+  socket.in(roomId).emit(
+    'change-all-user-data',
+    { score: INITIAL_USER_SCORE, state: 'in-progress' }
+  )
 }
