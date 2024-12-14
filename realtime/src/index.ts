@@ -5,6 +5,7 @@ import JoinRoom from "./events/JoinRoom";
 import ChangeUsername from "./events/ChangeUsername";
 import ChangeUserState from "./events/ChangeUserState";
 import ChangeUserScore from "./events/ChangeUserScore";
+import LeaveRoom from "./events/LeaveRoom";
 
 io.on('connect', (socket) => {
   socket.on('register', (...args) => Register(socket, ...args))
@@ -13,6 +14,7 @@ io.on('connect', (socket) => {
   socket.on('change-username', (...args) => ChangeUsername(socket, ...args))
   socket.on('change-user-state', (...args) => ChangeUserState(socket, ...args))
   socket.on('change-user-score', (...args) => ChangeUserScore(socket, ...args))
+  socket.on('leave-room', (_, callback) => LeaveRoom(socket, callback))
 })
 
 io.listen(5000)
