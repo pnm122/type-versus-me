@@ -5,7 +5,7 @@ type Payload = Pick<User, 'id' | 'score'>
 
 type Callback = (
   value: Return<
-    null,
+    Pick<User, 'score'>,
     | 'missing-argument'
     | 'invalid-user-id'
     | 'invalid-room-state'

@@ -25,17 +25,17 @@ describe('ChangeUsername', () => {
     })
 
     it('gives the correct error if the username is not provided', () => {
-          const callback = jest.fn()
-          // @ts-ignore
-          ChangeUsername(mockSocket('test'), { id: 'test' }, callback)
-    
-          expect(callback).toHaveBeenCalledWith({
-            value: null,
-            error: {
-              reason: 'missing-argument'
-            }
-          })
-        })
+      const callback = jest.fn()
+      // @ts-ignore
+      ChangeUsername(mockSocket('test'), { id: 'test' }, callback)
+
+      expect(callback).toHaveBeenCalledWith({
+        value: null,
+        error: {
+          reason: 'missing-argument'
+        }
+      })
+    })
 
     it('gives the correct error if the user is not in a room', () => {
       const callback = jest.fn()
