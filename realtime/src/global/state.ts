@@ -37,7 +37,7 @@ class State {
   createRoom(): Readonly<Room> {
     const newRoom: Room = {
       id: this.generateRoomId(),
-      test: generateTest(50),
+      test: generateTest(),
       state: 'waiting',
       users: []
     }
