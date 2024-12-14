@@ -4,6 +4,7 @@ import { UserState } from "$shared/types/User"
 import { Room, RoomState } from "$shared/types/Room"
 import state from "@/global/state"
 import { INITIAL_USER_SCORE } from "@/constants"
+import * as eventUtils from "@/utils/eventUtils"
 
 describe('ChangeUserState', () => {
   it('runs without failing if callback not provided', () => {
@@ -104,56 +105,17 @@ describe('ChangeUserState', () => {
     )
   })
 
-  describe('all users will be in the ready state', () => {
-    function init(socket = mockSocket('userB')) {
-      const { room, user } = createRoomForTesting(mockUser({ id: 'userA' }), mockSocket('userA')).value!
-      state.updateUser(user.id, { state: 'ready' })
-      state.addUserToRoom(room.id, mockUser({ id: socket.id }))
+  it('sets the room to in progress if all users will be in the ready state', () => {
+    const spy = jest.spyOn(eventUtils, 'setRoomToInProgress')
+    const { room, user } = createRoomForTesting().value!
+    const socket = mockSocket(user.id)
 
-      ChangeUserState(socket, { id: socket.id, state: 'ready' }, () => {})
+    ChangeUserState(socket, { id: user.id, state: 'ready' }, () => {})
 
-      return { room }
-    }
-
-    it('sets the room state to in-progress in the state', () => {
-      const { room } = init()
-
-      expect(state.getRoom(room.id)!.state).toBe('in-progress')
-    })
-
-    it('emits a change room event with the in-progress state to all users in the room', () => {
-      const socket = mockSocket('userB')
-      const { room } = init(socket)
-
-      expect(socket.in).toHaveBeenCalledWith(room.id)
-      expect(socket.in(room.id).emit).toHaveBeenCalledWith(
-        'change-room-data',
-        { state: 'in-progress' }
-      )
-    })
-
-    it('sets all user scores to 0 and states to in-progress in the state', () => {
-      const { room } = init()
-
-      const allUsersSetCorrectly = state.getRoom(room.id)!.users.every(u => (
-        u.state === 'in-progress' &&
-        u.score?.cursorPosition.letter === 0 &&
-        u.score.cursorPosition.word === 0 &&
-        u.score.netWPM === 0
-      ))
-      expect(allUsersSetCorrectly).toBeTruthy()
-    })
-
-    it('emits a change all users event with the new state and score to all users in the room', () => {
-      const socket = mockSocket('userB')
-      const { room } = init(socket)
-
-      expect(socket.in).toHaveBeenCalledWith(room.id)
-      expect(socket.in(room.id).emit).toHaveBeenCalledWith(
-        'change-all-user-data',
-        { state: 'in-progress', score: INITIAL_USER_SCORE }
-      )
-    })
+    expect(spy).toHaveBeenCalledWith(
+      room.id,
+      socket
+    )
   })
 
   describe('all users will be in the complete or failed state and the room state is in-progress', () => {
