@@ -7,6 +7,10 @@ import ChangeUserState from "./events/ChangeUserState";
 import ChangeUserScore from "./events/ChangeUserScore";
 import LeaveRoom from "./events/LeaveRoom";
 import Disconnect from "./events/Disconnect";
+import debug from "./utils/debug";
+import { config } from "dotenv";
+
+config()
 
 io.on('connect', (socket) => {
   socket.on('register', (...args) => Register(socket, ...args))
@@ -17,6 +21,10 @@ io.on('connect', (socket) => {
   socket.on('change-user-score', (...args) => ChangeUserScore(socket, ...args))
   socket.on('leave-room', (_, callback) => LeaveRoom(socket, callback))
   socket.on('disconnect', () => Disconnect(socket))
+
+  socket.onAny(ev => {
+    debug(ev)
+  })
 })
 
 io.listen(5000)
