@@ -6,47 +6,61 @@ import { useSocket } from "./Socket";
 import { isValidUsername, isValidColor } from "$shared/utils/validators"
 import * as storage from "@/utils/localStorage"
 import { CursorColor } from "$shared/types/Cursor";
+import Data from "@/types/Data";
+import { LOADING } from "@/utils/constants";
+import { RegisterCallback } from "$shared/types/events/client/Register";
+import ErrorsOf from "$shared/types/ErrorsOf"
 
-const UserContext = createContext<User | null>(null)
+const UserContext = createContext<Data<User, ErrorsOf<RegisterCallback>>>(LOADING)
 
 export function UserProvider({ children }: React.PropsWithChildren) {
-  const [user, setUser] = useState<User | null>(null)
+  const [data, setData] = useState<Data<User, ErrorsOf<RegisterCallback>>>(LOADING)
   const socket = useSocket()
 
   function update(u: User) {
     storage.set('username', u.username)
     storage.set('preferred-color', u.color)
-    setUser(u)
+    setData({
+      state: 'valid',
+      data: u,
+      error: null
+    })
   }
 
   async function register() {
-    if(socket.state !== 'connected') return
+    if(socket.state !== 'valid') return
 
     const username = storage.get<string>('username')
     const color = storage.get<CursorColor>('preferred-color')
 
-    const res = await socket.socket.emitWithAck('register', {
+    const res = await socket.data.emitWithAck('register', {
       username: isValidUsername(username) ? username! : undefined,
       color: isValidColor(color) ? color! : undefined
     })
     if(res.error) {
-      return console.error('REGISTER ERROR?', res.error.reason)
+      return setData({
+        state: 'error',
+        data: null,
+        error: res.error
+      })
     }
     update(res.value)
   }
 
   useEffect(() => {
-    if(socket.state !== 'connected') return
+    if(socket.state !== 'valid') return
 
     register()
   }, [socket])
 
   useEffect(() => {
-    console.log(user)
-  }, [user])
+    if(!data) return
+
+    console.log(data)
+  }, [data])
   
   return (
-    <UserContext.Provider value={user}>
+    <UserContext.Provider value={data}>
       {children}
     </UserContext.Provider>
   )
