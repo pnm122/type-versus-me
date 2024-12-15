@@ -5,6 +5,10 @@ import { Server } from "socket.io"
 const io = new Server<
   ClientEvents,
   ServerEvents
->()
+>({
+  cors: {
+    origin: '*'
+  }
+})
 
 export default io
