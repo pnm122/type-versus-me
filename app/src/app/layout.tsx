@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import '@/scss/index.scss'
 import { ThemeProvider } from "@/context/Theme";
+import { SocketProvider } from "@/context/Socket";
+import { UserProvider } from "@/context/User";
 
 export const metadata: Metadata = {
   title: "Typing Race",
@@ -15,9 +17,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <ThemeProvider>
-          {children}
-        </ThemeProvider>
+        <SocketProvider>
+          <UserProvider>
+            <ThemeProvider>
+              {children}
+            </ThemeProvider>
+          </UserProvider>
+        </SocketProvider>
       </body>
     </html>
   );
