@@ -4,7 +4,7 @@ import CursorPreview from "../CursorPreview/CursorPreview"
 import styles from './style.module.scss'
 
 interface Props {
-  selected: CursorColor
+  selected?: CursorColor
   onChange: (c: CursorColor) => void
 }
 
@@ -17,6 +17,7 @@ export default function CursorSelector({
       {CursorColors.map(c => (
         <button
           key={c}
+          type='button'
           className={styles['selector__item']}
           style={{
             backgroundColor: selected === c ? `var(--cursor-${c}-light)` : `var(--gray-10)`

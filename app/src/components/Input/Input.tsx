@@ -13,6 +13,8 @@ interface Props {
   disabled?: boolean
   wrapperClassName?: string
   inputClassName?: string
+  minLength?: number
+  maxLength?: number
 }
 
 export default function Input({
@@ -25,7 +27,9 @@ export default function Input({
   required,
   disabled,
   wrapperClassName,
-  inputClassName
+  inputClassName,
+  minLength,
+  maxLength
 }: Props) {
   return (
     <div className={createClasses({
@@ -55,6 +59,8 @@ export default function Input({
         placeholder={placeholder}
         onChange={onChange}
         size={1}
+        maxLength={maxLength}
+        minLength={minLength}
       />
       {error && (
         <span id={`${id}--error`} className={styles['input__error']}>
