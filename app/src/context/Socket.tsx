@@ -27,14 +27,14 @@ export function SocketProvider({ children }: React.PropsWithChildren) {
     socket.on('connect', () => {
       setData({
         state: 'valid',
-        data: socket,
+        value: socket,
         error: null
       })
     })
     socket.on('connect_error', () => {
       setData({
         state: 'error',
-        data: null,
+        value: null,
         error: 'connect_error'
       })
     })

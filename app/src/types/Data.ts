@@ -1,14 +1,14 @@
 type Data<T, K = string> = {
   state: 'loading'
-  data: null
+  value: null
   error: null
 } | {
   state: 'valid'
-  data: T
+  value: T
   error: null
 } | {
   state: 'error'
-  data: null
+  value: null
   error: K
 }
 
