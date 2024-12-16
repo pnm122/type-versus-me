@@ -3,17 +3,12 @@ import createClasses from "@/utils/createClasses"
 import { Fragment, useEffect, useRef, useState } from "react"
 import styles from './style.module.scss'
 import TyperCursor from "../TyperCursor/TyperCursor"
-import { getCursorPosition, getTextRegions, words } from "@/utils/typer"
+import { getCursorPosition, getTextRegions } from "@/utils/typer"
 
 interface Props {
   cursorColor: CursorColor
   text: string
   className?: string
-}
-
-interface Region {
-  text: string
-  type: 'typed' | 'untyped'
 }
 
 export default function TyperPreview({
@@ -28,10 +23,6 @@ export default function TyperPreview({
   const typed = text.slice(0, cursorPosition)
 
   const textRegions = getTextRegions(text, typed)
-
-  useEffect(() => {
-    console.log(cursorPosition)
-  }, [cursorPosition])
 
   function nextDelay() {
     return (Math.random() * 125) + 100

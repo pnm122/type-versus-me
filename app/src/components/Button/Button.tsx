@@ -11,6 +11,7 @@ export type ButtonProps = React.PropsWithChildren<{
   /** Callback for when the button is clicked */
   onClick?: React.MouseEventHandler<HTMLButtonElement | HTMLAnchorElement>
   className?: string
+  ariaLabel?: string
 }>
 
 export default function Button({
@@ -20,6 +21,7 @@ export default function Button({
   href,
   onClick = () => {},
   className,
+  ariaLabel,
   children
 }: ButtonProps) {
   // Link is not easily disabled, just use an HTML button if disabled
@@ -31,6 +33,7 @@ export default function Button({
         ...(className ? { [className]: true } : {})
       })}
       href={href}
+      aria-label={ariaLabel}
       onClick={e => !disabled && onClick(e)}>
       {children}
     </Link>
@@ -43,6 +46,7 @@ export default function Button({
       })}
       disabled={disabled}
       type={type}
+      aria-label={ariaLabel}
       onClick={onClick}>
       {children}
     </button>

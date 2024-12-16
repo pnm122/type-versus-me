@@ -33,4 +33,9 @@
   &--tertiary {
     color: var(--black);
   }
+
+  .button__icon {
+    display: grid;
+    place-items: center;
+  }
 }

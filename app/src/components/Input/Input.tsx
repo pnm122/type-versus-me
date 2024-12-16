@@ -5,11 +5,13 @@ import PixelarticonsClose from '~icons/pixelarticons/close'
 interface Props {
   id: string
   text: string
-  placeholder: string
+  placeholder?: string
   onChange: React.InputHTMLAttributes<HTMLInputElement>['onChange']
   label?: string
   error?: string
   required?: boolean
+  wrapperClassName?: string
+  inputClassName?: string
 }
 
 export default function Input({
@@ -19,12 +21,15 @@ export default function Input({
   onChange,
   label,
   error,
-  required
+  required,
+  wrapperClassName,
+  inputClassName
 }: Props) {
   return (
     <div className={createClasses({
       [styles['input']]: true,
-      [styles['input--error']]: !!error
+      [styles['input--error']]: !!error,
+      ...(wrapperClassName ? { [wrapperClassName]: true } : {})
     })}>
       {label && (
         <label
@@ -39,10 +44,14 @@ export default function Input({
         required={required}
         aria-invalid={!!error}
         aria-describedby={error ? `${id}--error` : undefined}
-        className={styles['input__input']}
+        className={createClasses({
+          [styles['input__input']]: true,
+          ...(inputClassName ? { [inputClassName]: true } : {})
+        })}
         value={text}
         placeholder={placeholder}
         onChange={onChange}
+        size={1}
       />
       {error && (
         <span id={`${id}--error`} className={styles['input__error']}>

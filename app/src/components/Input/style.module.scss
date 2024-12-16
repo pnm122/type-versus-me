@@ -35,6 +35,10 @@
     height: 40px;
     border: 2px solid var(--border);
     outline: none;
+
+    &::placeholder {
+      color: var(--placeholder);
+    }
   }
 
   &__error {
