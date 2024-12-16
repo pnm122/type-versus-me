@@ -10,6 +10,7 @@ interface Props {
   label?: string
   error?: string
   required?: boolean
+  disabled?: boolean
   wrapperClassName?: string
   inputClassName?: string
 }
@@ -22,6 +23,7 @@ export default function Input({
   label,
   error,
   required,
+  disabled,
   wrapperClassName,
   inputClassName
 }: Props) {
@@ -42,6 +44,7 @@ export default function Input({
       <input
         id={id}
         required={required}
+        disabled={disabled}
         aria-invalid={!!error}
         aria-describedby={error ? `${id}--error` : undefined}
         className={createClasses({

@@ -36,6 +36,12 @@
     border: 2px solid var(--border);
     outline: none;
 
+    &:disabled {
+      background-color: var(--disabled);
+      color: var(--on-disabled);
+      border-color: var(--disabled);
+    }
+
     &::placeholder {
       color: var(--placeholder);
     }
