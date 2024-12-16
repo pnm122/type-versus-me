@@ -30,19 +30,19 @@
       text-decoration: var(--_typer-wrong-word-decoration);
     }
   
-    .original-only {
+    .untyped {
       color: var(--_typer-untyped-letter-color);
     }
   
-    .typed-only {
+    .extra {
       color: var(--_typer-extra-letter-color);
     }
   
-    .match {
+    .correct {
       color: var(--_typer-correct-letter-color);
     }
   
-    .no-match {
+    .incorrect {
       color: var(--_typer-wrong-letter-color);
     }
   }

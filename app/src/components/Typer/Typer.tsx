@@ -4,6 +4,8 @@ import styles from './style.module.scss'
 import { Cursor } from "@/types/Cursor"
 import TyperCursor from "../TyperCursor/TyperCursor"
 import { CursorColor, CursorPosition } from "$shared/types/Cursor"
+import { getCursorPosition, getTextRegions, words } from "@/utils/typer"
+import { Word } from "@/types/Typer"
 
 export type TyperStats = Stats & {
   perWordStats: PerWordStats[]
@@ -67,26 +69,6 @@ interface Props {
   cursors?: Cursor[]
 }
 
-type WordRegionType = 'match' | 'no-match' | 'original-only' | 'typed-only'
-
-interface Word {
-  /** Whether this word was typed and submitted correctly */
-  correct: boolean
-  /** Regions within the current word */
-  regions: WordRegion[]
-  /** Index of the first character of the word, based on text displayed to user */
-  start: number
-  /** Distance to word currently being typed. Positive if before, 0 if current, and negative if after. */
-  distanceToCurrent: number
-}
-
-interface WordRegion {
-  /** Type for this region */
-  type: WordRegionType
-  /** Text within the region */
-  text: string
-}
-
 export default function Typer({
   text,
   finished,
@@ -135,31 +117,6 @@ export default function Typer({
   const cursorPosition = getCursorPosition(typed)
 
   const cursorAtStartOfWord = cursorPosition.letter === 0
-
-  function getCursorPosition(typed: string) {
-    return {
-      word: Math.max(words(typed).length - 1, 0),
-      letter: typed === '' ? 0 : words(typed).at(-1)!.length
-    }
-  }
-
-  function getTextRegions(tempText: string, tempTyped: string) {
-    return words(tempText).reduce<Word[]>((acc, word, index, arr) => {
-      const typedWords = words(tempTyped)
-      const isNotLastWordAndCorrect = index < typedWords.length - 1 && word === typedWords[index]
-      const isLastWordAndCorrect = index === arr.length - 1 && word === typedWords[index]
-      return [
-        ...acc,
-        {
-          correct: isNotLastWordAndCorrect || isLastWordAndCorrect,
-          regions: getWordRegions(word, typedWords[index]),
-          // Add one to account for spaces between words
-          start: acc.reduce((a, curr) => a + getWordLength(curr) + 1, 0),
-          distanceToCurrent: typedWords.length - 1 - index
-        }
-      ]
-    }, [])
-  }
 
   function onKeyDown(e: KeyboardEvent<HTMLDivElement>) {
     e.preventDefault()
@@ -227,9 +184,9 @@ export default function Typer({
           errors: isSubmitted(w) && !isRightLength(w) ? acc.errors + 1 : acc.errors,
         },
         w.regions.reduce((acc, r) => (
-          r.type === 'no-match' || r.type === 'typed-only'
+          r.type === 'incorrect' || r.type === 'extra'
             ? { ...acc, errors: acc.errors + r.text.length }
-            : r.type === 'match'
+            : r.type === 'correct'
               ? { ...acc, correct: acc.correct + r.text.length }
               : acc
         ), { correct: 0, errors: 0 })
@@ -270,72 +227,13 @@ export default function Typer({
     onFinish(stats.current)
   }
 
-  /**
-   * Split a piece of text into words
-   */
-  function words(str: string) {
-    return str.split(' ')
-  }
-
   function isSubmitted(word: Word) {
     return word.distanceToCurrent > 0
   }
 
   function isRightLength(word: Word) {
-    return word.regions.every(r => r.type === 'match' || r.type === 'no-match')
+    return word.regions.every(r => r.type === 'correct' || r.type === 'incorrect')
   }
-
-  function getWordLength(word: Word) {
-    return word.regions.reduce((acc, region) => acc + region.text.length, 0)
-  }
-
-  function getCharacterType(original: string | undefined, compare: string | undefined): WordRegionType {
-    if(!original) {
-      return 'typed-only'
-    } else if(!compare) {
-      return 'original-only'
-    } else if(original === compare) {
-      return 'match'
-    } else {
-      return 'no-match'
-    }
-  }
-
-  function getWordRegions(word: string, compare: string | undefined): WordRegion[] {
-    if(!compare) {
-      return [{
-        type: 'original-only',
-        text: word
-      }]
-    }
-
-    return Array(Math.max(word.length, compare.length)).fill(null).reduce<WordRegion[]>((acc, _, index) => {
-      const wordChar = word[index]
-      const compareChar = compare[index]
-      
-      const charType = getCharacterType(wordChar, compareChar)
-      
-      // Add to the last region if this character is the same type of region
-      if(acc.at(-1)?.type === charType) {
-        return [
-          ...acc.slice(0, -1),
-          {
-            type: acc.at(-1)!.type,
-            text: `${acc.at(-1)!.text}${charType === 'typed-only' ? compareChar : wordChar}`
-          }
-        ]
-      }
-
-      return [
-        ...acc,
-        {
-          type: charType,
-          text: charType === 'typed-only' ? compareChar : wordChar
-        }
-      ]
-    }, [])
-  }
-
   /**
    * Get information about the lines of text as they appear in the DOM
    * @returns the position of each line relative to the top of the typer, as well as the line the cursor is currently on
@@ -417,10 +315,8 @@ export default function Typer({
         {!finished && (
           <>
             <TyperCursor
-              id={userID}
               color={cursorColor}
               position={cursorPosition}
-              currentCursorPosition={cursorPosition}
               typer={typer}
             />
             {cursors?.map(c => (
@@ -428,7 +324,6 @@ export default function Typer({
                 key={c.id}
                 typer={typer}
                 opponent={true}
-                currentCursorPosition={cursorPosition}
                 {...c}
               />
             ))}

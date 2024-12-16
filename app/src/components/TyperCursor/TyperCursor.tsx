@@ -3,23 +3,21 @@ import { useEffect, useRef } from "react"
 import styles from './style.module.scss'
 import typerStyles from '../Typer/style.module.scss'
 import createClasses from "@/utils/createClasses"
-import { CursorPosition } from "$shared/types/Cursor"
 
-
-
-type Props = Cursor & {
-  currentCursorPosition: CursorPosition
-  typer: React.RefObject<HTMLDivElement>
+type Props = Omit<Cursor, 'id'> & {
+  typer: React.RefObject<HTMLElement>
   opponent?: boolean
+  wordClassName?: string
+  characterClassName?: string
 }
 
 export default function TyperCursor({
-  id,
   color,
   position,
-  currentCursorPosition,
   typer,
-  opponent = false
+  opponent = false,
+  wordClassName = typerStyles['word'],
+  characterClassName = typerStyles['character']
 }: Props) {
   const cursor = useRef<HTMLDivElement>(null)
   const cursorBlinkingTimeout = useRef<NodeJS.Timeout | null>(null)
@@ -39,10 +37,10 @@ export default function TyperCursor({
       return hideCursor()
     }
     
-    const wordElement = typer.current.querySelectorAll(`.${typerStyles['word']}`).item(position.word)
+    const wordElement = typer.current.querySelectorAll(`.${wordClassName}`).item(position.word)
     if(!wordElement) return hideCursor()
     const charElements = [
-      ...Array.from(wordElement.querySelectorAll(`.${typerStyles['character']}`)),
+      ...Array.from(wordElement.querySelectorAll(`.${characterClassName}`)),
       // Include the space after the word since the cursor can be attached to it too
       wordElement.nextSibling as Element
     ]
@@ -84,7 +82,7 @@ export default function TyperCursor({
     return () => {
       window.removeEventListener('resize', setCursorPosition)
     }
-  }, [position, currentCursorPosition])
+  }, [position])
 
   return (
     <div
