@@ -46,6 +46,7 @@ h5,
 h6 {
 	/* Low browser support but not incredibly important */
 	text-wrap: balance;
+  font: inherit;
 }
 
 a,
@@ -68,8 +69,13 @@ svg {
 	vertical-align: middle;
 }
 
+input,
+textarea,
 button {
-	background: none;
+  background: none;
+}
+
+button {
 	border: none;
 	cursor: pointer;
 }
