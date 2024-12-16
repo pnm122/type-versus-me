@@ -1,0 +1,42 @@
+.notification {
+  display: grid;
+  grid-template-columns: 40px 1fr 40px;
+  width: 100%;
+  max-width: 350px;
+  box-shadow: 2px 3px 16px var(--gray-20);
+
+  &--default {
+    background-color: var(--gray-10);
+  
+    .notification__close {
+      color: var(--white);
+    }
+  }
+
+  &--error {
+    background-color: var(--error);
+    color: var(--white);
+
+    .notification__close {
+      color: var(--white);
+    }
+  }
+
+  &__icon {
+    justify-self: center;
+    padding-top: 10px;
+  }
+
+  &__content {
+    flex: 1;
+    padding-block: 12px;
+  }
+  
+  &__close {
+    margin-top: 4px;
+
+    * {
+      color: inherit;
+    }
+  }
+}
