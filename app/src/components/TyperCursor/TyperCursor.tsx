@@ -29,7 +29,7 @@ export default function TyperCursor({
 
   function showCursor() {
     if(!cursor.current) return
-    cursor.current.style.display = ''
+    cursor.current.style.display = 'block'
   }
 
   function setCursorPosition() {
@@ -55,13 +55,16 @@ export default function TyperCursor({
       return hideCursor()
     }
 
-    showCursor()
-
     const { left: typerLeft, top: typerTop } = typer.current.getBoundingClientRect()
     const { left: charLeft, top: charTop } = charAtCursor.getBoundingClientRect()
 
     cursor.current.style.transform = `translate(${charLeft - typerLeft}px, ${charTop - typerTop}px)`
     cursor.current.classList.remove(styles['cursor--blinking'])
+
+    // Show cursor after transform so that when the cursor starts hidden,
+    // it doesn't animate the transition from its starting position to the first calculated position
+    showCursor()
+
     // Stop the previous timer if it exists
     if(cursorBlinkingTimeout.current) {
       clearTimeout(cursorBlinkingTimeout.current)
