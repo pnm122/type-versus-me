@@ -1,8 +1,8 @@
 .notification {
+  width: 350px;
+  max-width: min(350px, calc(100vw - (2 * 24px)));
   display: grid;
   grid-template-columns: 40px 1fr 40px;
-  width: 100%;
-  max-width: 350px;
   box-shadow: 2px 3px 16px var(--gray-20);
 
   &--default {

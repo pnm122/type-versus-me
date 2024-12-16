@@ -3,6 +3,7 @@ import '@/scss/index.scss'
 import { ThemeProvider } from "@/context/Theme";
 import { SocketProvider } from "@/context/Socket";
 import { UserProvider } from "@/context/User";
+import { NotificationProvider } from "@/context/Notification";
 
 export const metadata: Metadata = {
   title: "Typing Race",
@@ -20,7 +21,9 @@ export default function RootLayout({
         <SocketProvider>
           <UserProvider>
             <ThemeProvider>
-              {children}
+              <NotificationProvider>
+                {children}
+              </NotificationProvider>
             </ThemeProvider>
           </UserProvider>
         </SocketProvider>

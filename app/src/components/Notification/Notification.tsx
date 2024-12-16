@@ -5,22 +5,24 @@ import PixelarticonsClose from '~icons/pixelarticons/close'
 import IconButton from '../Button/IconButton'
 import { useEffect } from 'react'
 
-type Props = React.PropsWithChildren<{
-  onClose: () => void
+export type NotificationProps = React.PropsWithChildren<{
+  id: string
+  onClose: (id: string) => void
   closeDelay?: number
   style?: 'default' | 'error'
 }>
 
 export default function Notification({
+  id,
   onClose,
   closeDelay,
   style = 'default',
   children
-}: Props) {
+}: NotificationProps) {
   useEffect(() => {
     const timeout = setTimeout(() => {
       if(closeDelay) {
-        onClose()
+        onClose(id)
       }
     }, closeDelay ?? 0)
 
@@ -30,10 +32,12 @@ export default function Notification({
   }, [])
 
   return (
-    <div className={createClasses({
-      [styles['notification']]: true,
-      [styles[`notification--${style}`]]: true
-    })}>
+    <div
+      aria-live='polite'
+      className={createClasses({
+        [styles['notification']]: true,
+        [styles[`notification--${style}`]]: true
+      })}>
       <div className={styles['notification__icon']}>
         <PixelarticonsNotification />
       </div>
@@ -43,8 +47,9 @@ export default function Notification({
       <IconButton
         icon={<PixelarticonsClose />}
         style='tertiary'
-        onClick={onClose}
+        onClick={() => onClose(id)}
         className={styles['notification__close']}
+        ariaLabel='Close notification'
       />
     </div>
   )

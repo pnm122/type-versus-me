@@ -1,6 +1,5 @@
 import { Room, RoomMetadata } from "$shared/types/Room";
 import { User } from "$shared/types/User";
-import debug from "@/utils/debug";
 import generateTest from "@/utils/generateTest";
 
 class State {
