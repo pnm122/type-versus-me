@@ -3,9 +3,10 @@ import Button, { ButtonProps } from "./Button"
 import ButtonIcon from "./ButtonIcon"
 import styles from './style.module.scss'
 
-type Props = Omit<ButtonProps, 'children'> & {
-  icon: React.ReactNode
-}
+type Props =
+  Omit<ButtonProps, 'children'> &
+  Required<Pick<ButtonProps, 'ariaLabel'>> & 
+  { icon: React.ReactNode }
 
 export default function IconButton(props: Props) {
   const { className, icon, ...buttonProps } = props
