@@ -3,6 +3,7 @@ import { User } from "$shared/types/User";
 import { INITIAL_USER_SCORE } from "@/constants";
 import state from "@/global/state";
 import CustomSocket from "@/types/CustomSocket";
+import debug, { DEBUG_COLORS } from "./debug";
 
 /**
  * Check if an event with a payload is valid, returning appropriate errors through the callback if found.
@@ -51,6 +52,7 @@ export function check<
   callback: Callback
 ) {
   if(condition) {
+    debug(`${DEBUG_COLORS.RED}error:`, errorReason, DEBUG_COLORS.WHITE)
     callback({
       value: null,
       error: {
