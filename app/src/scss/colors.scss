@@ -40,6 +40,7 @@ $theme-alias-colors: (
   'light': (
     'border': map-get(map-get($theme-base-colors, 'light'), 'gray-20'),
     'disabled': map-get(map-get($theme-base-colors, 'light'), 'gray-20'),
+    'on-disabled': map-get(map-get($theme-base-colors, 'light'), 'gray-60'),
     'placeholder': map-get(map-get($theme-base-colors, 'light'), 'gray-50'),
     'untyped': map-get(map-get($theme-base-colors, 'light'), 'gray-50'),
     'text': map-get(map-get($theme-base-colors, 'light'), 'gray-80'),

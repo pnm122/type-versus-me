@@ -1,0 +1,36 @@
+.button {
+  padding-inline: 12px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+
+  &--icon-button {
+    padding-inline: 0;
+    width: 40px;
+  }
+
+  &:disabled {
+    background-color: var(--disabled);
+    color: var(--on-disabled);
+  }
+
+  &:not(:disabled):hover &__icon > * {
+    rotate: -15deg;
+  }
+
+  &--primary {
+    background-color: var(--primary);
+    color: var(--black);
+  }
+
+  &--secondary {
+    background-color: var(--black);
+    color: var(--white);
+  }
+
+  &--tertiary {
+    color: var(--black);
+  }
+}
