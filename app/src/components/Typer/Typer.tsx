@@ -52,17 +52,17 @@ interface Props {
   /**
    * Callback for when a user input should cause the typed text to change
    **/
-  onChange: (stats: TyperStats) => void
+  onChange?: (stats: TyperStats) => void
   /**
    * Callback for when the first onChange event is fired after initialization/reset
    * @param t time when starting the test
    **/
-  onStart: (t: number) => void
+  onStart?: (t: number) => void
   /**
    * Callback for when the test is finished by correctly typing the entire text
    * @param stats statistics from the test
    **/
-  onFinish: (stats: TyperStats) => void
+  onFinish?: (stats: TyperStats) => void
   /**
    * Other players' cursors to show within the Typer
    */
@@ -214,17 +214,17 @@ export default function Typer({
     }
 
     setTyped(newTyped)
-    onChange(stats.current)
+    onChange?.(stats.current)
   }
 
   function handleStart() {
     stats.current.startTime = Date.now()
-    onStart(stats.current.startTime)
+    onStart?.(stats.current.startTime)
   }
 
   function handleFinish() {
     stats.current.endTime = Date.now()
-    onFinish(stats.current)
+    onFinish?.(stats.current)
   }
 
   function isSubmitted(word: Word) {

@@ -1,7 +1,6 @@
 import { Cursor } from "@/types/Cursor"
 import { useEffect, useRef } from "react"
-import styles from './style.module.scss'
-import typerStyles from '../Typer/style.module.scss'
+import styles from '../Typer/style.module.scss'
 import createClasses from "@/utils/createClasses"
 
 type Props = Omit<Cursor, 'id'> & {
@@ -16,8 +15,8 @@ export default function TyperCursor({
   position,
   typer,
   opponent = false,
-  wordClassName = typerStyles['word'],
-  characterClassName = typerStyles['character']
+  wordClassName = styles['word'],
+  characterClassName = styles['character']
 }: Props) {
   const cursor = useRef<HTMLDivElement>(null)
   const cursorBlinkingTimeout = useRef<NodeJS.Timeout | null>(null)

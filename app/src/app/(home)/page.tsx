@@ -2,6 +2,7 @@
 
 import { CursorColor } from "$shared/types/Cursor";
 import { isValidColor } from "$shared/utils/validators";
+import Typer from "@/components/Typer/Typer";
 import TyperPreview from "@/components/TyperPreview/TyperPreview";
 import { useSocket } from "@/context/Socket";
 import { useEffect, useRef, useState } from "react";
@@ -20,13 +21,18 @@ export default function Home() {
 
   return (
     <div style={{ marginInline: 24 }}>
-      <TyperPreview
+      {/* <TyperPreview
         cursorColor={lastValidColor}
         text="taptaptap.live"
       />
       <input
         value={color}
         onChange={e => updateColor(e.target.value)}
+      /> */}
+      <Typer
+        text='hooga booga baby wooo'
+        finished={false}
+        onChange={() => {}}
       />
     </div>
   )

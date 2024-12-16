@@ -16,10 +16,18 @@
 
   &:focus {
     outline: none;
+
+    .cursor {
+      visibility: visible;
+    }
   }
 
   &__inner {
     display: block;
+  }
+
+  .cursor {
+    visibility: hidden;
   }
 
   .word {
@@ -49,5 +57,70 @@
 
   .character {
     display: inline;
+  }
+}
+
+.cursor {
+  height: 1.1em;
+  width: 0.1em;
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: -0.05em;
+  display: none;
+  // Makes the cursor look roughly centered vertically
+  // Pretty sure this is dependent on font, oh well
+  margin-top: 0.1em;
+  // Initial transform to move the cursor relative to padding of Typer
+  transform: translate(0.1em, 0.1em);
+  transition:
+    transform 0.1s cubic-bezier(0.215, 0.610, 0.355, 1),
+    opacity 0.5s;
+
+  &--red {
+    background-color: var(--cursor-red);
+  }
+  
+  &--orange {
+    background-color: var(--cursor-orange);
+  }
+
+  &--yellow {
+    background-color: var(--cursor-yellow);
+  }
+
+  &--green {
+    background-color: var(--cursor-green);
+  }
+
+  &--blue {
+    background-color: var(--cursor-blue);
+  }
+
+  &--purple {
+    background-color: var(--cursor-purple);
+  }
+
+  &--pink {
+    background-color: var(--cursor-pink);
+  }
+
+  &--opponent {
+    filter: opacity(0.333);
+    z-index: 1;
+  }
+  
+  &--blinking:not(.cursor--opponent) {
+    animation: blink 1.25s infinite;
+  }
+
+  @keyframes blink {
+    0%, 15%, 85%, 100% {
+      opacity: 1;
+    }
+
+    50% {
+      opacity: 0;
+    }
   }
 }
