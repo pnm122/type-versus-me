@@ -13,14 +13,82 @@ import generateUsername from "$shared/utils/generateUsername";
 import Button from "@/components/Button/Button";
 import ButtonIcon from "@/components/Button/ButtonIcon";
 import { useState } from "react";
+import { useSocket } from "@/context/Socket";
+import { useRouter } from "next/navigation";
+import { isValidUsername } from "$shared/utils/validators";
 
 export default function Home() {
   const [joinRoomCode, setJoinRoomCode] = useState('')
+  const [usernameError, setUsernameError] = useState(false)
   const user = useUser()
+  const socket = useSocket()
+  const router = useRouter()
+
+  function onUsernameChange(e: React.ChangeEvent<HTMLInputElement>) {
+    if(usernameError) {
+      setUsernameError(false)
+    }
+    user.update({ username: e.target.value })
+  }
+
+  async function onCreateRoomClicked() {
+    if(socket.state !== 'valid' || user.data.state !== 'valid') return
+    if(!isValidUsername(user.data.value.username)) {
+      return setUsernameError(true)
+    }
+    const res = await socket.value.emitWithAck('create-room', user.data.value)
+
+    if(res.error) {
+      const { reason } = res.error
+      if(reason === 'invalid-username') {
+        setUsernameError(true)
+      } else if(reason === 'user-in-room-already') {
+        // TODO: Notification for error
+      } else if(reason === 'max-rooms-created') {
+        // TODO: Notification for error
+      } else {
+        // TODO: Notification for error
+      }
+
+      return
+    }
+
+    user.update(res.value.user)
+    router.push(`/room/${res.value.room.id}`)
+  }
+
+  async function onJoinRoomSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    if(socket.state !== 'valid' || user.data.state !== 'valid') return
+    if(!isValidUsername(user.data.value.username)) {
+      return setUsernameError(true)
+    }
+    const res = await socket.value.emitWithAck('join-room', { roomId: joinRoomCode, user: user.data.value })
+
+    if(res.error) {
+      const { reason } = res.error
+
+      if(reason === 'invalid-username') {
+        setUsernameError(true)
+      } else if(reason === 'room-does-not-exist') {
+        // TODO: Notification for error
+      } else if(reason === 'room-is-full') {
+        // TODO: Notification for error
+      } else if(reason === 'game-in-progress') {
+        // TODO: Notification for error
+      } else if(reason === 'user-in-room-already') {
+        // TODO: Notification for error
+      } else {
+        // TODO: Notification for error
+      }
+
+      return
+    }
+  }
 
   return (
     <main className={styles['page']}>
-      <form className={styles['main']}>
+      <form onSubmit={onJoinRoomSubmit} className={styles['main']}>
         <h1>
           <TyperPreview
             text='taptaptap.live'
@@ -36,12 +104,18 @@ export default function Home() {
               placeholder='Username'
               disabled={user.data.state === 'loading'}
               text={user.data.value?.username ?? ''}
-              onChange={e => user.update({ username: e.target.value })}
+              error={
+                usernameError
+                  ? 'Must be between 3 and 16 characters (alphanumeric or underscore).'
+                  : ''
+              }
+              onChange={onUsernameChange}
               wrapperClassName={styles['username__input']}
               required
             />
             <IconButton
               icon={<PixelarticonsDice />}
+              className={styles['username__generate']}
               style='secondary'
               ariaLabel='Generate random username'
               onClick={() => user.update({ username: generateUsername() })}
@@ -54,7 +128,7 @@ export default function Home() {
         </div>
         <div className={styles['main__group']}>
           <Button
-          >
+            onClick={onCreateRoomClicked}>
             <ButtonIcon icon={<PixelarticonsPlus />} />
             Create a room
           </Button>
