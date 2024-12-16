@@ -1,21 +1,12 @@
-import { CursorColor } from "$shared/types/Cursor";
+import { CursorColor } from "../types/Cursor";
+import CursorColors from "./CursorColors";
 
-const COLORS: CursorColor[] = [
-  'red',
-  'orange',
-  'yellow',
-  'green',
-  'blue',
-  'purple',
-  'pink'
-]
-
-export function generateColor(colors: CursorColor[] = COLORS): CursorColor {
+export function generateColor(colors: Readonly<CursorColor[]> | CursorColor[] = CursorColors): CursorColor {
   return colors[Math.round(Math.random() * (colors.length - 1))]
 }
 
 export function generateColorFromPreference(preferred: CursorColor, taken: CursorColor[]): CursorColor {
-  const available = COLORS.reduce<CursorColor[]>((acc, color) => (
+  const available = CursorColors.reduce<CursorColor[]>((acc, color) => (
     taken.includes(color)
       ? acc
       : [...acc, color]

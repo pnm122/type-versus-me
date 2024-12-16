@@ -4,7 +4,7 @@ import { INITIAL_USER_SCORE, INITIAL_USER_STATE, MAX_USERS_PER_ROOM } from "@/co
 import state from "@/global/state"
 import CustomSocket from "@/types/CustomSocket"
 import { check, isValidEventAndPayload } from "@/utils/eventUtils"
-import { generateColorFromPreference } from "@/utils/generateColor"
+import { generateColorFromPreference } from "$shared/utils/generateColor"
 
 export default function JoinRoom(
   socket: CustomSocket,
