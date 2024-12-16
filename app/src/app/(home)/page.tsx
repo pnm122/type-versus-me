@@ -111,6 +111,8 @@ export default function Home() {
               }
               onChange={onUsernameChange}
               wrapperClassName={styles['username__input']}
+              minLength={3}
+              maxLength={16}
               required
             />
             <IconButton
