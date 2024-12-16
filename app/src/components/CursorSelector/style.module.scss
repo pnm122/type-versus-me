@@ -1,0 +1,12 @@
+.selector {
+  width: 100%;
+  display: flex;
+  gap: 4px;
+
+  &__item {
+    aspect-ratio: 1;
+    flex: 1;
+    display: grid;
+    place-items: center;
+  }
+}
