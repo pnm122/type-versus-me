@@ -1,3 +1,5 @@
+@import "@/scss/fonts";
+
 .typer {
   --_typer-correct-letter-color: var(--typer-correct-letter-color, var(--correct));
   --_typer-wrong-letter-color: var(--typer-wrong-letter-color, var(--error));
@@ -6,7 +8,7 @@
   --_typer-cursor-color: var(--typer-cursor-color, var(--cursor-blue));
   --_typer-wrong-word-decoration: var(--typer-wrong-word-decoration, underline var(--error));
 
-  font: var(--font-body-32);
+  @include font-body(32);
   position: relative;
   // Cut off cursors and text so only 3 lines show
   overflow: hidden;

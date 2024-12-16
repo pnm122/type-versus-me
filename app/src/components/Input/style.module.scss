@@ -1,0 +1,50 @@
+@import '@/scss/fonts';
+
+.input {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  &--error {
+    .input__label {
+      color: var(--error);
+    }
+
+    .input__input {
+      border-color: var(--error);
+    }
+  }
+
+  &:not(.input--error) {
+    .input__input:focus-visible {
+      border-color: var(--gray-70);
+    }
+  }
+
+  &__label {
+    @include font-body(14);
+
+    .input__required-star {
+      color: red;
+      display: inline;
+    }
+  }
+
+  &__input {
+    padding-inline: 12px;
+    height: 40px;
+    border: 2px solid var(--border);
+    outline: none;
+  }
+
+  &__error {
+    @include font-body(14);
+    color: var(--error);
+    display: flex;
+    gap: 2px;
+    
+    svg {
+      margin-top: 0.1em;
+    }
+  }
+}
