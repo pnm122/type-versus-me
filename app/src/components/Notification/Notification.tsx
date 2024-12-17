@@ -33,6 +33,9 @@ export default function Notification({
 
   return (
     <div
+      style={{
+        viewTransitionName: id
+      }}
       aria-live='polite'
       className={createClasses({
         [styles['notification']]: true,

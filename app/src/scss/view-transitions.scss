@@ -1,0 +1,63 @@
+// View transition API related styling must be separated from modules since
+// the selectors are global :(
+
+// Override this explicitly for elements that should have a view transition animation
+::view-transition-new(*),
+::view-transition-old(*) {
+  /* Prevent the default animation,
+  so both views remain opacity:1 throughout the transition */
+  animation: none;
+  /* Use normal blending,
+  so the new view sits on top and obscures the old view */
+  mix-blend-mode: normal;
+}
+
+::view-transition-group(.notification) {
+  animation-duration: 0.25s;
+  animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+// ENTRANCE ANIMATION: view-transition-new is the only child only when an element is appearing
+::view-transition-new(.notification):only-child {
+  animation: 0.25s cubic-bezier(0.165, 0.84, 0.44, 1) enter forwards;
+}
+
+// EXIT ANIMATION: view-transition-old is the only child only when an element is appearing
+::view-transition-old(.notification-first):only-child {
+  animation: 0.25s cubic-bezier(0.165, 0.84, 0.44, 1) first-exit forwards;
+}
+
+::view-transition-old(.notification-not-first):only-child {
+  animation: 0.25s cubic-bezier(0.165, 0.84, 0.44, 1) not-first-exit forwards;
+}
+
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(calc(-100% - 12px)) scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes first-exit {
+  from {
+    transform: none;
+  }
+  to {
+    opacity: 0;
+    transform: translateY(calc(-100% - 12px)) scale(0.85);
+  }
+}
+
+@keyframes not-first-exit {
+  from {
+    transform: none;
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+}

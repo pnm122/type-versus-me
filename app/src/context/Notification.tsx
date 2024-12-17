@@ -2,7 +2,8 @@
 
 import { NotificationProps } from "@/components/Notification/Notification"
 import NotificationStack from "@/components/NotificationStack/NotificationStack"
-import { createContext, useContext, useState } from "react"
+import { createContext, useContext, useRef, useState } from "react"
+import { flushSync } from "react-dom"
 
 export type NotificationData = {
   style: Required<NotificationProps>['style']
@@ -19,15 +20,30 @@ const NotificationContext = createContext<NotificationContextType>({
 
 export function NotificationProvider({ children }: React.PropsWithChildren) {
   const [notifs, setNotifs] = useState<NotificationProps[]>([])
+  const counter = useRef(0)
+
+  function updateNotifs(
+    x: React.SetStateAction<NotificationProps[]>
+  ) {
+    if(!document.startViewTransition) return setNotifs(x)
+    
+    document.startViewTransition(async () => {
+      // Update the DOM synchronously so the view transition API can reliably get
+      // a before and after snapshot of the DOM
+      flushSync(() => {
+        setNotifs(x)
+      })
+    })
+  }
 
   function onClose(id: string) {
-    setNotifs(n => n.filter(notif => notif.id !== id))
+    updateNotifs(n => n.filter(notif => notif.id !== id))
   }
 
   function push(data: NotificationData) {
-    setNotifs(n => [
+    updateNotifs(n => [
       {
-        id: `${data.text}${Date.now()}`,
+        id: `notif-${counter.current++}`,
         onClose,
         style: data.style,
         children: data.text

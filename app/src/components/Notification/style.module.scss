@@ -3,13 +3,21 @@
   max-width: min(350px, calc(100vw - (2 * 24px)));
   display: grid;
   grid-template-columns: 40px 1fr 40px;
-  box-shadow: 2px 3px 16px var(--gray-20);
+  box-shadow: 2px 3px 16px rgb(0, 0, 0, 0.15);
+
+  &:nth-of-type(1) {
+    view-transition-class: notification notification-first;
+  }
+
+  &:nth-of-type(n + 2) {
+    view-transition-class: notification notification-not-first;
+  }
 
   &--default {
     background-color: var(--gray-10);
   
     .notification__close {
-      color: var(--white);
+      color: var(--black);
     }
   }
 

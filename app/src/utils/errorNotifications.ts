@@ -8,6 +8,7 @@ const readableErrorReasons: Record<ErrorReason, string | null> = {
   'user-in-room-already': 'You are already in a room. Please leave the room and try again.',
   'room-is-full': 'This room is full. Please try again later.',
   'game-in-progress': 'This room has a game in progress. Please try again later.',
+  'room-does-not-exist': 'Invalid room code.',
   'invalid-user-id': null,
   'missing-argument': null,
   'user-not-in-room': null
