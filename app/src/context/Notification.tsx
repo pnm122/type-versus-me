@@ -19,6 +19,8 @@ const NotificationContext = createContext<NotificationContextType>({
 })
 
 export function NotificationProvider({ children }: React.PropsWithChildren) {
+  const MAX_NOTIFICATIONS = 4 as const
+  
   const [notifs, setNotifs] = useState<NotificationProps[]>([])
   const counter = useRef(0)
 
@@ -49,7 +51,7 @@ export function NotificationProvider({ children }: React.PropsWithChildren) {
         children: data.text
       },
       ...n
-    ])
+    ].slice(0, MAX_NOTIFICATIONS))
   }
 
   return (
