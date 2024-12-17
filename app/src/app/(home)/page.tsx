@@ -16,6 +16,8 @@ import { useState } from "react";
 import { useSocket } from "@/context/Socket";
 import { useRouter } from "next/navigation";
 import { isValidUsername } from "$shared/utils/validators";
+import { useNotification } from "@/context/Notification";
+import { errorNotification } from "@/utils/errorNotifications";
 
 export default function Home() {
   const [joinRoomCode, setJoinRoomCode] = useState('')
@@ -23,6 +25,7 @@ export default function Home() {
   const user = useUser()
   const socket = useSocket()
   const router = useRouter()
+  const notifs = useNotification()
 
   function onUsernameChange(e: React.ChangeEvent<HTMLInputElement>) {
     if(usernameError) {
@@ -41,16 +44,10 @@ export default function Home() {
     if(res.error) {
       const { reason } = res.error
       if(reason === 'invalid-username') {
-        setUsernameError(true)
-      } else if(reason === 'user-in-room-already') {
-        // TODO: Notification for error
-      } else if(reason === 'max-rooms-created') {
-        // TODO: Notification for error
-      } else {
-        // TODO: Notification for error
+        return setUsernameError(true)
       }
 
-      return
+      return notifs.push(errorNotification(reason))
     }
 
     user.update(res.value.user)
@@ -69,20 +66,10 @@ export default function Home() {
       const { reason } = res.error
 
       if(reason === 'invalid-username') {
-        setUsernameError(true)
-      } else if(reason === 'room-does-not-exist') {
-        // TODO: Notification for error
-      } else if(reason === 'room-is-full') {
-        // TODO: Notification for error
-      } else if(reason === 'game-in-progress') {
-        // TODO: Notification for error
-      } else if(reason === 'user-in-room-already') {
-        // TODO: Notification for error
-      } else {
-        // TODO: Notification for error
+        return setUsernameError(true)
       }
 
-      return
+      return notifs.push(errorNotification(reason))
     }
   }
 

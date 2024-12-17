@@ -4,7 +4,7 @@ import { NotificationProps } from "@/components/Notification/Notification"
 import NotificationStack from "@/components/NotificationStack/NotificationStack"
 import { createContext, useContext, useState } from "react"
 
-type NotificationData = {
+export type NotificationData = {
   style: Required<NotificationProps>['style']
   text: string
 }
