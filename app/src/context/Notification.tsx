@@ -48,7 +48,8 @@ export function NotificationProvider({ children }: React.PropsWithChildren) {
         id: `notif-${counter.current++}`,
         onClose,
         style: data.style,
-        children: data.text
+        children: data.text,
+        closeDelay: 8000
       },
       ...n
     ].slice(0, MAX_NOTIFICATIONS))
