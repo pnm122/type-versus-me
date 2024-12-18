@@ -1,6 +1,7 @@
 import Link from "next/link"
 import styles from './style.module.scss'
 import createClasses from "@/utils/createClasses"
+import Loader from "../Loader/Loader"
 
 export type ButtonProps = React.PropsWithChildren<{
   style?: 'primary' | 'secondary' | 'tertiary'
@@ -12,6 +13,7 @@ export type ButtonProps = React.PropsWithChildren<{
   onClick?: React.MouseEventHandler<HTMLButtonElement | HTMLAnchorElement>
   className?: string
   ariaLabel?: string
+  loading?: boolean
 }>
 
 export default function Button({
@@ -22,6 +24,7 @@ export default function Button({
   onClick = () => {},
   className,
   ariaLabel,
+  loading,
   children
 }: ButtonProps) {
   // Link is not easily disabled, just use an HTML button if disabled
@@ -42,13 +45,20 @@ export default function Button({
       className={createClasses({
         [styles['button']]: true,
         [styles[`button--${style}`]]: true,
+        [styles['button--loading']]: !!loading,
         ...(className ? { [className]: true } : {})
       })}
-      disabled={disabled}
+      disabled={disabled || loading}
       type={type}
-      aria-label={ariaLabel}
+      aria-label={`${ariaLabel ?? ''}${loading ? ' loading' : ''}`}
       onClick={onClick}>
-      {children}
+        <div className={styles['button__content']}>
+          {children}
+        </div>
+        <Loader
+          className={styles['button__loader']}
+          size={16}
+        />
     </button>
   )
 }

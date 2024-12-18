@@ -1,0 +1,26 @@
+.loader {
+  width: var(--loader-size);
+  height: var(--loader-size);
+  animation: load 1.5s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
+
+  &__circle {
+    stroke: var(--loader-color, var(--primary));
+  }
+}
+
+@keyframes load {
+  from {
+    stroke-dasharray: 0, 100000;
+    stroke-dashoffset: 0;
+    rotate: 0deg;
+  }
+  50% {
+    stroke-dasharray: calc(1.33 * 3.14159 * 100px), 100000;
+    stroke-dashoffset: calc(-0.67 * 3.14159 * 100px);
+  }
+  to {
+    stroke-dasharray: 0, 100000;
+    stroke-dashoffset: calc(-2 * 3.14159 * 100px);
+    rotate: 360deg;
+  }
+}

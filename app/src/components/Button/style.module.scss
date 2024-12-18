@@ -1,17 +1,10 @@
 .button {
   padding-inline: 12px;
   height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
+  display: grid;
+  place-items: center;
 
-  &--icon-button {
-    padding-inline: 0;
-    width: 40px;
-  }
-
-  &:disabled {
+  &:not(.button--loading):disabled {
     background-color: var(--disabled);
     color: var(--on-disabled);
   }
@@ -20,22 +13,63 @@
     rotate: -15deg;
   }
 
+  &--icon-button {
+    padding-inline: 0;
+    width: 40px;
+  }
+
   &--primary {
+    --loader-color: var(--black);
     background-color: var(--primary);
     color: var(--black);
   }
 
   &--secondary {
+    --loader-color: var(--white);
     background-color: var(--black);
     color: var(--white);
   }
 
   &--tertiary {
+    --loader-color: var(--black);
     color: var(--black);
   }
 
-  .button__icon {
+  &--loading {
+    .button__content {
+      visibility: hidden;
+      opacity: 0;
+    }
+
+    .button__loader {
+      visibility: visible;
+      opacity: 1;
+    }
+  }
+
+  &__content,
+  &__loader {
+    transition:
+      opacity 0.1s ease-out,
+      visibility 0.1s ease-out;
+  }
+
+  &__content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    grid-area: 1 / 1;
+  }
+
+  &__icon {
     display: grid;
     place-items: center;
+  }
+
+  &__loader {
+    grid-area: 1 / 1;
+    visibility: hidden;
+    opacity: 0;
   }
 }

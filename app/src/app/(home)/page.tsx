@@ -22,6 +22,8 @@ import { errorNotification } from "@/utils/errorNotifications";
 export default function Home() {
   const [joinRoomCode, setJoinRoomCode] = useState('')
   const [usernameError, setUsernameError] = useState(false)
+  const [createRoomLoading, setCreateRoomLoading] = useState(false)
+  const [joinRoomLoading, setJoinRoomLoading] = useState(false)
   const user = useUser()
   const socket = useSocket()
   const router = useRouter()
@@ -39,7 +41,10 @@ export default function Home() {
     if(!isValidUsername(user.data.value.username)) {
       return setUsernameError(true)
     }
+
+    setCreateRoomLoading(true)
     const res = await socket.value.emitWithAck('create-room', user.data.value)
+    setCreateRoomLoading(false)
 
     if(res.error) {
       const { reason } = res.error
@@ -60,7 +65,10 @@ export default function Home() {
     if(!isValidUsername(user.data.value.username)) {
       return setUsernameError(true)
     }
+
+    setJoinRoomLoading(true)
     const res = await socket.value.emitWithAck('join-room', { roomId: joinRoomCode, user: user.data.value })
+    setJoinRoomLoading(false)
 
     if(res.error) {
       const { reason } = res.error
@@ -117,7 +125,8 @@ export default function Home() {
         </div>
         <div className={styles['main__group']}>
           <Button
-            onClick={onCreateRoomClicked}>
+            onClick={onCreateRoomClicked}
+            loading={createRoomLoading}>
             <ButtonIcon icon={<PixelarticonsPlus />} />
             Create a room
           </Button>
@@ -134,7 +143,8 @@ export default function Home() {
             />
             <Button
               style='secondary'
-              type='submit'>
+              type='submit'
+              loading={joinRoomLoading}>
               Join
               <ButtonIcon icon={<PixelarticonsArrowRight />} />
             </Button>
