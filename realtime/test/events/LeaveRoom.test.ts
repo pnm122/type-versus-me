@@ -52,14 +52,18 @@ describe('LeaveRoom', () => {
   it('emits a leave room event to all users left in the room', () => {
     const { room, user } = init()
     const socket = mockSocket(user.id)
+    const spy = jest.spyOn(socket.in(room.id), 'emit')
     
     LeaveRoom(socket, () => {})
 
     expect(socket.in).toHaveBeenCalledWith(room.id)
-    expect(socket.in(room.id).emit).toHaveBeenCalledWith(
-      'leave-room',
-      { id: socket.id }
-    )
+    expect(spy.mock.lastCall?.[0]).toBe('leave-room')
+    expect(spy.mock.lastCall?.[1]).toMatchObject({
+        userId: socket.id,
+        room: {
+          id: room.id
+        }
+    })
   })
 
   it('removes the room if there are no users left in the room', () => {
