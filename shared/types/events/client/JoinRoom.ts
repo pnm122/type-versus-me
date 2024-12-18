@@ -21,6 +21,7 @@ type Callback = (
     | 'room-does-not-exist'
     | 'game-in-progress'
     | 'room-is-full'
+    | 'username-taken'
   >
 ) => void
 

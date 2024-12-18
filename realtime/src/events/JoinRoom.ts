@@ -51,6 +51,14 @@ export default function JoinRoom(
     return
   }
 
+  if(check(
+    state.getRoom(roomId)!.users.find(u => u.username === value.user.username),
+    'username-taken',
+    callback
+  )) {
+    return
+  }
+
   const takenColors = state.getRoom(roomId)!.users.map(u => u.color)
 
   const userToAdd: User = {

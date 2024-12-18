@@ -3,9 +3,6 @@ import { createRoomForTesting, mockSocket, mockUser } from "../test-utils";
 import state from "@/global/state";
 import { INITIAL_USER_SCORE, INITIAL_USER_STATE, MAX_USERS_PER_ROOM } from "@/constants";
 
-const socket = mockSocket()
-const validUser = mockUser()
-
 /** Create a room and return the user, room, and socket */
 function initRoom(userId = 'abcdef') {
   const socket = mockSocket(userId)
@@ -17,10 +14,13 @@ function initRoom(userId = 'abcdef') {
   return { ...value!, socket }
 }
 
+const secondUser = () => mockUser({ id: 'userB', username: 'secondUser' })
+const secondUserSocket = () => mockSocket('userB')
+
 describe('JoinRoom', () => {
   it('runs without failing if callback not provided', () => {
     // @ts-ignore
-    JoinRoom(socket, null, null)
+    JoinRoom(mockSocket(), null, null)
     expect(true).toBe(true)
   })
 
@@ -29,7 +29,7 @@ describe('JoinRoom', () => {
       const { room: { id: roomId } } = createRoomForTesting(mockUser()).value!
       
       const callback = jest.fn()
-      JoinRoom(mockSocket('userA'), { roomId, user: mockUser({ id: 'userB' }) }, callback)
+      JoinRoom(mockSocket('INCORRECT_ID'), { roomId, user: secondUser() }, callback)
 
       expect(callback).toHaveBeenCalledWith({
         value: null,
@@ -40,9 +40,10 @@ describe('JoinRoom', () => {
     })
     
     it('gives the correct error when no roomId is provided', () => {
+      initRoom()
       const callback = jest.fn()
       // @ts-ignore
-      JoinRoom(socket, { user: validUser }, callback)
+      JoinRoom(secondUserSocket(), { user: secondUser() }, callback)
 
       expect(callback).toHaveBeenCalledWith({
         value: null,
@@ -57,7 +58,7 @@ describe('JoinRoom', () => {
       const { room: { id: roomId } } = initRoom()
       
       // @ts-ignore
-      JoinRoom(socket, { roomId }, callback)
+      JoinRoom(secondUserSocket(), { roomId }, callback)
 
       expect(callback).toHaveBeenCalledWith({
         value: null,
@@ -71,7 +72,6 @@ describe('JoinRoom', () => {
       const callback = jest.fn()
       const { room: { id: roomId }, user, socket } = initRoom()
       
-      // @ts-ignore
       JoinRoom(socket, { roomId, user }, callback)
 
       expect(callback).toHaveBeenCalledWith({
@@ -83,9 +83,10 @@ describe('JoinRoom', () => {
     })
 
     it('gives the correct error when the wrong room ID is provided', () => {
+      initRoom()
       const callback = jest.fn()
       
-      JoinRoom(socket, { roomId: 'INVALID_ID', user: validUser }, callback)
+      JoinRoom(secondUserSocket(), { roomId: 'INVALID_ID', user: secondUser() }, callback)
 
       expect(callback).toHaveBeenCalledWith({
         value: null,
@@ -100,7 +101,7 @@ describe('JoinRoom', () => {
       const { room: { id: roomId } } = initRoom()
       state.updateRoom(roomId, { state: 'in-progress' })
       
-      JoinRoom(socket, { roomId, user: validUser }, callback)
+      JoinRoom(secondUserSocket(), { roomId, user: secondUser() }, callback)
 
       expect(callback).toHaveBeenCalledWith({
         value: null,
@@ -117,16 +118,37 @@ describe('JoinRoom', () => {
       Array(MAX_USERS_PER_ROOM - 1).fill(null).forEach((_, index) => {
         state.addUserToRoom(
           roomId,
-          mockUser({ id: `user${index}`})
+          mockUser({ id: `user${index}`, username: `user${index}` })
         )
       })
       
-      JoinRoom(socket, { roomId, user: validUser }, callback)
+      JoinRoom(secondUserSocket(), { roomId, user: secondUser()}, callback)
 
       expect(callback).toHaveBeenCalledWith({
         value: null,
         error: {
           reason: 'room-is-full'
+        }
+      })
+    })
+
+    it('gives the correct error when the username is taken', () => {
+      const callback = jest.fn()
+      const { room: { id: roomId }, user, socket } = initRoom()
+      
+      JoinRoom(
+        mockSocket('userB'),
+        {
+          roomId,
+          user: { id: 'userB', username: user.username, color: 'orange' }
+        },
+        callback
+      )
+
+      expect(callback).toHaveBeenCalledWith({
+        value: null,
+        error: {
+          reason: 'username-taken'
         }
       })
     })
@@ -136,10 +158,10 @@ describe('JoinRoom', () => {
     initRoom('another one')
     const { room: { id: roomId } } = initRoom()
 
-    JoinRoom(socket, { roomId, user: validUser }, () => {})
+    JoinRoom(secondUserSocket(), { roomId, user: secondUser()}, () => {})
 
     expect(state.getRoom(roomId)!.users[1]).toMatchObject({
-      id: validUser.id
+      id: secondUser().id
     })
   })
 
@@ -147,8 +169,8 @@ describe('JoinRoom', () => {
     initRoom('another one')
     const { room: { id: roomId } } = initRoom()
 
-    const socket = mockSocket()
-    JoinRoom(socket, { roomId, user: validUser }, () => {})
+    const socket = secondUserSocket()
+    JoinRoom(socket, { roomId, user: secondUser() }, () => {})
 
     expect(socket.join).toHaveBeenCalledWith(roomId)
   })
@@ -157,8 +179,8 @@ describe('JoinRoom', () => {
     initRoom('another one')
     const { room: { id: roomId } } = initRoom()
 
-    const socket = mockSocket()
-    JoinRoom(socket, { roomId, user: validUser }, () => {})
+    const socket = secondUserSocket()
+    JoinRoom(socket, { roomId, user: secondUser() }, () => {})
 
     expect(socket.join).toHaveBeenCalledWith(roomId)
   })
@@ -167,12 +189,12 @@ describe('JoinRoom', () => {
     const { room: { id: roomId } } = initRoom()
 
     const callback = jest.fn()
-    JoinRoom(socket, { roomId, user: validUser }, callback)
+    JoinRoom(secondUserSocket(), { roomId, user: secondUser() }, callback)
 
     expect(callback.mock.lastCall[0].value).toMatchObject({
       user: {
-        id: validUser.id,
-        username: validUser.username,
+        id: secondUser().id,
+        username: secondUser().username,
         score: INITIAL_USER_SCORE,
         state: INITIAL_USER_STATE
       },
@@ -185,9 +207,9 @@ describe('JoinRoom', () => {
   it('emits the correct event with the user', () => {
     const { room: { id: roomId } } = initRoom()
 
-    const socket = mockSocket()
+    const socket = secondUserSocket()
     const callback = jest.fn()
-    JoinRoom(socket, { roomId, user: validUser }, callback)
+    JoinRoom(socket, { roomId, user: secondUser() }, callback)
 
     expect(socket.broadcast.to).toHaveBeenCalledWith(roomId)
     expect(socket.broadcast.to(roomId).emit).toHaveBeenCalledWith(
@@ -199,14 +221,9 @@ describe('JoinRoom', () => {
   it('gives the user a color that is not taken', () => {
     const { room, user } = initRoom('userA')
 
-    const newUser = mockUser({
-      id: 'userB',
-      color: user.color
-    })
-    const newUserSocket = mockSocket('userB')
     const callback = jest.fn()
 
-    JoinRoom(newUserSocket, { roomId: room.id, user: newUser }, callback)
+    JoinRoom(secondUserSocket(), { roomId: room.id, user: secondUser() }, callback)
 
     expect(callback.mock.lastCall[0]).toMatchObject({
       value: {
