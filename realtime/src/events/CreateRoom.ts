@@ -6,6 +6,7 @@ import state from "@/global/state";
 import CustomSocket from "@/types/CustomSocket";
 import { check, isValidEventAndPayload } from "@/utils/eventUtils";
 
+// TODO: Test does not need to exist at time of room creation
 export default function CreateRoom(
   socket: CustomSocket,
   value: CreateRoomPayload,

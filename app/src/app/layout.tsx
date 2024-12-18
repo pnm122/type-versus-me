@@ -4,6 +4,7 @@ import { ThemeProvider } from "@/context/Theme";
 import { SocketProvider } from "@/context/Socket";
 import { UserProvider } from "@/context/User";
 import { NotificationProvider } from "@/context/Notification";
+import { RoomProvider } from "@/context/Room";
 
 export const metadata: Metadata = {
   title: "Typing Race",
@@ -19,13 +20,15 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <SocketProvider>
-          <UserProvider>
-            <ThemeProvider>
-              <NotificationProvider>
-                {children}
-              </NotificationProvider>
-            </ThemeProvider>
-          </UserProvider>
+          <NotificationProvider>
+            <UserProvider>
+              <RoomProvider>
+                <ThemeProvider>
+                  {children}
+                </ThemeProvider>
+              </RoomProvider>
+            </UserProvider>
+          </NotificationProvider>
         </SocketProvider>
       </body>
     </html>

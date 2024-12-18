@@ -3,6 +3,7 @@ import state from "@/global/state";
 import CustomSocket from "@/types/CustomSocket";
 import { check, setRoomToInProgress } from "@/utils/eventUtils";
 
+// TODO: Should return the new room state after the user leaves
 export default function LeaveRoom(
   socket: CustomSocket,
   callback: LeaveRoomCallback

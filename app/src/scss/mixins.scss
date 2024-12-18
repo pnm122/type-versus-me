@@ -1,5 +1,5 @@
 @mixin container {
-  @include max-width(1280px, 24px)
+  @include max-width(1040px, 24px)
 }
 
 @mixin max-width($max-width, $side-padding) {

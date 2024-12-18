@@ -1,22 +1,17 @@
 "use client"
 
-import generateUsername from '$shared/utils/generateUsername'
-import { useNotification } from '@/context/Notification'
-import React from 'react'
+import React, { useEffect } from 'react'
+import styles from './style.module.scss'
+import { useRoom } from '@/context/Room'
 
 export default function Room() {
-  const notifs = useNotification()
+  const room = useRoom()
 
   return (
-    <div style={{ padding: 24 }}>
-      <button onClick={() => {
-        notifs.push({
-          text: `${generateUsername()} fdsaf dsf saf safdasd fasdfas`,
-          style: 'error'
-        })
-      }}>
-        Add
-      </button>
-    </div>
+    <main className={styles['page']}>
+      {room.room?.users.map(u => (
+        <p key={u.id}>{u.username}</p>
+      ))}
+    </main>
   )
 }

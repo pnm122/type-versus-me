@@ -18,6 +18,7 @@ import { useRouter } from "next/navigation";
 import { isValidUsername } from "$shared/utils/validators";
 import { useNotification } from "@/context/Notification";
 import { errorNotification } from "@/utils/errorNotifications";
+import { useRoom } from "@/context/Room";
 
 export default function Home() {
   const [joinRoomCode, setJoinRoomCode] = useState('')
@@ -25,6 +26,7 @@ export default function Home() {
   const [createRoomLoading, setCreateRoomLoading] = useState(false)
   const [joinRoomLoading, setJoinRoomLoading] = useState(false)
   const user = useUser()
+  const room = useRoom()
   const socket = useSocket()
   const router = useRouter()
   const notifs = useNotification()
@@ -56,6 +58,7 @@ export default function Home() {
     }
 
     user.update(res.value.user)
+    await room.join(res.value.room)
     router.push(`/room/${res.value.room.id}`)
   }
 
@@ -79,6 +82,11 @@ export default function Home() {
 
       return notifs.push(errorNotification(reason))
     }
+
+    user.update(res.value.user)
+    room.join(res.value.room)
+
+    router.push(`/room/${res.value.room.id}`)
   }
 
   return (

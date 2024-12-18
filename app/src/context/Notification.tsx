@@ -5,10 +5,9 @@ import NotificationStack from "@/components/NotificationStack/NotificationStack"
 import { createContext, useContext, useRef, useState } from "react"
 import { flushSync } from "react-dom"
 
-export type NotificationData = {
-  style: Required<NotificationProps>['style']
-  text: string
-}
+export type NotificationData =
+  Pick<NotificationProps, 'style'> &
+  { text: string }
 
 interface NotificationContextType {
   push: (data: NotificationData) => void

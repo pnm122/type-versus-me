@@ -76,12 +76,6 @@ export function UserProvider({ children }: React.PropsWithChildren) {
       error: null
     })
   }, [socket])
-
-  useEffect(() => {
-    if(!data) return
-
-    console.log(data)
-  }, [data])
   
   return (
     <UserContext.Provider value={{ data, update }}>

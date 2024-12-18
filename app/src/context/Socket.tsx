@@ -24,22 +24,29 @@ export function SocketProvider({ children }: React.PropsWithChildren) {
         ? process.env.NEXT_PUBLIC_DEV_SOCKET_URL
         : process.env.NEXT_PUBLIC_PROD_SOCKET_URL
     )
-    socket.on('connect', () => {
+
+    function onConnect() {
       setData({
         state: 'valid',
         value: socket,
         error: null
       })
-    })
-    socket.on('connect_error', () => {
+    }
+  
+    function onConnectError() {
       setData({
         state: 'error',
         value: null,
         error: 'connect_error'
       })
-    })
+    }
+
+    socket.on('connect', onConnect)
+    socket.on('connect_error', onConnectError)
 
     return () => {
+      socket.off('connect', onConnect)
+      socket.off('connect_error', onConnectError)
       socket.disconnect()
     }
   }, [])
