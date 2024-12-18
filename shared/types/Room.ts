@@ -2,7 +2,7 @@ import { User } from "./User"
 
 export interface RoomMetadata {
   id: string
-  test: string
+  test?: string
   state: RoomState
 }
 

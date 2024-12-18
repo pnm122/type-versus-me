@@ -1,6 +1,5 @@
 import { Room, RoomMetadata } from "$shared/types/Room";
 import { User } from "$shared/types/User";
-import generateTest from "@/utils/generateTest";
 
 class State {
   private static instance: State
@@ -37,7 +36,6 @@ class State {
   createRoom(): Readonly<Room> {
     const newRoom: Room = {
       id: this.generateRoomId(),
-      test: generateTest(),
       state: 'waiting',
       users: []
     }

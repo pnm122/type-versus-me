@@ -160,12 +160,6 @@ describe('ChangeUserState', () => {
       return { room }
     }
 
-    it('generates a new test in the state', () => {
-      const { room } = init()
-
-      expect(room.test).not.toBe(state.getRoom(room.id)!.test)
-    })
-
     it('changes the room state to waiting in the state', () => {
       const { room } = init()
 

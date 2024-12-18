@@ -78,7 +78,7 @@ describe('setRoomToInProgress', () => {
     expect(state.getRoom(room.id)!.state).toBe('in-progress')
   })
 
-  it('emits a change room event with the in-progress state to all users in the room', () => {
+  it('emits a change room event with the in-progress state and new test to all users in the room', () => {
     const socket = mockSocket()
     const { room } = init()
 
@@ -87,7 +87,7 @@ describe('setRoomToInProgress', () => {
     expect(socket.in).toHaveBeenCalledWith(room.id)
     expect(socket.in(room.id).emit).toHaveBeenCalledWith(
       'change-room-data',
-      { state: 'in-progress' }
+      { state: 'in-progress', test: expect.any(String) }
     )
   })
 

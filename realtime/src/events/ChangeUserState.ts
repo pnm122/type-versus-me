@@ -63,11 +63,10 @@ export default function ChangeUserState(
     room!.users.every(u => u.state === 'complete' || u.state === 'failed') &&
     value.state === 'not-ready'
   if(restart) {
-    const test = generateTest()
-    state.updateRoom(room!.id, { test, state: 'waiting' })
+    state.updateRoom(room!.id, { state: 'waiting' })
     socket.in(room!.id).emit(
       'change-room-data',
-      { test, state: 'waiting' }
+      { state: 'waiting' }
     )
   }
 
