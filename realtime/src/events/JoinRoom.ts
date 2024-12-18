@@ -6,8 +6,6 @@ import CustomSocket from "@/types/CustomSocket"
 import { check, isValidEventAndPayload } from "@/utils/eventUtils"
 import { generateColorFromPreference } from "$shared/utils/generateColor"
 
-// TODO: Return an error if the username is already taken in the room
-// TODO: Return the new room as well
 export default function JoinRoom(
   socket: CustomSocket,
   value: ClientJoinRoomPayload,
@@ -70,7 +68,13 @@ export default function JoinRoom(
 
   const room = state.addUserToRoom(roomId, userToAdd)!
   
-  socket.broadcast.to(roomId).emit('join-room', userToAdd)
+  socket.broadcast.to(roomId).emit(
+    'join-room',
+    {
+      user: userToAdd,
+      room
+    }
+  )
   socket.join(roomId)
 
   callback({

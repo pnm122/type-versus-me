@@ -204,18 +204,27 @@ describe('JoinRoom', () => {
     })
   })
 
-  it('emits the correct event with the user', () => {
+  it('emits the correct event with the user and room', () => {
     const { room: { id: roomId } } = initRoom()
 
     const socket = secondUserSocket()
     const callback = jest.fn()
     JoinRoom(socket, { roomId, user: secondUser() }, callback)
+    const spy = jest.spyOn(socket.broadcast.to(roomId), 'emit')
 
     expect(socket.broadcast.to).toHaveBeenCalledWith(roomId)
-    expect(socket.broadcast.to(roomId).emit).toHaveBeenCalledWith(
-      'join-room',
-      callback.mock.lastCall[0].value.user
-    )
+    expect(spy.mock.lastCall?.[0]).toBe('join-room')
+    expect(spy.mock.lastCall?.[1]).toMatchObject({
+      user: {
+        id: secondUser().id,
+        username: secondUser().username,
+        score: INITIAL_USER_SCORE,
+        state: INITIAL_USER_STATE
+      },
+      room: {
+        id: roomId
+      }
+    })
   })
 
   it('gives the user a color that is not taken', () => {
