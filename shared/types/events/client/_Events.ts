@@ -6,7 +6,7 @@ import { RequestColorPayload, RequestColorCallback } from './RequestColor'
 import { ChangeUserStatePayload, ChangeUserStateCallback } from './ChangeUserState'
 import { ChangeUserScorePayload, ChangeUserScoreCallback } from './ChangeUserScore'
 import { LeaveRoomCallback } from './LeaveRoom'
-import CustomSocket from '@/types/CustomSocket'
+import { DoesRoomExistPayload, DoesRoomExistCallback } from './DoesRoomExist'
 
 interface ClientEvents {
   /** Register a user and get a User object */
@@ -25,6 +25,8 @@ interface ClientEvents {
   'change-user-score': (value: ChangeUserScorePayload, callback: ChangeUserScoreCallback) => Promise<void> | void
   /** Request to leave a room */
   'leave-room': (_: any, callback: LeaveRoomCallback) => Promise<void> | void
+  /** Check if a room exists */
+  'does-room-exist': (value: DoesRoomExistPayload, callback: DoesRoomExistCallback) => Promise<void> | void
 }
 
 export default ClientEvents
