@@ -1,5 +1,7 @@
-import { Return } from './Return'
-
-type ErrorsOf<Callback extends (value: Return<any, any>) => void> = Parameters<Callback>[0]['error']
+type ErrorsOf<F> = F extends (value: infer R) => void 
+? R extends { error: { reason: infer E } } 
+  ? E 
+  : never 
+: never;
 
 export default ErrorsOf

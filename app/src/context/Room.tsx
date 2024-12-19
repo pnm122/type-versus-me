@@ -108,7 +108,7 @@ export function RoomProvider({ children }: React.PropsWithChildren) {
       return res
     }
 
-    user.update(res.value.user)
+    user.set(res.value.user)
     setRoom(res.value.room)
     await waitForRoomUpdate()
     return res
@@ -130,7 +130,7 @@ export function RoomProvider({ children }: React.PropsWithChildren) {
       return res
     }
 
-    user.update(res.value.user)
+    user.set(res.value.user)
     setRoom(res.value.room)
     await waitForRoomUpdate()
     return res

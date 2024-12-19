@@ -8,12 +8,20 @@ import PixelarticonsCopy from '~icons/pixelarticons/copy'
 
 import { MAX_USERS_PER_ROOM } from '$shared/constants'
 import { useNotification } from '@/context/Notification'
+import Checkbox from '@/components/Checkbox/Checkbox'
+import { useUser } from '@/context/User'
+import { useEffect, useState } from 'react'
+import { User as UserType } from '$shared/types/User'
 
 export default function RoomData() {
   const { room } = useRoom()
+  const { data: { value: user }, update: updateUser } = useUser()
   const notifs = useNotification()
+  // 'Predict' what state the user will be in before waiting for server
+  // This way, the state changes can feel instantaneous, but still be verified by the server
+  const [predictedUserState, setPredictedUserState] = useState<UserType['state'] | null>(null)
 
-  if(!room) return <></>
+  if(!room || !user) return <></>
 
   function onInviteClicked() {
     window.navigator.clipboard.writeText(window.location.href)
@@ -23,6 +31,20 @@ export default function RoomData() {
     })
   }
 
+  async function onCheckboxChange(ready: boolean) {
+    setPredictedUserState(ready ? 'ready' : 'not-ready')
+    await updateUser('state', ready ? 'ready' : 'not-ready')
+    setPredictedUserState(null)
+  }
+
+  useEffect(() => {
+    console.log('predicted:', predictedUserState)
+  }, [predictedUserState])
+
+  useEffect(() => {
+    console.log('actual:', user.state)
+  }, [user.state])
+
   return (
     <div className={styles['data']}>
       <ul className={styles['data__users']}>
@@ -30,6 +52,11 @@ export default function RoomData() {
           <User key={u.id} user={u} />
         ))}
       </ul>
+      <Checkbox
+        checked={predictedUserState ? predictedUserState === 'ready' : user.state === 'ready'}
+        onChange={onCheckboxChange}>
+        I'm ready
+      </Checkbox>
       <hr></hr>
       <div className={styles['data__room']}>
         <div className={styles['room-metadata']}>
