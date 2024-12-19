@@ -1,7 +1,7 @@
 import JoinRoom from "@/events/JoinRoom";
 import { createRoomForTesting, mockSocket, mockUser } from "../test-utils";
 import state from "@/global/state";
-import { INITIAL_USER_SCORE, INITIAL_USER_STATE, MAX_USERS_PER_ROOM } from "@/constants";
+import { INITIAL_USER_SCORE, INITIAL_USER_STATE, MAX_USERS_PER_ROOM } from "$shared/constants";
 
 /** Create a room and return the user, room, and socket */
 function initRoom(userId = 'abcdef') {

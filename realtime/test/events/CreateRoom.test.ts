@@ -1,5 +1,5 @@
 import { User } from "$shared/types/User"
-import { INITIAL_USER_SCORE, INITIAL_USER_STATE, MAX_ROOMS } from "@/constants"
+import { INITIAL_USER_SCORE, INITIAL_USER_STATE, MAX_ROOMS } from "$shared/constants"
 import CreateRoom from "@/events/CreateRoom"
 import state from "@/global/state"
 import { mockSocket, mockUser } from "../test-utils"

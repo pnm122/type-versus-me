@@ -2,7 +2,7 @@ import CustomSocket from "@/types/CustomSocket"
 import { check, isValidEventAndPayload, setRoomToInProgress } from "@/utils/eventUtils"
 import { createRoomForTesting, mockSocket, mockUser } from "../test-utils"
 import state from "@/global/state"
-import { INITIAL_USER_SCORE } from "@/constants"
+import { INITIAL_USER_SCORE } from "$shared/constants"
 
 const socket = {
   id: 'TEST_ID'

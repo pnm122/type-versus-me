@@ -1,6 +1,6 @@
 import { ErrorReason, Return } from "$shared/types/Return";
 import { User } from "$shared/types/User";
-import { INITIAL_USER_SCORE } from "@/constants";
+import { INITIAL_USER_SCORE } from "$shared/constants";
 import state from "@/global/state";
 import CustomSocket from "@/types/CustomSocket";
 import debug, { DEBUG_COLORS } from "./debug";

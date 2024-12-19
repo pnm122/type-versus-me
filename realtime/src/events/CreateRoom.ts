@@ -1,7 +1,7 @@
 import { CreateRoomCallback, CreateRoomPayload } from "$shared/types/events/client/CreateRoom";
 import { User } from "$shared/types/User";
 import { isValidColor, isValidUsername } from "$shared/utils/validators";
-import { INITIAL_USER_SCORE, INITIAL_USER_STATE, MAX_ROOMS } from "@/constants";
+import { INITIAL_USER_SCORE, INITIAL_USER_STATE, MAX_ROOMS } from "$shared/constants";
 import state from "@/global/state";
 import CustomSocket from "@/types/CustomSocket";
 import { check, isValidEventAndPayload } from "@/utils/eventUtils";

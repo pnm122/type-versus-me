@@ -1,6 +1,6 @@
 import { ClientJoinRoomCallback, ClientJoinRoomPayload } from "$shared/types/events/client/JoinRoom"
 import { User } from "$shared/types/User"
-import { INITIAL_USER_SCORE, INITIAL_USER_STATE, MAX_USERS_PER_ROOM } from "@/constants"
+import { INITIAL_USER_SCORE, INITIAL_USER_STATE, MAX_USERS_PER_ROOM } from "$shared/constants"
 import state from "@/global/state"
 import CustomSocket from "@/types/CustomSocket"
 import { check, isValidEventAndPayload } from "@/utils/eventUtils"

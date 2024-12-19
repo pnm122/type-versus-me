@@ -3,7 +3,7 @@ import { createRoomForTesting, mockSocket, mockUser } from "../test-utils"
 import { UserState } from "$shared/types/User"
 import { Room, RoomState } from "$shared/types/Room"
 import state from "@/global/state"
-import { INITIAL_USER_SCORE } from "@/constants"
+import { INITIAL_USER_SCORE } from "$shared/constants"
 import * as eventUtils from "@/utils/eventUtils"
 
 describe('ChangeUserState', () => {

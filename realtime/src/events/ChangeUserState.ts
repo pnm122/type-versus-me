@@ -1,7 +1,7 @@
 import { ChangeUserStateCallback, ChangeUserStatePayload } from "$shared/types/events/client/ChangeUserState";
 import { RoomState } from "$shared/types/Room";
 import { UserState } from "$shared/types/User";
-import { INITIAL_USER_SCORE } from "@/constants";
+import { INITIAL_USER_SCORE } from "$shared/constants";
 import state from "@/global/state";
 import CustomSocket from "@/types/CustomSocket";
 import { check, isValidEventAndPayload, setRoomToInProgress } from "@/utils/eventUtils";

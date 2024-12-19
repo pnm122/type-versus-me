@@ -1,6 +1,6 @@
 import ChangeUserScore from "@/events/ChangeUserScore"
 import { createRoomForTesting, mockSocket, mockUser } from "../test-utils"
-import { INITIAL_USER_SCORE } from "@/constants"
+import { INITIAL_USER_SCORE } from "$shared/constants"
 import state from "@/global/state"
 import { RoomState } from "$shared/types/Room"
 

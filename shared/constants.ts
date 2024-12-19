@@ -1,4 +1,4 @@
-import { User, UserState } from "$shared/types/User"
+import { User, UserState } from "./types/User"
 
 const MAX_ROOMS = 8 as const
 const MAX_USERS_PER_ROOM = 7 as const

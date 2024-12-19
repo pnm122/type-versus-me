@@ -18,6 +18,6 @@
       "$shared/*": ["../shared/*"]
     }
   },
-  "include": ["**/*.ts", "../shared/types/Return.ts"],
+  "include": ["**/*.ts", "../shared/types/Return.ts", "../shared/constants.ts"],
   "exclude": ["node_modules"]
 }
