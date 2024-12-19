@@ -11,21 +11,25 @@ import { useUser } from "./User";
 import { errorNotification } from "@/utils/errorNotifications";
 import { ClientJoinRoomCallback } from "$shared/types/events/client/JoinRoom";
 import { CreateRoomCallback } from "$shared/types/events/client/CreateRoom";
+import { Return } from "$shared/types/Return";
+import ErrorsOf from "$shared/types/ErrorsOf";
+import { LeaveRoomCallback } from "$shared/types/events/client/LeaveRoom";
+import { usePathname } from "next/navigation";
 
 interface RoomContextType {
   room: Room | null
   create: () => Promise<Parameters<CreateRoomCallback>[0]>
   join: (id: Room['id']) => Promise<Parameters<ClientJoinRoomCallback>[0]>
   update: (r: Partial<Omit<Room, 'id'>>) => void
-  leave: () => void
+  leave: () => Promise<Return<null, 'user-not-in-room' | 'missing-argument'>>
 }
 
 const RoomContext = createContext<RoomContextType>({
   room: null,
-  create: (): any => {},
-  join: (): any => {},
+  create(): any {},
+  join(): any {},
   update() {},
-  leave() {}
+  leave(): any {}
 })
 
 // TODO outgoing room events should probably be handled in here to centralize it?
@@ -34,7 +38,16 @@ export function RoomProvider({ children }: React.PropsWithChildren) {
   const socket = useSocket()
   const notifs = useNotification()
   const user = useUser()
+  const pathname = usePathname()
   const roomHasBeenUpdated = useRef<(() => void) | null>(null)
+
+  useEffect(() => {
+    if(!room) return
+
+    // Leave the room the user is currently in if they are in one and the new route doesn't match the room's path
+    const inCurrentRoom = pathname === `/room/${room.id}`
+    if(!inCurrentRoom) leave()
+  }, [pathname])
 
   useEffect(() => {
     if(socket.state !== 'valid') return
@@ -129,9 +142,23 @@ export function RoomProvider({ children }: React.PropsWithChildren) {
     setRoom(current => current ? ({ ...current, ...r }) : null)
   }
 
-  function leave() {
+  async function leave(): ReturnType<RoomContextType['leave']> {
+    if(!checkSocket(socket.value, notifs)) {
+      return {
+        value: null,
+        error: {
+          reason: 'missing-argument'
+        }
+      }
+    }
+    const res = await socket.value.emitWithAck('leave-room', null)
+
+    if(res.error) {
+      return res
+    }
     setRoom(null)
-    socket.value?.emitWithAck('leave-room', undefined)
+    await waitForRoomUpdate()
+    return { value: null, error: null }
   }
 
   function waitForRoomUpdate() {
