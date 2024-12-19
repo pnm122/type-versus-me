@@ -18,6 +18,7 @@ export default function RoomData() {
   function onInviteClicked() {
     window.navigator.clipboard.writeText(window.location.href)
     notifs.push({
+      style: 'success',
       text: 'Copied link to clipboard!'
     })
   }

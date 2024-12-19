@@ -17,16 +17,25 @@
     background-color: var(--gray-10);
   
     .notification__close {
-      color: var(--black);
+      color: var(--heading);
     }
   }
 
   &--error {
     background-color: var(--error);
-    color: var(--white);
+    color: var(--background);
 
     .notification__close {
-      color: var(--white);
+      color: var(--background);
+    }
+  }
+
+  &--success {
+    background-color: var(--positive);
+    color: var(--heading);
+  
+    .notification__close {
+      color: var(--heading);
     }
   }
 

@@ -24,6 +24,7 @@ export function SocketProvider({ children }: React.PropsWithChildren) {
   function onConnect() {
     if(data.state === 'error') {
       notifs.push({
+        style: 'success',
         text: 'Reconnected to the server successfully!'
       })
     }

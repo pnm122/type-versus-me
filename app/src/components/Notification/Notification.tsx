@@ -1,6 +1,8 @@
 import createClasses from '@/utils/createClasses'
 import styles from './style.module.scss'
 import PixelarticonsNotification from '~icons/pixelarticons/notification'
+import PixelarticonsCheck from '~icons/pixelarticons/check'
+import PixelarticonsAlert from '~icons/pixelarticons/alert'
 import PixelarticonsClose from '~icons/pixelarticons/close'
 import IconButton from '../Button/IconButton'
 import { useEffect } from 'react'
@@ -9,7 +11,8 @@ export type NotificationProps = React.PropsWithChildren<{
   id: string
   onClose: (id: string) => void
   closeDelay?: number
-  style?: 'default' | 'error'
+  style?: 'default' | 'error' | 'success'
+  icon?: 'notification' | 'check' | 'alert'
 }>
 
 export default function Notification({
@@ -17,8 +20,28 @@ export default function Notification({
   onClose,
   closeDelay,
   style = 'default',
-  children
+  children,
+  icon
 }: NotificationProps) {
+  const displayedIcon = icon ?? getIconFromStyle()
+
+  function getIconFromStyle(): NotificationProps['icon'] {
+    return (
+      style === 'default'
+        ? 'notification'
+        : style === 'error'
+          ? 'alert'
+          : 'check'
+    )
+  }
+
+  const iconElement =
+    displayedIcon === 'notification'
+      ? <PixelarticonsNotification />
+      : displayedIcon === 'alert'
+        ? <PixelarticonsAlert />
+        : <PixelarticonsCheck />
+
   useEffect(() => {
     const timeout = setTimeout(() => {
       if(closeDelay) {
@@ -42,7 +65,7 @@ export default function Notification({
         [styles[`notification--${style}`]]: true
       })}>
       <div className={styles['notification__icon']}>
-        <PixelarticonsNotification />
+        {iconElement}
       </div>
       <div className={styles['notification__content']}>
         {children}

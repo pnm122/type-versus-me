@@ -12,8 +12,6 @@ import { errorNotification } from "@/utils/errorNotifications";
 import { ClientJoinRoomCallback } from "$shared/types/events/client/JoinRoom";
 import { CreateRoomCallback } from "$shared/types/events/client/CreateRoom";
 import { Return } from "$shared/types/Return";
-import ErrorsOf from "$shared/types/ErrorsOf";
-import { LeaveRoomCallback } from "$shared/types/events/client/LeaveRoom";
 import { usePathname } from "next/navigation";
 
 interface RoomContextType {
