@@ -32,12 +32,14 @@ $theme-base-colors: (
     'cursor-pink': #E50091,
     'cursor-pink-light': #FFD9F1,
     'error': #EA1C1C,
-    'error-dark': #840C0C
+    'error-dark': #840C0C,
+    'positive': #5CFF5C
   )
 );
 
 $theme-alias-colors: (
   'light': (
+    'surface': map-get(map-get($theme-base-colors, 'light'), 'gray-10'),
     'border': map-get(map-get($theme-base-colors, 'light'), 'gray-20'),
     'disabled': map-get(map-get($theme-base-colors, 'light'), 'gray-20'),
     'on-disabled': map-get(map-get($theme-base-colors, 'light'), 'gray-60'),
