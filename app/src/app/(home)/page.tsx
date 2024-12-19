@@ -31,7 +31,7 @@ export default function Home() {
   const notifs = useNotification()
 
   function onUsernameChange(e: React.ChangeEvent<HTMLInputElement>) {
-    user.update({ username: e.target.value })
+    user.set({ username: e.target.value })
   }
 
   async function onCreateRoomClicked() {
@@ -94,12 +94,12 @@ export default function Home() {
               className={styles['username__generate']}
               style='secondary'
               ariaLabel='Generate random username'
-              onClick={() => user.update({ username: generateUsername() })}
+              onClick={() => user.set({ username: generateUsername() })}
             />
           </div>
           <CursorSelector
             selected={user.data.value?.color}
-            onChange={c => user.update({ color: c })}
+            onChange={c => user.set({ color: c })}
           />
         </div>
         <div className={styles['main__group']}>

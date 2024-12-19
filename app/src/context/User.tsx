@@ -22,7 +22,7 @@ import { errorNotification } from "@/utils/errorNotifications";
 export type UserContextType = {
   data: Data<User, ErrorsOf<RegisterCallback>>
   /**
-   * **WARNING: ONLY USE THIS FUNCTION TO UPDATE THE USER WHEN THE SERVER RETURNS AN UPDATED USER**
+   * **WARNING: ONLY USE THIS FUNCTION TO UPDATE THE USER WHEN THE SERVER RETURNS AN UPDATED USER OR OUTSIDE OF A ROOM**
    * Directly update the state of the user.
    */
   set: (u: Partial<Omit<User, 'id'>>) => void
