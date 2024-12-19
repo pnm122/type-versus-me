@@ -22,7 +22,6 @@ import { useRoom } from "@/context/Room";
 
 export default function Home() {
   const [joinRoomCode, setJoinRoomCode] = useState('')
-  const [usernameError, setUsernameError] = useState(false)
   const [createRoomLoading, setCreateRoomLoading] = useState(false)
   const [joinRoomLoading, setJoinRoomLoading] = useState(false)
   const user = useUser()
@@ -32,33 +31,21 @@ export default function Home() {
   const notifs = useNotification()
 
   function onUsernameChange(e: React.ChangeEvent<HTMLInputElement>) {
-    if(usernameError) {
-      setUsernameError(false)
-    }
     user.update({ username: e.target.value })
   }
 
   async function onCreateRoomClicked() {
     if(socket.state !== 'valid' || user.data.state !== 'valid') return
     if(!isValidUsername(user.data.value.username)) {
-      return setUsernameError(true)
+      return notifs.push(errorNotification('invalid-username'))
     }
 
     setCreateRoomLoading(true)
-    const res = await socket.value.emitWithAck('create-room', user.data.value)
+    const res = await room.create()
     setCreateRoomLoading(false)
 
-    if(res.error) {
-      const { reason } = res.error
-      if(reason === 'invalid-username') {
-        return setUsernameError(true)
-      }
+    if(res.error) return
 
-      return notifs.push(errorNotification(reason))
-    }
-
-    user.update(res.value.user)
-    await room.join(res.value.room)
     router.push(`/room/${res.value.room.id}`)
   }
 
@@ -66,25 +53,14 @@ export default function Home() {
     e.preventDefault()
     if(socket.state !== 'valid' || user.data.state !== 'valid') return
     if(!isValidUsername(user.data.value.username)) {
-      return setUsernameError(true)
+      return notifs.push(errorNotification('invalid-username'))
     }
 
     setJoinRoomLoading(true)
-    const res = await socket.value.emitWithAck('join-room', { roomId: joinRoomCode, user: user.data.value })
+    const res = await room.join(joinRoomCode)
     setJoinRoomLoading(false)
 
-    if(res.error) {
-      const { reason } = res.error
-
-      if(reason === 'invalid-username') {
-        return setUsernameError(true)
-      }
-
-      return notifs.push(errorNotification(reason))
-    }
-
-    user.update(res.value.user)
-    room.join(res.value.room)
+    if(res.error) return
 
     router.push(`/room/${res.value.room.id}`)
   }
@@ -107,11 +83,6 @@ export default function Home() {
               placeholder='Username'
               disabled={user.data.state === 'loading'}
               text={user.data.value?.username ?? ''}
-              error={
-                usernameError
-                  ? 'Must be between 3 and 16 characters (alphanumeric or underscore).'
-                  : ''
-              }
               onChange={onUsernameChange}
               wrapperClassName={styles['username__input']}
               minLength={3}

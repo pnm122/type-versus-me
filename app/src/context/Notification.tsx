@@ -9,7 +9,7 @@ export type NotificationData =
   Pick<NotificationProps, 'style'> &
   { text: string }
 
-interface NotificationContextType {
+export interface NotificationContextType {
   push: (data: NotificationData) => void
 }
 

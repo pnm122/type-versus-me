@@ -6,17 +6,24 @@ import { useSocket } from "./Socket";
 import { ServerJoinRoomPayload } from "$shared/types/events/server/JoinRoom";
 import { ServerLeaveRoomPayload } from "$shared/types/events/server/LeaveRoom";
 import { useNotification } from "./Notification";
+import checkSocket from "@/utils/checkSocket";
+import { useUser } from "./User";
+import { errorNotification } from "@/utils/errorNotifications";
+import { ClientJoinRoomCallback } from "$shared/types/events/client/JoinRoom";
+import { CreateRoomCallback } from "$shared/types/events/client/CreateRoom";
 
 interface RoomContextType {
   room: Room | null
-  join: (r: Room) => Promise<void>
+  create: () => Promise<Parameters<CreateRoomCallback>[0]>
+  join: (id: Room['id']) => Promise<Parameters<ClientJoinRoomCallback>[0]>
   update: (r: Partial<Omit<Room, 'id'>>) => void
   leave: () => void
 }
 
 const RoomContext = createContext<RoomContextType>({
   room: null,
-  async join() {},
+  create: (): any => {},
+  join: (): any => {},
   update() {},
   leave() {}
 })
@@ -26,6 +33,7 @@ export function RoomProvider({ children }: React.PropsWithChildren) {
   const [room, setRoom] = useState<Room | null>(null)
   const socket = useSocket()
   const notifs = useNotification()
+  const user = useUser()
   const roomHasBeenUpdated = useRef<(() => void) | null>(null)
 
   useEffect(() => {
@@ -73,13 +81,48 @@ export function RoomProvider({ children }: React.PropsWithChildren) {
     return false
   }
 
-  async function join(r: Room) {
-    if(room) {
-      console.warn(`Tried to join room ${r.id}, but the user is already in room ${room.id}!`)
-      return
+  async function create(): ReturnType<RoomContextType['create']> {
+    if(!checkSocket(socket.value, notifs)) {
+      return {
+        value: null,
+        error: {
+          reason: 'missing-argument'
+        }
+      }
     }
-    setRoom(r)
+    const res = await socket.value.emitWithAck('create-room', user.data.value!)
+
+    if(res.error) {
+      notifs.push(errorNotification(res.error.reason))
+      return res
+    }
+
+    user.update(res.value.user)
+    setRoom(res.value.room)
     await waitForRoomUpdate()
+    return res
+  }
+
+  async function join(id: Room['id']): ReturnType<RoomContextType['join']> {
+    if(!checkSocket(socket.value, notifs)) {
+      return {
+        value: null,
+        error: {
+          reason: 'missing-argument'
+        }
+      }
+    }
+    const res = await socket.value.emitWithAck('join-room', { roomId: id, user: user.data.value! })
+
+    if(res.error) {
+      notifs.push(errorNotification(res.error.reason))
+      return res
+    }
+
+    user.update(res.value.user)
+    setRoom(res.value.room)
+    await waitForRoomUpdate()
+    return res
   }
 
   function update(r: Partial<Omit<Room, 'id'>>) {
@@ -96,7 +139,7 @@ export function RoomProvider({ children }: React.PropsWithChildren) {
   }
 
   return (
-    <RoomContext.Provider value={{ room, join, update, leave }}>
+    <RoomContext.Provider value={{ room, create, join, update, leave }}>
       {children}
     </RoomContext.Provider>
   )
