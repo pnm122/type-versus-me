@@ -1,0 +1,23 @@
+@use '@/scss/fonts' as *;
+
+.user {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  &__name {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    .username {
+      @include font-heading(16);
+
+      &__you {
+        @include font-heading(12);
+        color: var(--placeholder);
+        display: inline;
+      }
+    }
+  }
+}

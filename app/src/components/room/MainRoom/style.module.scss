@@ -1,0 +1,11 @@
+@use '@/scss/fonts' as *;
+
+.main {
+  background-color: var(--surface);
+  padding: 16px;
+
+  &__waiting-text {
+    @include font-body(32);
+    color: var(--placeholder);
+  }
+}
