@@ -1,7 +1,7 @@
 "use client"
 
 import { Room } from "$shared/types/Room";
-import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { useSocket } from "./Socket";
 import { ServerJoinRoomPayload } from "$shared/types/events/server/JoinRoom";
 import { ServerLeaveRoomPayload } from "$shared/types/events/server/LeaveRoom";
@@ -40,35 +40,33 @@ export function RoomProvider({ children }: React.PropsWithChildren) {
   }, [socket, room])
 
   useEffect(() => {
-    console.log('room update', room)
     if(roomHasBeenUpdated.current) {
       roomHasBeenUpdated.current()
       roomHasBeenUpdated.current = null
     }
   }, [room])
 
-  const onJoinRoom = useCallback((user: ServerJoinRoomPayload) => {
+  function onJoinRoom(res: ServerJoinRoomPayload) {
     if(!checkRoomExists()) return
-    update({ users: [...room!.users, user] })
+    update({ users: [...room!.users, res.user] })
     notifs.push({
-      text: `${user.username} has joined the room.`
+      text: `${res.user.username} has joined the room.`
     })
-  }, [room])
+  }
 
-  function onLeaveRoom(user: ServerLeaveRoomPayload) {
+  function onLeaveRoom(res: ServerLeaveRoomPayload) {
     if(!checkRoomExists()) return
-    const leavingUser = room!.users.find(u => u.id === user.id)
+    const leavingUser = room!.users.find(u => u.id === res.userId)
     if(!leavingUser) {
-      return console.warn(`Received ${user.id} left room, but this user does not exist!`)
+      return console.warn(`Received ${res.userId} left room, but this user does not exist!`)
     }
-    update({ users: room!.users.filter(u => u.id !== user.id) })
+    update({ users: room!.users.filter(u => u.id !== res.userId) })
     notifs.push({
       text: `${leavingUser.username} has left the room.`
     })
   }
 
   function checkRoomExists() {
-    console.log('checkRoomExists', room)
     if(room) return true
 
     console.warn('Room does not exist, but it should!')
@@ -90,6 +88,7 @@ export function RoomProvider({ children }: React.PropsWithChildren) {
 
   function leave() {
     setRoom(null)
+    socket.value?.emitWithAck('leave-room', undefined)
   }
 
   function waitForRoomUpdate() {

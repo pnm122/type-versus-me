@@ -19,8 +19,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <SocketProvider>
-          <NotificationProvider>
+        <NotificationProvider>
+          <SocketProvider>
             <UserProvider>
               <RoomProvider>
                 <ThemeProvider>
@@ -28,8 +28,8 @@ export default function RootLayout({
                 </ThemeProvider>
               </RoomProvider>
             </UserProvider>
-          </NotificationProvider>
-        </SocketProvider>
+          </SocketProvider>
+        </NotificationProvider>
       </body>
     </html>
   );
