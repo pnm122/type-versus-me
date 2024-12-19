@@ -8,5 +8,10 @@
     flex: 1;
     display: grid;
     place-items: center;
+    background-color: var(--surface);
+
+    &:disabled {
+      background-color: var(--disabled);
+    }
   }
 }

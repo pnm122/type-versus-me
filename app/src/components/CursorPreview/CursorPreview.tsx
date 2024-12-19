@@ -4,11 +4,13 @@ import styles from './style.module.scss'
 
 interface Props {
   color: CursorColor
+  disabled?: boolean
   size?: 'small' | 'medium' | 'large'
 }
 
 export default function CursorPreview({
   color,
+  disabled,
   size = 'medium'
 }: Props) {
   return (
@@ -17,7 +19,7 @@ export default function CursorPreview({
         [styles['cursor']]: true,
         [styles[`cursor--${size}`]]: true
       })}
-      style={{ backgroundColor: `var(--cursor-${color})` }}
+      style={{ backgroundColor: disabled ? 'var(--on-disabled)' : `var(--cursor-${color})` }}
     />
   )
 }

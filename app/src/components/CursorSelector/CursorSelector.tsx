@@ -5,25 +5,32 @@ import styles from './style.module.scss'
 
 interface Props {
   selected?: CursorColor
+  disabled?: CursorColor[]
   onChange: (c: CursorColor) => void
 }
 
 export default function CursorSelector({
   selected,
-  onChange
+  onChange,
+  disabled
 }: Props) {
+  function isDisabled(color: CursorColor) {
+    return disabled?.includes(color) ?? false
+  }
+
   return (
     <div className={styles['selector']}>
       {CursorColors.map(c => (
         <button
           key={c}
           type='button'
+          disabled={isDisabled(c)}
           className={styles['selector__item']}
           style={{
-            backgroundColor: selected === c ? `var(--cursor-${c}-light)` : `var(--gray-10)`
+            backgroundColor: selected === c && !isDisabled(c) ? `var(--cursor-${c}-light)` : undefined
           }}
           onClick={() => onChange(c)}>
-          <CursorPreview color={c} />
+          <CursorPreview color={c} disabled={isDisabled(c)} />
         </button>
       ))}
     </div>

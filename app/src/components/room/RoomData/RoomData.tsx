@@ -37,14 +37,6 @@ export default function RoomData() {
     setPredictedUserState(null)
   }
 
-  useEffect(() => {
-    console.log('predicted:', predictedUserState)
-  }, [predictedUserState])
-
-  useEffect(() => {
-    console.log('actual:', user.state)
-  }, [user.state])
-
   return (
     <div className={styles['data']}>
       <ul className={styles['data__users']}>
