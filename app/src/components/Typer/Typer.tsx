@@ -1,5 +1,5 @@
 import createClasses from "@/utils/createClasses"
-import { Fragment, KeyboardEvent, useEffect, useLayoutEffect, useRef, useState } from "react"
+import { Fragment, KeyboardEvent, useEffect, useImperativeHandle, useLayoutEffect, useRef, useState } from "react"
 import styles from './style.module.scss'
 import { Cursor } from "@/types/Cursor"
 import TyperCursor from "../TyperCursor/TyperCursor"
@@ -10,6 +10,10 @@ import { useGlobalState } from "@/context/GlobalState"
 
 export type TyperStats = Stats & {
   perWordStats: PerWordStats[]
+}
+
+export interface TyperRef {
+  focus: () => void
 }
 
 type PerWordStats = Stats & {
@@ -65,6 +69,10 @@ interface Props {
    * Other players' cursors to show within the Typer
    */
   cursors?: Cursor[]
+  /**
+   * Reference to this Typer's exposed functions
+   */
+  ref?: React.RefObject<TyperRef>
 }
 
 export default function Typer({
@@ -73,7 +81,8 @@ export default function Typer({
   disabled,
   onChange,
   onFinish,
-  cursors
+  cursors,
+  ref
 }: Props) {
   function getInitialStats(numWords = 0): TyperStats {
     const INIT: Stats = {
@@ -97,6 +106,15 @@ export default function Typer({
       })
     }
   }
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      focus() {
+        typer.current?.focus()
+      }
+    })
+  )
 
   const { user } = useGlobalState()
 

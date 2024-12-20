@@ -1,11 +1,11 @@
 import { useGlobalState } from '@/context/GlobalState'
 import styles from './style.module.scss'
-import Typer, { TyperStats } from '@/components/Typer/Typer'
+import Typer, { TyperRef, TyperStats } from '@/components/Typer/Typer'
 import { updateUser } from '@/utils/user'
 import { useSocket } from '@/context/Socket'
 import { useNotification } from '@/context/Notification'
 import { Cursor } from '@/types/Cursor'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 export default function MainRoom() {
   const [startTime, setStartTime] = useState(-1)
@@ -14,11 +14,13 @@ export default function MainRoom() {
   const socket = useSocket()
   const notifs = useNotification()
   const { room, user } = globalState
+  const typer = useRef<TyperRef>(null)
 
   useEffect(() => {
     if(room?.state === 'in-progress') {
       setStartTime(Date.now())
       setFinished(false)
+      typer.current?.focus()
     }
   }, [room?.state])
   
@@ -59,6 +61,7 @@ export default function MainRoom() {
           onChange={onTyperChange}
           cursors={otherCursors}
           onFinish={onTyperFinish}
+          ref={typer}
         />
       ) : (
         <></>
