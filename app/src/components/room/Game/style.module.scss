@@ -1,0 +1,21 @@
+@use '@/scss/fonts' as *;
+
+.game {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  &__info {
+    display: flex;
+    justify-content: space-between;
+
+    .typed,
+    .time-left {
+      @include font-body(14);
+    }
+
+    .time-left--low {
+      color: var(--error);
+    }
+  }
+}
