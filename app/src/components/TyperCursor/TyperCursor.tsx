@@ -2,6 +2,7 @@ import { Cursor } from "@/types/Cursor"
 import { useEffect, useRef } from "react"
 import styles from '../Typer/style.module.scss'
 import createClasses from "@/utils/createClasses"
+import { useGlobalState } from "@/context/GlobalState"
 
 type Props = Omit<Cursor, 'id'> & {
   typer: React.RefObject<HTMLElement>
@@ -18,6 +19,7 @@ export default function TyperCursor({
   wordClassName = styles['word'],
   characterClassName = styles['character']
 }: Props) {
+  const { user } = useGlobalState()
   const cursor = useRef<HTMLDivElement>(null)
   const cursorBlinkingTimeout = useRef<NodeJS.Timeout | null>(null)
 
@@ -77,6 +79,8 @@ export default function TyperCursor({
 
   // useEffect instead of useLayout effect so that the cursor position is calculated
   // AFTER the lines have been shifted in the Typer's useLayoutEffect
+  // Rerun the effect when the current user's cursor position changes, to handle
+  // opponent cursors correctly moving when the current user changes lines
   useEffect(() => {
     setCursorPosition()
     window.addEventListener('resize', setCursorPosition)
@@ -84,7 +88,7 @@ export default function TyperCursor({
     return () => {
       window.removeEventListener('resize', setCursorPosition)
     }
-  }, [position])
+  }, [position, user?.score?.cursorPosition])
 
   return (
     <div
