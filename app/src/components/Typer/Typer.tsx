@@ -6,6 +6,7 @@ import TyperCursor from "../TyperCursor/TyperCursor"
 import { CursorColor, CursorPosition } from "$shared/types/Cursor"
 import { getCursorPosition, getTextRegions, words } from "@/utils/typer"
 import { Word } from "@/types/Typer"
+import { useGlobalState } from "@/context/GlobalState"
 
 export type TyperStats = Stats & {
   perWordStats: PerWordStats[]
@@ -25,8 +26,6 @@ interface Stats {
   correctMade: number
   /** Number of correct keystrokes left in typed text */
   correctLeft: number
-  /** Start time in ms since epoch */
-  startTime: number
   /** End time in ms since epoch */
   endTime: number
   /** Words per minute without accounting for errors. (Keystrokes / 5) / (Elapsed time in minutes) */
@@ -47,17 +46,14 @@ interface LineInfo {
 interface Props {
   /** Text to display in the Typer */
   text: string
-  /** Whether the test has been finished */
-  finished: boolean
+  /** Time the test was started in ms since epoch */
+  startTime: number
+  /** Whether the test should disallow typing */
+  disabled: boolean
   /**
    * Callback for when a user input should cause the typed text to change
    **/
   onChange?: (stats: TyperStats) => void
-  /**
-   * Callback for when the first onChange event is fired after initialization/reset
-   * @param t time when starting the test
-   **/
-  onStart?: (t: number) => void
   /**
    * Callback for when the test is finished by correctly typing the entire text
    * @param stats statistics from the test
@@ -71,9 +67,9 @@ interface Props {
 
 export default function Typer({
   text,
-  finished,
+  startTime,
+  disabled,
   onChange,
-  onStart,
   onFinish,
   cursors
 }: Props) {
@@ -83,7 +79,6 @@ export default function Typer({
       errorsLeft: 0,
       correctMade: 0,
       correctLeft: 0,
-      startTime: -1,
       endTime: -1,
       rawWPM: -1,
       netWPM: -1,
@@ -100,10 +95,9 @@ export default function Typer({
     }
   }
 
-  // TODO: Replace with context
-  const cursorColor: CursorColor = 'blue'
-  // TODO: Replace with context
-  const userID = 0
+  const { user } = useGlobalState()
+
+  const cursorColor: CursorColor = user?.color ?? 'blue'
 
   const typer = useRef<HTMLDivElement>(null)
   const stats = useRef<TyperStats>(getInitialStats())
@@ -121,7 +115,7 @@ export default function Typer({
   function onKeyDown(e: KeyboardEvent<HTMLDivElement>) {
     e.preventDefault()
 
-    if(finished) {
+    if(disabled) {
       return
     }
 
@@ -145,10 +139,6 @@ export default function Typer({
     }
 
     const newTyped = `${typed}${e.key}`
-
-    if(stats.current.startTime === -1 && typed.length === 0) {
-      handleStart()
-    }
 
     handleChange(newTyped)
 
@@ -208,18 +198,13 @@ export default function Typer({
       errorsLeft: newErrors,
       correctMade,
       correctLeft: newCorrect,
-      netWPM: (correctMade / 5) / ((Date.now() - stats.current.startTime) / 60000),
-      rawWPM: ((correctMade + errorsMade) / 5) / ((Date.now() - stats.current.startTime) / 60000),
+      netWPM: (correctMade / 5) / ((Date.now() - startTime) / 60000),
+      rawWPM: ((correctMade + errorsMade) / 5) / ((Date.now() - startTime) / 60000),
       accuracy: correctMade * 100 / (correctMade + errorsMade)
     }
 
     setTyped(newTyped)
     onChange?.(stats.current)
-  }
-
-  function handleStart() {
-    stats.current.startTime = Date.now()
-    onStart?.(stats.current.startTime)
   }
 
   function handleFinish() {
@@ -306,13 +291,13 @@ export default function Typer({
     <>
       <div
         onKeyDown={onKeyDown}
-        tabIndex={finished ? -1 : 0}
+        tabIndex={disabled ? -1 : 0}
         className={createClasses({
           [styles['typer']]: true,
-          [styles['typer--finished']]: finished
+          [styles['typer--disabled']]: disabled
         })}
         ref={typer}>
-        {!finished && (
+        {!disabled && (
           <>
             <TyperCursor
               color={cursorColor}

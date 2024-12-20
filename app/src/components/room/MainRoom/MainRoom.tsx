@@ -1,9 +1,9 @@
-import { useRoom } from '@/context/Room'
+import { useGlobalState } from '@/context/GlobalState'
 import styles from './style.module.scss'
 import Typer from '@/components/Typer/Typer'
 
 export default function MainRoom() {
-  const { room } = useRoom()
+  const { room } = useGlobalState()
 
   if(!room || (room.state === 'in-progress' && !room.test)) return <></>
 
@@ -14,7 +14,8 @@ export default function MainRoom() {
       ) : room.state === 'in-progress' ? (
         <Typer
           text={room.test!}
-          finished={false}
+          disabled={false}
+          startTime={Date.now()}
         />
       ) : (
         <></>
