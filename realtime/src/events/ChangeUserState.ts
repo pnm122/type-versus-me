@@ -6,6 +6,7 @@ import state from "@/global/state";
 import CustomSocket from "@/types/CustomSocket";
 import { check, isValidEventAndPayload, setRoomToInProgress } from "@/utils/eventUtils";
 import generateTest from "@/utils/generateTest";
+import io from "@/global/server";
 
 export default function ChangeUserState(
   socket: CustomSocket,
@@ -45,15 +46,16 @@ export default function ChangeUserState(
 
   const allUsersReady = room!.users.every(u => u.id === value.id || u.state === 'ready') && value.state === 'ready'
   if(allUsersReady) {
-    setRoomToInProgress(room!.id, socket)
+    setRoomToInProgress(room!.id)
   }
 
   const allUsersDone =
     room!.users.every(u => u.id === value.id || u.state === 'complete' || u.state === 'failed') &&
     (value.state === 'complete' || value.state === 'failed')
+  console.log('allUsersDone', allUsersDone)
   if(allUsersDone) {
     state.updateRoom(room!.id, { state: 'complete' })
-    socket.in(room!.id).emit(
+    io.in(room!.id).emit(
       'change-room-data',
       { state: 'complete' }
     )
@@ -64,7 +66,7 @@ export default function ChangeUserState(
     value.state === 'not-ready'
   if(restart) {
     state.updateRoom(room!.id, { state: 'waiting' })
-    socket.in(room!.id).emit(
+    io.in(room!.id).emit(
       'change-room-data',
       { state: 'waiting' }
     )

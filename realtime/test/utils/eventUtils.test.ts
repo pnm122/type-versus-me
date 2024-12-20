@@ -1,8 +1,9 @@
 import CustomSocket from "@/types/CustomSocket"
 import { check, isValidEventAndPayload, setRoomToInProgress } from "@/utils/eventUtils"
-import { createRoomForTesting, mockSocket, mockUser } from "../test-utils"
+import { createRoomForTesting, ioSpies, mockSocket, mockUser } from "../test-utils"
 import state from "@/global/state"
 import { INITIAL_USER_SCORE } from "$shared/constants"
+import io from "@/global/server"
 
 const socket = {
   id: 'TEST_ID'
@@ -73,19 +74,19 @@ describe('setRoomToInProgress', () => {
   it('sets the room state to in-progress in the state', () => {
     const { room } = init()
 
-    setRoomToInProgress(room.id, mockSocket())
+    setRoomToInProgress(room.id)
 
     expect(state.getRoom(room.id)!.state).toBe('in-progress')
   })
 
   it('emits a change room event with the in-progress state and new test to all users in the room', () => {
-    const socket = mockSocket()
     const { room } = init()
+    const { inSpy, emitSpy } = ioSpies()
 
-    setRoomToInProgress(room.id, socket)
+    setRoomToInProgress(room.id)
 
-    expect(socket.in).toHaveBeenCalledWith(room.id)
-    expect(socket.in(room.id).emit).toHaveBeenCalledWith(
+    expect(inSpy).toHaveBeenCalledWith(room.id)
+    expect(emitSpy).toHaveBeenCalledWith(
       'change-room-data',
       { state: 'in-progress', test: expect.any(String) }
     )
@@ -94,7 +95,7 @@ describe('setRoomToInProgress', () => {
   it('sets all user scores to 0 and states to in-progress in the state', () => {
     const { room } = init()
 
-    setRoomToInProgress(room.id, mockSocket())
+    setRoomToInProgress(room.id)
 
     const allUsersSetCorrectly = state.getRoom(room.id)!.users.every(u => (
       u.state === 'in-progress' &&
@@ -106,13 +107,14 @@ describe('setRoomToInProgress', () => {
   })
 
   it('emits a change all users event with the new state and score to all users in the room', () => {
-    const socket = mockSocket()
     const { room } = init()
+    const emitSpy = jest.fn()
+    const inSpy = jest.spyOn(io, 'in').mockReturnValue({ emit: emitSpy } as any)
 
-    setRoomToInProgress(room.id, socket)
+    setRoomToInProgress(room.id)
 
-    expect(socket.in).toHaveBeenCalledWith(room.id)
-    expect(socket.in(room.id).emit).toHaveBeenCalledWith(
+    expect(inSpy).toHaveBeenCalledWith(room.id)
+    expect(emitSpy).toHaveBeenCalledWith(
       'change-all-user-data',
       { state: 'in-progress', score: INITIAL_USER_SCORE }
     )

@@ -1,5 +1,5 @@
 import ChangeUserState from "@/events/ChangeUserState"
-import { createRoomForTesting, mockSocket, mockUser } from "../test-utils"
+import { createRoomForTesting, ioSpies, mockSocket, mockUser } from "../test-utils"
 import { UserState } from "$shared/types/User"
 import { Room, RoomState } from "$shared/types/Room"
 import state from "@/global/state"
@@ -113,8 +113,7 @@ describe('ChangeUserState', () => {
     ChangeUserState(socket, { id: user.id, state: 'ready' }, () => {})
 
     expect(spy).toHaveBeenCalledWith(
-      room.id,
-      socket
+      room.id
     )
   })
 
@@ -138,10 +137,11 @@ describe('ChangeUserState', () => {
 
     it('emits a change room event with the complete state to all users in the room', () => {
       const socket = mockSocket('userB')
+      const { inSpy, emitSpy } = ioSpies()
       const { room } = init(socket)
 
-      expect(socket.in).toHaveBeenCalledWith(room.id)
-      expect(socket.in(room.id).emit).toHaveBeenCalledWith(
+      expect(inSpy).toHaveBeenCalledWith(room.id)
+      expect(emitSpy).toHaveBeenCalledWith(
         'change-room-data',
         { state: 'complete' }
       )
@@ -168,12 +168,13 @@ describe('ChangeUserState', () => {
 
     it('emits a change room event with the waiting state and new test to all users in the room', () => {
       const socket = mockSocket()
+      const { inSpy, emitSpy } = ioSpies()
       const { room } = init(socket)
 
       const { test: updatedTest } = state.getRoom(room.id)!
 
-      expect(socket.in).toHaveBeenCalledWith(room.id)
-      expect(socket.in(room.id).emit).toHaveBeenCalledWith(
+      expect(inSpy).toHaveBeenCalledWith(room.id)
+      expect(emitSpy).toHaveBeenCalledWith(
         'change-room-data',
         { state: 'waiting', test: updatedTest }
       )

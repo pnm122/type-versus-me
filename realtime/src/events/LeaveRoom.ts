@@ -1,4 +1,5 @@
 import { LeaveRoomCallback } from "$shared/types/events/client/LeaveRoom";
+import io from "@/global/server";
 import state from "@/global/state";
 import CustomSocket from "@/types/CustomSocket";
 import { check, setRoomToInProgress } from "@/utils/eventUtils";
@@ -16,7 +17,7 @@ export default function LeaveRoom(
 
   state.removeUserFromRoom(room!.id, socket.id)
   socket.leave(room!.id)
-  socket.in(room!.id).emit(
+  io.in(room!.id).emit(
     'leave-room',
     { userId: socket.id, room: room! }
   )
@@ -31,13 +32,13 @@ export default function LeaveRoom(
 
   const allUsersReady = state.getRoom(room!.id)!.users.every(u => u.state === 'ready')
   if(allUsersReady) {
-    setRoomToInProgress(room!.id, socket)
+    setRoomToInProgress(room!.id)
   }
 
   const allUsersDone = state.getRoom(room!.id)!.users.every(u => u.state === 'complete' || u.state === 'failed')
   if(allUsersDone) {
     state.updateRoom(room!.id, { state: 'complete' })
-    socket.in(room!.id).emit(
+    io.in(room!.id).emit(
       'change-room-data',
       { state: 'complete' }
     )

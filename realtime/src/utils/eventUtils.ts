@@ -5,6 +5,7 @@ import state from "@/global/state";
 import CustomSocket from "@/types/CustomSocket";
 import debug, { DEBUG_COLORS } from "./debug";
 import generateTest from "./generateTest";
+import io from "@/global/server";
 
 /**
  * Check if an event with a payload is valid, returning appropriate errors through the callback if found.
@@ -74,11 +75,10 @@ export function check<
  *  4. Emits an event to the clients to update every user accordingly
  */
 export function setRoomToInProgress(
-  roomId: string,
-  socket: CustomSocket
+  roomId: string
 ) {
   state.updateRoom(roomId, { state: 'in-progress', test: generateTest() })
-  socket.in(roomId).emit(
+  io.in(roomId).emit(
     'change-room-data',
     { state: 'in-progress', test: generateTest() }
   )
@@ -86,7 +86,7 @@ export function setRoomToInProgress(
   state.getRoom(roomId)!.users.forEach(u => {
     state.updateUser(u.id, { score: INITIAL_USER_SCORE, state: 'in-progress' })
   })
-  socket.in(roomId).emit(
+  io.in(roomId).emit(
     'change-all-user-data',
     { score: INITIAL_USER_SCORE, state: 'in-progress' }
   )

@@ -1,6 +1,7 @@
 import { CreateRoomCallback } from "$shared/types/events/client/CreateRoom";
 import { User } from "$shared/types/User";
 import CreateRoom from "@/events/CreateRoom";
+import io from "@/global/server";
 import CustomSocket from "@/types/CustomSocket";
 
 export function mockSocket(id = 'test') {
@@ -42,4 +43,10 @@ export function createRoomForTesting(user = mockUser(), socket = mockSocket()) {
   CreateRoom(socket, user, (arg: typeof res) => { res = arg })
 
   return res!
+}
+
+export function ioSpies() {
+  const emitSpy = jest.fn()
+  const inSpy = jest.spyOn(io, 'in').mockReturnValue({ emit: emitSpy } as any)
+  return { inSpy, emitSpy }
 }

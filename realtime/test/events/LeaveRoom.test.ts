@@ -1,5 +1,5 @@
 import LeaveRoom from "@/events/LeaveRoom"
-import { createRoomForTesting, mockSocket, mockUser } from "../test-utils"
+import { createRoomForTesting, ioSpies, mockSocket, mockUser } from "../test-utils"
 import * as eventUtils from "@/utils/eventUtils"
 import state from "@/global/state"
 
@@ -52,13 +52,13 @@ describe('LeaveRoom', () => {
   it('emits a leave room event to all users left in the room', () => {
     const { room, user } = init()
     const socket = mockSocket(user.id)
-    const spy = jest.spyOn(socket.in(room.id), 'emit')
+    const { inSpy, emitSpy } = ioSpies()
     
     LeaveRoom(socket, () => {})
 
-    expect(socket.in).toHaveBeenCalledWith(room.id)
-    expect(spy.mock.lastCall?.[0]).toBe('leave-room')
-    expect(spy.mock.lastCall?.[1]).toMatchObject({
+    expect(inSpy).toHaveBeenCalledWith(room.id)
+    expect(emitSpy.mock.lastCall?.[0]).toBe('leave-room')
+    expect(emitSpy.mock.lastCall?.[1]).toMatchObject({
         userId: socket.id,
         room: {
           id: room.id
@@ -83,8 +83,7 @@ describe('LeaveRoom', () => {
     LeaveRoom(socket, () => {})
 
     expect(spy).toHaveBeenCalledWith(
-      room.id,
-      socket
+      room.id
     )
   })
 
@@ -102,13 +101,14 @@ describe('LeaveRoom', () => {
   it('emits a room data change event with the complete state if all users are completed or failed', () => {
     const { room, user, secondUser } = init()
     const socket = mockSocket(user.id)
+    const { inSpy, emitSpy } = ioSpies()
     state.updateUser(secondUser!.id, { state: 'complete' })
     state.addUserToRoom(room.id, mockUser({ id: 'userC', username: 'AnotherOne', state: 'failed' }))
 
     LeaveRoom(socket, () => {})
 
-    expect(socket.in).toHaveBeenCalledWith(room.id)
-    expect(socket.in(room.id).emit).toHaveBeenCalledWith(
+    expect(inSpy).toHaveBeenCalledWith(room.id)
+    expect(emitSpy).toHaveBeenCalledWith(
       'change-room-data',
       { state: 'complete' }
     )
