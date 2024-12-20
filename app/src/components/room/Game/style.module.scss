@@ -4,6 +4,7 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  position: relative;
 
   &__info {
     display: flex;
@@ -16,6 +17,20 @@
 
     .time-left--low {
       color: var(--error);
+    }
+  }
+
+  .start-overlay {
+    @include font-body(32);
+    position: absolute;
+    z-index: 5;
+    inset: 0;
+    color: var(--heading);
+    background-color: var(--surface);
+    display: none;
+
+    &--visible {
+      display: block;
     }
   }
 }

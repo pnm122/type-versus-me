@@ -17,6 +17,7 @@ export default function Game() {
   const [startTime, setStartTime] = useState(-1)
   const [finished, setFinished] = useState(false)
   const [correctTyped, setCorrectTyped] = useState(0)
+  const [timeToStart, setTimeToStart] = useState(0)
   const [timeLeft, setTimeLeft] = useState(0)
   const globalState = useGlobalState()
   const socket = useSocket()
@@ -25,22 +26,36 @@ export default function Game() {
   const { room, user } = globalState
 
   useInterval(
-    nextTime,
-    room?.state === 'in-progress' && !finished ? 1000 : null
+    nextTimeLeft,
+    room?.state === 'in-progress' && !finished && timeToStart === 0 ? 1000 : null
   )
+
+  useInterval(
+    nextTimeToStart,
+    timeToStart > 0 ? 1000 : null
+  )
+
+  useEffect(() => {
+    if(timeToStart === 0) {
+      typer.current?.focus()
+    }
+  }, [timeToStart])
 
   useEffect(() => {
     if(room?.state === 'in-progress') {
       setStartTime(Date.now())
       setFinished(false)
       setCorrectTyped(0)
+      setTimeToStart(5)
       setTimeLeft(GAME_TIME)
-      typer.current?.focus()
     }
   }, [room?.state])
 
-  function nextTime() {
-    console.log('nextTime', timeLeft)
+  function nextTimeToStart() {
+    setTimeToStart(t => t - 1)
+  }
+
+  function nextTimeLeft() {
     if(timeLeft > 1) {
       setTimeLeft(t => t - 1)
     } else {
@@ -81,9 +96,15 @@ export default function Game() {
 
   return (
     <div className={styles['game']}>
+      <h1 className={createClasses({
+        [styles['start-overlay']]: true,
+        [styles['start-overlay--visible']]: timeToStart > 0
+      })}>
+        Game starting in {timeToStart}...
+      </h1>
       <Typer
         text={room.test}
-        disabled={finished}
+        disabled={finished || timeToStart > 0}
         startTime={startTime}
         onChange={onTyperChange}
         cursors={otherCursors}
