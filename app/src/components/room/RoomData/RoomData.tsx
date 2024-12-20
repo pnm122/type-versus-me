@@ -13,15 +13,19 @@ import { User as UserType } from '$shared/types/User'
 import { useGlobalState } from '@/context/GlobalState'
 import { updateUser } from '@/utils/user'
 import { useSocket } from '@/context/Socket'
+import { leaveRoom } from '@/utils/room'
+import { useRouter } from 'next/navigation'
 
 export default function RoomData() {
-  const { room, user, ...otherGlobalState } = useGlobalState()
+  const globalState = useGlobalState()
   const notifs = useNotification()
   const socket = useSocket()
+  const router = useRouter()
   // 'Predict' what state the user will be in before waiting for server
   // This way, the state changes can feel instantaneous, but still be verified by the server
   const [predictedUserState, setPredictedUserState] = useState<UserType['state'] | null>(null)
 
+  const { room, user } = globalState
   if(!room || !user) return <></>
 
   function onInviteClicked() {
@@ -38,12 +42,17 @@ export default function RoomData() {
       'state',
       ready ? 'ready' : 'not-ready',
       {
-        globalState: { room, user, ...otherGlobalState },
+        globalState,
         notifs,
         socket
       }
     )
     setPredictedUserState(null)
+  }
+
+  function handleLeaveRoom() {
+    router.push('/')
+    leaveRoom({ globalState, socket, notifs })
   }
 
   return (
@@ -68,7 +77,8 @@ export default function RoomData() {
             <h3 className={styles['players']}>{room.users.length}/{MAX_USERS_PER_ROOM} players</h3>
           </div>
           <Button
-            style='tertiary'>
+            style='tertiary'
+            onClick={handleLeaveRoom}>
             <ButtonIcon icon={<PixelarticonsLogout />} />
             Leave room
           </Button>
