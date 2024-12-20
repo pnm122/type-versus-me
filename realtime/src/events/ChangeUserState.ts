@@ -52,7 +52,6 @@ export default function ChangeUserState(
   const allUsersDone =
     room!.users.every(u => u.id === value.id || u.state === 'complete' || u.state === 'failed') &&
     (value.state === 'complete' || value.state === 'failed')
-  console.log('allUsersDone', allUsersDone)
   if(allUsersDone) {
     state.updateRoom(room!.id, { state: 'complete' })
     io.in(room!.id).emit(

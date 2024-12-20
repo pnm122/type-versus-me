@@ -4,12 +4,14 @@ import { Room } from "$shared/types/Room"
 import { User } from "$shared/types/User"
 import { createContext, useContext, useEffect, useRef, useState } from "react"
 import { useSocket } from "./Socket"
-import { getColor, getUsername } from "@/utils/user"
+import { getColor, getUsername, onChangeAllUserData, onChangeUserData } from "@/utils/user"
 import { onChangeRoomData, onJoinRoom, onLeaveRoom } from "@/utils/room"
 import { useNotification } from "./Notification"
 import { ServerJoinRoomPayload } from "$shared/types/events/server/JoinRoom"
 import { ServerLeaveRoomPayload } from "$shared/types/events/server/LeaveRoom"
 import { ChangeRoomDataPayload } from "$shared/types/events/server/ChangeRoomData"
+import { ChangeAllUserDataPayload } from "$shared/types/events/server/ChangeAllUserData"
+import { ChangeUserDataPayload } from "$shared/types/events/server/ChangeUserData"
 
 export type GlobalState = {
   user: User | null
@@ -37,6 +39,8 @@ export function GlobalStateProvider({
   const stateHasChanged = useRef<(() => void) | null>(null)
   const waitForStateChangePromise = useRef<Promise<void> | null>(null)
 
+  const globalState = { user, setUser, room, setRoom, waitForStateChange }
+
   useEffect(() => {
     if(stateHasChanged.current) {
       stateHasChanged.current()
@@ -60,18 +64,26 @@ export function GlobalStateProvider({
   useEffect(() => {
     if(socket.state !== 'valid') return
 
-    const handleJoinRoom = (res: ServerJoinRoomPayload) => onJoinRoom(res, { globalState: { user, setUser, room, setRoom, waitForStateChange }, notifs })
-    const handleLeaveRoom = (res: ServerLeaveRoomPayload) => onLeaveRoom(res, { globalState: { user, setUser, room, setRoom, waitForStateChange }, notifs })
-    const handleChangeRoomData = (res: ChangeRoomDataPayload) => onChangeRoomData(res, { globalState: { user, room, setUser, setRoom, waitForStateChange }})
+    const handleJoinRoom = (res: ServerJoinRoomPayload) => onJoinRoom(res, { globalState, notifs })
+    const handleLeaveRoom = (res: ServerLeaveRoomPayload) => onLeaveRoom(res, { globalState, notifs })
+    const handleChangeRoomData = (res: ChangeRoomDataPayload) => onChangeRoomData(res, { globalState })
+    const handleChangeAllUserData = (res: ChangeAllUserDataPayload) => onChangeAllUserData(res, { globalState })
+    const handleChangeUserData = (res: ChangeUserDataPayload) => onChangeUserData(res, { globalState })
+    const handleDisconnect = () => setRoom(null)
 
     socket.value.on('join-room', handleJoinRoom)
     socket.value.on('leave-room', handleLeaveRoom)
     socket.value.on('change-room-data', handleChangeRoomData)
+    socket.value.on('change-all-user-data', handleChangeAllUserData)
+    socket.value.on('change-user-data', handleChangeUserData)
+    // socket.value.on('disconnect', handleDisconnect)
 
     return () => {
       socket.value.off('join-room', handleJoinRoom)
       socket.value.off('leave-room', handleLeaveRoom)
       socket.value.off('change-room-data', handleChangeRoomData)
+      socket.value.off('change-user-data', handleChangeUserData)
+      // socket.value.off('disconnect', handleDisconnect)
     }
   }, [socket, room])
 
@@ -84,7 +96,7 @@ export function GlobalStateProvider({
   }
 
   return (
-    <GlobalStateContext.Provider value={{ user, room, setUser, setRoom, waitForStateChange }}>
+    <GlobalStateContext.Provider value={globalState}>
       {children}
     </GlobalStateContext.Provider>
   )

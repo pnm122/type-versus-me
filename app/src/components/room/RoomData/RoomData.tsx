@@ -53,11 +53,13 @@ export default function RoomData() {
           <User key={u.id} user={u} />
         ))}
       </ul>
-      <Checkbox
-        checked={predictedUserState ? predictedUserState === 'ready' : user.state === 'ready'}
-        onChange={onCheckboxChange}>
-        I'm ready
-      </Checkbox>
+      {room.state === 'waiting' && (
+        <Checkbox
+          checked={predictedUserState ? predictedUserState === 'ready' : user.state === 'ready'}
+          onChange={onCheckboxChange}>
+          I'm ready
+        </Checkbox>
+      )}
       <hr></hr>
       <div className={styles['data__room']}>
         <div className={styles['room-metadata']}>

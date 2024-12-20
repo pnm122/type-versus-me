@@ -12,6 +12,8 @@ import { GlobalState } from '@/context/GlobalState'
 import { SocketContextType } from '@/context/Socket'
 import { NotificationContextType } from '@/context/Notification'
 import { errorNotification } from './errorNotifications'
+import { ChangeAllUserDataPayload } from '$shared/types/events/server/ChangeAllUserData'
+import { ChangeUserDataPayload } from '$shared/types/events/server/ChangeUserData'
 
 interface Context {
   globalState: GlobalState
@@ -128,4 +130,37 @@ T extends 'username'
   setUser(res.value, { globalState })
   await globalState.waitForStateChange()
   return res as any
+}
+
+export async function onChangeAllUserData(
+  data: ChangeAllUserDataPayload,
+  { globalState }: Pick<Context, 'globalState'>
+) {
+  globalState.setRoom(r => r ? ({
+    ...r,
+    users: r.users.map(u => ({ ...u, ...data }))
+  }) : null)
+
+  globalState.setUser(u => u ? ({
+    ...u,
+    ...data
+  }) : null)
+  await globalState.waitForStateChange()
+  return
+}
+
+export async function onChangeUserData(
+  data: ChangeUserDataPayload,
+  { globalState }: Pick<Context, 'globalState'>
+) {
+  globalState.setRoom(r => r ? ({
+    ...r,
+    users: r.users.map(u => (
+      u.id === data.id
+        ? { ...u, ...data }
+        : u
+    ))
+  }) : null)
+  await globalState.waitForStateChange()
+  return
 }
