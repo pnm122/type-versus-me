@@ -50,7 +50,7 @@ export default function User({
           <p
             aria-label={`${score?.netWPM ?? 0} words per minute`}
             className={styles['words-per-minute']}>
-            {score?.netWPM ?? 0}wpm
+            {Math.round(score?.netWPM ?? 0)}wpm
           </p>
         ) : state === 'complete' ? (
           <Pill

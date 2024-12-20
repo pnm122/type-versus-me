@@ -1,11 +1,40 @@
 import { useGlobalState } from '@/context/GlobalState'
 import styles from './style.module.scss'
-import Typer from '@/components/Typer/Typer'
+import Typer, { TyperStats } from '@/components/Typer/Typer'
+import { updateUser } from '@/utils/user'
+import { useSocket } from '@/context/Socket'
+import { useNotification } from '@/context/Notification'
+import { Cursor } from '@/types/Cursor'
+import { useEffect, useState } from 'react'
 
 export default function MainRoom() {
-  const { room } = useGlobalState()
+  const [startTime, setStartTime] = useState(-1)
+  const globalState = useGlobalState()
+  const socket = useSocket()
+  const notifs = useNotification()
+  const { room, user } = globalState
 
+  useEffect(() => {
+    if(room?.state === 'in-progress') {
+      setStartTime(Date.now())
+    }
+  }, [room?.state])
+  
   if(!room || (room.state === 'in-progress' && !room.test)) return <></>
+
+  const otherCursors: Cursor[] = room.users.filter(u => u.id !== user!.id).map(u => ({
+    id: u.id,
+    color: u.color,
+    position: u.score?.cursorPosition ?? { word: 0, letter: 0 }
+  }))
+
+  function onTyperChange(stats: TyperStats) {
+    updateUser(
+      'score',
+      { cursorPosition: stats.cursorPosition, netWPM: stats.netWPM },
+      { globalState, socket, notifs }
+    )
+  }
 
   return (
     <div className={styles['main']}>
@@ -15,7 +44,9 @@ export default function MainRoom() {
         <Typer
           text={room.test!}
           disabled={false}
-          startTime={Date.now()}
+          startTime={startTime}
+          onChange={onTyperChange}
+          cursors={otherCursors}
         />
       ) : (
         <></>
