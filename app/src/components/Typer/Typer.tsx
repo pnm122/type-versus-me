@@ -34,6 +34,8 @@ interface Stats {
   netWPM: number
   /** Percentage of correct keystrokes. (Correct keystrokes) / (Total keystrokes) */
   accuracy: number
+  /** Current position of the user's cursor */
+  cursorPosition: CursorPosition
 }
 
 interface LineInfo {
@@ -82,7 +84,8 @@ export default function Typer({
       endTime: -1,
       rawWPM: -1,
       netWPM: -1,
-      accuracy: 0
+      accuracy: 0,
+      cursorPosition: { word: 0, letter: 0 }
     }
 
     return {
@@ -200,7 +203,8 @@ export default function Typer({
       correctLeft: newCorrect,
       netWPM: (correctMade / 5) / ((Date.now() - startTime) / 60000),
       rawWPM: ((correctMade + errorsMade) / 5) / ((Date.now() - startTime) / 60000),
-      accuracy: correctMade * 100 / (correctMade + errorsMade)
+      accuracy: correctMade * 100 / (correctMade + errorsMade),
+      cursorPosition: getCursorPosition(newTyped)
     }
 
     setTyped(newTyped)
