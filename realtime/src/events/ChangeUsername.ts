@@ -1,5 +1,6 @@
 import { ChangeUsernameCallback, ChangeUsernamePayload } from "$shared/types/events/client/ChangeUsername";
 import { isValidUsername } from "$shared/utils/validators";
+import io from "@/global/server";
 import state from "@/global/state";
 import CustomSocket from "@/types/CustomSocket";
 import { check, isValidEventAndPayload } from "@/utils/eventUtils";
@@ -31,7 +32,7 @@ export default function ChangeUsername(
 
   // Should be defined since we checked that the user is in a room already
   const newUser = state.updateUser(id, { username })!
-  socket.broadcast.to(room!.id).emit('change-user-data', newUser)
+  io.in(room!.id).emit('change-user-data', newUser)
 
   callback({
     value: { username },

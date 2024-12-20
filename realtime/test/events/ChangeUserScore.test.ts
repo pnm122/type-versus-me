@@ -1,5 +1,5 @@
 import ChangeUserScore from "@/events/ChangeUserScore"
-import { createRoomForTesting, mockSocket, mockUser } from "../test-utils"
+import { createRoomForTesting, ioSpies, mockSocket, mockUser } from "../test-utils"
 import { INITIAL_USER_SCORE } from "$shared/constants"
 import state from "@/global/state"
 import { RoomState } from "$shared/types/Room"
@@ -78,14 +78,15 @@ describe('ChangeUserScore', () => {
   })
 
   it('tells all other users in the room that the user score has changed', () => {
+    const { inSpy, emitSpy } = ioSpies()
     const { room, user } = createRoomForTesting().value!
     const socket = mockSocket(user.id)
     state.updateRoom(room.id, { state: 'in-progress' })
     const newScore = { ...INITIAL_USER_SCORE, netWPM: 100 }
     ChangeUserScore(socket, { id: user.id, score: newScore }, () => {})
 
-    expect(socket.broadcast.to).toHaveBeenLastCalledWith(room.id)
-    expect(socket.broadcast.to(room.id).emit).toHaveBeenLastCalledWith(
+    expect(inSpy).toHaveBeenLastCalledWith(room.id)
+    expect(emitSpy).toHaveBeenLastCalledWith(
       'change-user-data',
       { id: user.id, score: newScore }
     )

@@ -93,13 +93,14 @@ describe('ChangeUserState', () => {
   })
 
   it('emits an event to all other users in the room to change the user state', () => {
+    const { inSpy, emitSpy } = ioSpies()
     const { user, room } = createRoomForTesting().value!
     const socket = mockSocket()
 
     ChangeUserState(socket, { id: user.id, state: 'ready' }, () => {})
 
-    expect(socket.broadcast.to).toHaveBeenCalledWith(room.id)
-    expect(socket.broadcast.to(room.id).emit).toHaveBeenCalledWith(
+    expect(inSpy).toHaveBeenCalledWith(room.id)
+    expect(emitSpy).toHaveBeenCalledWith(
       'change-user-data',
       { id: user.id, state: 'ready' }
     )

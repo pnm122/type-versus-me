@@ -1,4 +1,4 @@
-import { createRoomForTesting, mockSocket, mockUser } from "../test-utils";
+import { createRoomForTesting, ioSpies, mockSocket, mockUser } from "../test-utils";
 import RequestColor from "@/events/RequestColor";
 import state from "@/global/state";
 
@@ -86,13 +86,14 @@ describe('RequestColor', () => {
   })
 
   it('tells all other users in the room that the color has changed', () => {
+    const { inSpy, emitSpy } = ioSpies()
     const socket = mockSocket()
     const { user, room } = createRoomForTesting(mockUser({ color: 'red' })).value!
 
     RequestColor(socket, { id: user.id, color: 'blue' }, () => {})
 
-    expect(socket.broadcast.to).toHaveBeenCalledWith(room.id)
-    expect(socket.broadcast.to(room.id).emit).toHaveBeenCalledWith(
+    expect(inSpy).toHaveBeenCalledWith(room.id)
+    expect(emitSpy).toHaveBeenCalledWith(
       'change-user-data',
       { id: user.id, color: 'blue' }
     )

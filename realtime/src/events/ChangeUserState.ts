@@ -39,7 +39,7 @@ export default function ChangeUserState(
   }
 
   state.updateUser(value.id, { state: value.state })
-  socket.broadcast.to(room!.id).emit(
+  io.in(room!.id).emit(
     'change-user-data',
     value
   )

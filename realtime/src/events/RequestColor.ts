@@ -1,5 +1,6 @@
 import { RequestColorCallback, RequestColorPayload } from "$shared/types/events/client/RequestColor";
 import { isValidColor } from "$shared/utils/validators";
+import io from "@/global/server";
 import state from "@/global/state";
 import CustomSocket from "@/types/CustomSocket";
 import { check, isValidEventAndPayload } from "@/utils/eventUtils";
@@ -30,7 +31,7 @@ export default function RequestColor(
   }
 
   state.updateUser(id, { color })
-  socket.broadcast.to(room!.id).emit('change-user-data', { id, color })
+  io.in(room!.id).emit('change-user-data', { id, color })
 
   callback({
     value: { color },

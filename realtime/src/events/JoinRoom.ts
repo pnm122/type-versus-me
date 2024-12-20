@@ -5,6 +5,7 @@ import state from "@/global/state"
 import CustomSocket from "@/types/CustomSocket"
 import { check, isValidEventAndPayload } from "@/utils/eventUtils"
 import { generateColorFromPreference } from "$shared/utils/generateColor"
+import io from "@/global/server"
 
 export default function JoinRoom(
   socket: CustomSocket,
@@ -68,7 +69,7 @@ export default function JoinRoom(
 
   const room = state.addUserToRoom(roomId, userToAdd)!
   
-  socket.broadcast.to(roomId).emit(
+  io.in(roomId).emit(
     'join-room',
     {
       user: userToAdd,

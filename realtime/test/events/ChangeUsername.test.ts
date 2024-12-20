@@ -1,5 +1,5 @@
 import ChangeUsername from "@/events/ChangeUsername";
-import { createRoomForTesting, mockSocket, mockUser } from "../test-utils";
+import { createRoomForTesting, ioSpies, mockSocket, mockUser } from "../test-utils";
 import state from "@/global/state";
 
 const socket = mockSocket()
@@ -93,14 +93,15 @@ describe('ChangeUsername', () => {
   it('emits a change username event to all sockets except the sender', () => {
     const user = mockUser()
     const socket = mockSocket()
+    const { inSpy, emitSpy } = ioSpies()
     
     const { user: userAfterCreateRoom, room: { id: roomId } } = createRoomForTesting(user).value!
     const userAfterChange = { ...userAfterCreateRoom, username: 'Pierce' }
 
     ChangeUsername(socket, { id: user.id, username: userAfterChange.username }, () => {})
 
-    expect(socket.broadcast.to).toHaveBeenCalledWith(roomId)
-    expect(socket.broadcast.to(roomId).emit).toHaveBeenCalledWith(
+    expect(inSpy).toHaveBeenCalledWith(roomId)
+    expect(emitSpy).toHaveBeenCalledWith(
       'change-user-data',
       userAfterChange
     )

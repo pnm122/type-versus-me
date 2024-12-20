@@ -1,4 +1,5 @@
 import { ChangeUserScoreCallback, ChangeUserScorePayload } from "$shared/types/events/client/ChangeUserScore";
+import io from "@/global/server";
 import state from "@/global/state";
 import CustomSocket from "@/types/CustomSocket";
 import { check, isValidEventAndPayload } from "@/utils/eventUtils";
@@ -22,7 +23,7 @@ export default function ChangeUserScore(
   }
 
   state.updateUser(value.id, { score: value.score })
-  socket.broadcast.to(room!.id).emit(
+  io.in(room!.id).emit(
     'change-user-data',
     value
   )
