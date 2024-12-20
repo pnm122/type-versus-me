@@ -19,7 +19,7 @@
   &:focus {
     outline: none;
 
-    .cursor {
+    .cursor:not(.cursor--opponent) {
       visibility: visible;
     }
   }
@@ -28,7 +28,7 @@
     display: block;
   }
 
-  .cursor {
+  .cursor:not(.cursor--opponent) {
     visibility: hidden;
   }
 
