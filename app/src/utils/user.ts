@@ -125,7 +125,7 @@ T extends 'username'
     return res as any
   }
 
-  setUser({ [key]: value }, { globalState })
+  setUser(res.value, { globalState })
   await globalState.waitForStateChange()
   return res as any
 }

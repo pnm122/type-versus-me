@@ -11,6 +11,7 @@ import { ClientJoinRoomCallback } from "$shared/types/events/client/JoinRoom"
 import { Return } from "$shared/types/Return"
 import ErrorsOf from "$shared/types/ErrorsOf"
 import { LeaveRoomCallback } from "$shared/types/events/client/LeaveRoom"
+import { ChangeRoomDataPayload } from "$shared/types/events/server/ChangeRoomData"
 
 interface Context {
   globalState: GlobalState
@@ -51,6 +52,15 @@ export function onLeaveRoom(
   notifs.push({
     text: `${leavingUser.username} has left the room.`
   })
+}
+
+export function onChangeRoomData(
+  res: ChangeRoomDataPayload,
+  { globalState }: Pick<Context, 'globalState'>
+) {
+  globalState.setRoom(r => (
+    r ? { ...r, ...res } : null
+  ))
 }
 
 export async function createRoom(
