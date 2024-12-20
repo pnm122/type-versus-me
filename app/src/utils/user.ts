@@ -56,6 +56,14 @@ export function setUser(
     ...globalState.user!,
     ...u
   })
+  globalState.setRoom(r => r ? ({
+    ...r,
+    users: r.users.map(user => (
+      user.id === globalState.user?.id
+        ? { ...user, ...u }
+        : user
+    ))
+  }) : null)
 }
 
 /**
@@ -127,8 +135,6 @@ T extends 'username'
     return res as any
   }
 
-  setUser(res.value, { globalState })
-  await globalState.waitForStateChange()
   return res as any
 }
 
@@ -161,6 +167,12 @@ export async function onChangeUserData(
         : u
     ))
   }) : null)
+  if(data.id === globalState.user?.id) {
+    globalState.setUser(u => u ? ({
+      ...u,
+      ...data
+    }) : null)
+  }
   await globalState.waitForStateChange()
   return
 }
