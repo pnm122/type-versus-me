@@ -82,6 +82,7 @@ export function GlobalStateProvider({
       socket.value.off('join-room', handleJoinRoom)
       socket.value.off('leave-room', handleLeaveRoom)
       socket.value.off('change-room-data', handleChangeRoomData)
+      socket.value.off('change-all-user-data', handleChangeAllUserData)
       socket.value.off('change-user-data', handleChangeUserData)
       // socket.value.off('disconnect', handleDisconnect)
     }
