@@ -8,7 +8,6 @@ import IconButton from "@/components/Button/IconButton";
 import PixelarticonsDice from '~icons/pixelarticons/dice'
 import PixelarticonsPlus from '~icons/pixelarticons/plus'
 import PixelarticonsArrowRight from '~icons/pixelarticons/arrow-right'
-import { useUser } from "@/context/User";
 import generateUsername from "$shared/utils/generateUsername";
 import Button from "@/components/Button/Button";
 import ButtonIcon from "@/components/Button/ButtonIcon";
@@ -18,30 +17,34 @@ import { useRouter } from "next/navigation";
 import { isValidUsername } from "$shared/utils/validators";
 import { useNotification } from "@/context/Notification";
 import { errorNotification } from "@/utils/errorNotifications";
-import { useRoom } from "@/context/Room";
+import { useGlobalState } from "@/context/GlobalState";
+import { setUser } from "@/utils/user";
+import { createRoom, joinRoom } from "@/utils/room";
 
 export default function Home() {
   const [joinRoomCode, setJoinRoomCode] = useState('')
   const [createRoomLoading, setCreateRoomLoading] = useState(false)
   const [joinRoomLoading, setJoinRoomLoading] = useState(false)
-  const user = useUser()
-  const room = useRoom()
+  const { user, room, ...otherGlobalState } = useGlobalState()
   const socket = useSocket()
   const router = useRouter()
   const notifs = useNotification()
 
   function onUsernameChange(e: React.ChangeEvent<HTMLInputElement>) {
-    user.set({ username: e.target.value })
+    setUser(
+      { username: e.target.value },
+      { globalState: { user, room, ...otherGlobalState } }
+    )
   }
 
   async function onCreateRoomClicked() {
-    if(socket.state !== 'valid' || user.data.state !== 'valid') return
-    if(!isValidUsername(user.data.value.username)) {
+    if(socket.state !== 'valid' || !user) return
+    if(!isValidUsername(user.username)) {
       return notifs.push(errorNotification('invalid-username'))
     }
 
     setCreateRoomLoading(true)
-    const res = await room.create()
+    const res = await createRoom({ socket, notifs, globalState: { user, room, ...otherGlobalState }})
     setCreateRoomLoading(false)
 
     if(res.error) return
@@ -51,13 +54,16 @@ export default function Home() {
 
   async function onJoinRoomSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if(socket.state !== 'valid' || user.data.state !== 'valid') return
-    if(!isValidUsername(user.data.value.username)) {
+    if(socket.state !== 'valid' || !user) return
+    if(!isValidUsername(user.username)) {
       return notifs.push(errorNotification('invalid-username'))
     }
 
     setJoinRoomLoading(true)
-    const res = await room.join(joinRoomCode)
+    const res = await joinRoom(
+      joinRoomCode,
+      { socket, notifs, globalState: { user, room, ...otherGlobalState }}
+    )
     setJoinRoomLoading(false)
 
     if(res.error) return
@@ -71,7 +77,7 @@ export default function Home() {
         <h1>
           <TyperPreview
             text='taptaptap.live'
-            cursorColor={user.data.value?.color ?? 'blue'}
+            cursorColor={user?.color}
             className={styles['main__title']}
           />
         </h1>
@@ -81,8 +87,8 @@ export default function Home() {
               id='username'
               label='Username'
               placeholder='Username'
-              disabled={user.data.state === 'loading'}
-              text={user.data.value?.username ?? ''}
+              disabled={!user}
+              text={user?.username ?? ''}
               onChange={onUsernameChange}
               wrapperClassName={styles['username__input']}
               minLength={3}
@@ -94,12 +100,12 @@ export default function Home() {
               className={styles['username__generate']}
               style='secondary'
               ariaLabel='Generate random username'
-              onClick={() => user.set({ username: generateUsername() })}
+              onClick={() => setUser({ username: generateUsername() }, { globalState: { user, room, ...otherGlobalState } })}
             />
           </div>
           <CursorSelector
-            selected={user.data.value?.color}
-            onChange={c => user.set({ color: c })}
+            selected={user?.color}
+            onChange={c => setUser({ color: c }, { globalState: { user, room, ...otherGlobalState } })}
           />
         </div>
         <div className={styles['main__group']}>

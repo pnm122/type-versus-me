@@ -1,10 +1,10 @@
-import { useRoom } from '@/context/Room'
 import styles from './style.module.scss'
 import MainRoom from '../../MainRoom/MainRoom'
 import RoomData from '../../RoomData/RoomData'
+import { useGlobalState } from '@/context/GlobalState'
 
 export default function InRoom() {
-  const { room } = useRoom()
+  const { room } = useGlobalState()
 
   if(!room) {
     return (

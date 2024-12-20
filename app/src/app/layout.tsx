@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import '@/scss/index.scss'
 import { ThemeProvider } from "@/context/Theme";
 import { SocketProvider } from "@/context/Socket";
-import { UserProvider } from "@/context/User";
 import { NotificationProvider } from "@/context/Notification";
-import { RoomProvider } from "@/context/Room";
+import { GlobalStateProvider } from "@/context/GlobalState";
+import LeaveRoomHandler from "@/components/LeaveRoomHandler/LeaveRoomHandler";
 
 export const metadata: Metadata = {
   title: "Typing Race",
@@ -21,13 +21,12 @@ export default function RootLayout({
       <body>
         <NotificationProvider>
           <SocketProvider>
-            <UserProvider>
-              <RoomProvider>
-                <ThemeProvider>
-                  {children}
-                </ThemeProvider>
-              </RoomProvider>
-            </UserProvider>
+            <GlobalStateProvider>
+              <ThemeProvider>
+                <LeaveRoomHandler />
+                {children}
+              </ThemeProvider>
+            </GlobalStateProvider>
           </SocketProvider>
         </NotificationProvider>
       </body>

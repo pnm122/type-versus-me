@@ -6,7 +6,7 @@ import TyperCursor from "../TyperCursor/TyperCursor"
 import { getCursorPosition, getTextRegions } from "@/utils/typer"
 
 interface Props {
-  cursorColor: CursorColor
+  cursorColor?: CursorColor
   text: string
   className?: string
 }
@@ -72,7 +72,7 @@ export default function TyperPreview({
       })}>
       <TyperCursor
         typer={preview}
-        color={cursorColor}
+        color={cursorColor ?? 'blue'}
         position={getCursorPosition(typed)}
         wordClassName={styles['word']}
         characterClassName={styles['character']}

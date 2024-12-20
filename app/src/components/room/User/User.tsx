@@ -1,11 +1,11 @@
 import { User as UserType } from '$shared/types/User'
 import CursorPreview from '@/components/CursorPreview/CursorPreview'
 import styles from './style.module.scss'
-import { useUser } from '@/context/User'
 import Pill from '@/components/Pill/Pill'
 import PixelarticonsMinus from '~icons/pixelarticons/minus'
 import PixelarticonsCheck from '~icons/pixelarticons/check'
 import PixelarticonsClose from '~icons/pixelarticons/close'
+import { useGlobalState } from '@/context/GlobalState'
 
 interface Props {
   user: UserType
@@ -20,7 +20,7 @@ export default function User({
     state
   }
 }: Props) {
-  const { data: currentUser } = useUser()
+  const { user } = useGlobalState()
 
   return (
     <li className={styles['user']}>
@@ -28,7 +28,7 @@ export default function User({
         <CursorPreview size='small' color={color} />
         <p className={styles['username']}>
           {username}
-          {id === currentUser!.value!.id && <span className={styles['username__you']}> (you)</span>}
+          {id === user!.id && <span className={styles['username__you']}> (you)</span>}
         </p>
       </div>
       <div className={styles['user__info']}>

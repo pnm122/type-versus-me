@@ -1,4 +1,3 @@
-import { useRoom } from '@/context/Room'
 import styles from './style.module.scss'
 import User from '../User/User'
 import Button from '@/components/Button/Button'
@@ -9,14 +8,16 @@ import PixelarticonsCopy from '~icons/pixelarticons/copy'
 import { MAX_USERS_PER_ROOM } from '$shared/constants'
 import { useNotification } from '@/context/Notification'
 import Checkbox from '@/components/Checkbox/Checkbox'
-import { useUser } from '@/context/User'
 import { useEffect, useState } from 'react'
 import { User as UserType } from '$shared/types/User'
+import { useGlobalState } from '@/context/GlobalState'
+import { updateUser } from '@/utils/user'
+import { useSocket } from '@/context/Socket'
 
 export default function RoomData() {
-  const { room } = useRoom()
-  const { data: { value: user }, update: updateUser } = useUser()
+  const { room, user, ...otherGlobalState } = useGlobalState()
   const notifs = useNotification()
+  const socket = useSocket()
   // 'Predict' what state the user will be in before waiting for server
   // This way, the state changes can feel instantaneous, but still be verified by the server
   const [predictedUserState, setPredictedUserState] = useState<UserType['state'] | null>(null)
@@ -33,7 +34,15 @@ export default function RoomData() {
 
   async function onCheckboxChange(ready: boolean) {
     setPredictedUserState(ready ? 'ready' : 'not-ready')
-    await updateUser('state', ready ? 'ready' : 'not-ready')
+    await updateUser(
+      'state',
+      ready ? 'ready' : 'not-ready',
+      {
+        globalState: { room, user, ...otherGlobalState },
+        notifs,
+        socket
+      }
+    )
     setPredictedUserState(null)
   }
 
