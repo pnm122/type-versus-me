@@ -27,7 +27,12 @@ io.on('connect', (socket) => {
   socket.on('disconnect', () => Disconnect(socket))
 
   socket.onAny((ev, ...args) => {
-    debug(`${DEBUG_COLORS.BLUE}${ev}:${DEBUG_COLORS.WHITE}`)
+    debug(`${DEBUG_COLORS.BLUE}(IN) ${ev}:${DEBUG_COLORS.WHITE}`)
+    debug(...args)
+  })
+
+  socket.onAnyOutgoing((ev, ...args) => {
+    debug(`${DEBUG_COLORS.YELLOW}(OUT) ${ev}:${DEBUG_COLORS.WHITE}`)
     debug(...args)
   })
 
