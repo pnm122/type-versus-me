@@ -1,5 +1,5 @@
 import JoinRoom from "@/events/JoinRoom";
-import { createRoomForTesting, mockSocket, mockUser } from "../test-utils";
+import { createRoomForTesting, ioSpies, mockSocket, mockUser } from "../test-utils";
 import state from "@/global/state";
 import { INITIAL_USER_SCORE, INITIAL_USER_STATE, MAX_USERS_PER_ROOM } from "$shared/constants";
 
@@ -205,16 +205,16 @@ describe('JoinRoom', () => {
   })
 
   it('emits the correct event with the user and room', () => {
+    const { inSpy, emitSpy } = ioSpies()
     const { room: { id: roomId } } = initRoom()
 
     const socket = secondUserSocket()
     const callback = jest.fn()
     JoinRoom(socket, { roomId, user: secondUser() }, callback)
-    const spy = jest.spyOn(socket.broadcast.to(roomId), 'emit')
 
-    expect(socket.broadcast.to).toHaveBeenCalledWith(roomId)
-    expect(spy.mock.lastCall?.[0]).toBe('join-room')
-    expect(spy.mock.lastCall?.[1]).toMatchObject({
+    expect(inSpy).toHaveBeenCalledWith(roomId)
+    expect(emitSpy.mock.lastCall?.[0]).toBe('join-room')
+    expect(emitSpy.mock.lastCall?.[1]).toMatchObject({
       user: {
         id: secondUser().id,
         username: secondUser().username,
