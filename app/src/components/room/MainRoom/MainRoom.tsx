@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react'
 
 export default function MainRoom() {
   const [startTime, setStartTime] = useState(-1)
+  const [finished, setFinished] = useState(false)
   const globalState = useGlobalState()
   const socket = useSocket()
   const notifs = useNotification()
@@ -17,6 +18,7 @@ export default function MainRoom() {
   useEffect(() => {
     if(room?.state === 'in-progress') {
       setStartTime(Date.now())
+      setFinished(false)
     }
   }, [room?.state])
   
@@ -36,6 +38,15 @@ export default function MainRoom() {
     )
   }
 
+  function onTyperFinish() {
+    setFinished(true)
+    updateUser(
+      'state',
+      'complete',
+      { globalState, socket, notifs }
+    )
+  }
+
   return (
     <div className={styles['main']}>
       {room.state === 'waiting' ? (
@@ -43,10 +54,11 @@ export default function MainRoom() {
       ) : room.state === 'in-progress' ? (
         <Typer
           text={room.test!}
-          disabled={false}
+          disabled={finished}
           startTime={startTime}
           onChange={onTyperChange}
           cursors={otherCursors}
+          onFinish={onTyperFinish}
         />
       ) : (
         <></>
