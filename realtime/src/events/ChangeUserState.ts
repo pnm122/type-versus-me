@@ -1,12 +1,11 @@
 import { ChangeUserStateCallback, ChangeUserStatePayload } from "$shared/types/events/client/ChangeUserState";
 import { RoomState } from "$shared/types/Room";
 import { UserState } from "$shared/types/User";
-import { INITIAL_USER_SCORE } from "$shared/constants";
 import state from "@/global/state";
 import CustomSocket from "@/types/CustomSocket";
 import { check, isValidEventAndPayload, setRoomToInProgress } from "@/utils/eventUtils";
-import generateTest from "@/utils/generateTest";
 import io from "@/global/server";
+import { INITIAL_USER_SCORE } from "$shared/constants";
 
 export default function ChangeUserState(
   socket: CustomSocket,
@@ -38,10 +37,17 @@ export default function ChangeUserState(
     return
   }
 
-  state.updateUser(value.id, { state: value.state })
+  const lastScore = value.state === 'complete' || value.state === 'failed'
+    ? {
+        netWPM: state.getUserInRoom(room!.id, value.id)!.score!.netWPM,
+        failed: value.state === 'failed'
+      }
+    : undefined
+
+  state.updateUser(value.id, { state: value.state, lastScore })
   io.in(room!.id).emit(
     'change-user-data',
-    value
+    { id: value.id, state: value.state, lastScore }
   )
 
   const allUsersReady = room!.users.every(u => u.id === value.id || u.state === 'ready') && value.state === 'ready'
@@ -58,10 +64,19 @@ export default function ChangeUserState(
       'change-room-data',
       { state: 'complete' }
     )
+
+    state.getRoom(room!.id)!.users.forEach(u => {
+      state.updateUser(u.id, { score: INITIAL_USER_SCORE, state: 'not-ready' })
+    })
     io.in(room!.id).emit(
       'change-all-user-data',
-      { state: 'not-ready' }
+      { score: INITIAL_USER_SCORE, state: 'not-ready' }
     )
+
+    return callback({
+      value: { state: 'not-ready' },
+      error: null
+    })
   }
 
   callback({

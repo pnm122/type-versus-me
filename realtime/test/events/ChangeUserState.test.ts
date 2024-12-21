@@ -56,7 +56,7 @@ describe('ChangeUserState', () => {
 
     describe('requested state is not possible given the room state', () => {
       const invalidStates: { [key in RoomState]: UserState[] } = {
-        'complete': ['failed', 'in-progress'],
+        'complete': ['in-progress', 'complete', 'failed'],
         'in-progress': ['not-ready', 'ready'],
         'waiting': ['in-progress', 'complete', 'failed']
       }
@@ -118,6 +118,56 @@ describe('ChangeUserState', () => {
     )
   })
 
+  describe('the user is changing state to complete or failed', () => {
+    function init(failed = false) {
+      const score = { netWPM: 85, cursorPosition: { word: 50, letter: 5 }}
+      const { room, user } = createRoomForTesting(mockUser({ id: 'userA' }), mockSocket('userA')).value!
+      state.updateRoom(room.id, { state: 'in-progress' })
+      state.updateUser(user.id, { state: 'in-progress', score: score })
+      ChangeUserState(mockSocket('userA'), { id: 'userA', state: failed ? 'failed' : 'complete' }, () => {})
+      return { score, room, user }
+    }
+
+    it('updates the user last score to their last recorded score in the state when changing to complete', () => {
+      const { score, room, user } = init()
+      expect(state.getUserInRoom(room.id, user.id)).toMatchObject({
+        lastScore: {
+          netWPM: score.netWPM,
+          failed: false
+        }
+      })
+    })
+
+    it('emits their last recorded score in the state to all users when changing to complete', () => {
+      const { inSpy, emitSpy } = ioSpies()
+      const { score, room } = init()
+      expect(inSpy).toHaveBeenCalledWith(room.id)
+
+      // One of the calls should have change-user-data w/ an object matching the lastScore provided below
+      const hasMatchingCall = emitSpy.mock.calls.some(call => (
+        call[0] === 'change-user-data' &&
+        expect.objectContaining({
+          lastScore: {
+            netWPM: score.netWPM,
+            failed: false
+          }
+        }).asymmetricMatch(call[1])
+      ))
+
+      expect(hasMatchingCall).toBeTruthy()
+    })
+
+    it('updates the user last score to their last recorded score in the state when changing to failed', () => {
+      const { score, room , user} = init(true)
+      expect(state.getUserInRoom(room.id, user.id)).toMatchObject({
+        lastScore: {
+          netWPM: score.netWPM,
+          failed: true
+        }
+      })
+    })
+  })
+
   describe('all users will be in the complete or failed state and the room state is in-progress', () => {
     function init(socket = mockSocket('userB')) {
       const { room, user } = createRoomForTesting(mockUser({ id: 'userA' }), mockSocket('userA')).value!
@@ -148,7 +198,16 @@ describe('ChangeUserState', () => {
       )
     })
 
-    it('emits a change all user data event with the not-ready state to all users in the room', () => {
+    it('updates all user scores and states in the state', () => {
+      const { room } = init()
+
+      state.getRoom(room.id)!.users.forEach((u) => {
+        expect(u.score).toBe(INITIAL_USER_SCORE)
+        expect(u.state).toBe('not-ready')
+      })
+    })
+
+    it('emits a change all user data event with the not-ready state and initial score to all users in the room', () => {
       const socket = mockSocket('userB')
       const { inSpy, emitSpy } = ioSpies()
       const { room } = init(socket)
@@ -156,7 +215,7 @@ describe('ChangeUserState', () => {
       expect(inSpy).toHaveBeenCalledWith(room.id)
       expect(emitSpy).toHaveBeenCalledWith(
         'change-all-user-data',
-        { state: 'not-ready' }
+        { state: 'not-ready', score: INITIAL_USER_SCORE }
       )
     })
   })
