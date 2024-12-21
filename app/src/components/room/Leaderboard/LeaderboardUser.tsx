@@ -4,6 +4,7 @@ import styles from './style.module.scss'
 import Pill from '@/components/Pill/Pill'
 import PixelarticonsClose from '~icons/pixelarticons/close'
 import sortUsersByScore from '@/utils/sortUsersByScore'
+import createClasses from '@/utils/createClasses'
 
 export default function LeaderboardUser({ user }: { user: User }) {
   const { room, user: currentUser } = useGlobalState()
@@ -34,10 +35,13 @@ export default function LeaderboardUser({ user }: { user: User }) {
     <li className={styles['user']}>
       <div
         style={{
-          width: user.state === 'failed' ? 16 : `${ratioToHighestWPM * 100}%`,
+          width: user.lastScore.failed ? 12 : `${ratioToHighestWPM * 100}%`,
           backgroundColor: `var(--cursor-${user.color})`
         }}
-        className={styles['user__bar']}>
+        className={createClasses({
+          [styles['user__bar']]: true,
+          [styles['user__bar--failed']]: user.lastScore.failed
+        })}>
         {nameInsideBar && nameAndStat}
       </div>
       {!nameInsideBar && nameAndStat}

@@ -1,4 +1,5 @@
 @use '@/scss/fonts' as *;
+@use '@/scss/breakpoints' as *;
 
 .leaderboard {
   display: flex;
@@ -30,11 +31,21 @@
   }
 
   .username {
-    @include font-heading(20);
+    @include font-heading(16);
   }
 
   .wpm {
-    @include font-heading(14);
+    @include font-heading(12);
+  }
+
+  @media screen and (width > $screen-sm) {
+    .username {
+      @include font-heading(20);
+    }
+  
+    .wpm {
+      @include font-heading(14);
+    }
   }
 
   &__bar {
@@ -43,6 +54,10 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+
+    &--failed {
+      padding-inline: 0;
+    }
 
     .username,
     .wpm {
