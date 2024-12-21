@@ -5,7 +5,7 @@ import styles from './style.module.scss'
 
 interface Props {
   selected?: CursorColor
-  disabled?: CursorColor[]
+  disabled?: CursorColor[] | readonly CursorColor[]
   onChange: (c: CursorColor) => void
 }
 

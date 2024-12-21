@@ -77,7 +77,8 @@ export default function Home() {
         <div className={styles['main__group']}>
           <Button
             onClick={onCreateRoomClicked}
-            loading={createRoomLoading}>
+            loading={createRoomLoading}
+            disabled={!user}>
             <ButtonIcon icon={<PixelarticonsPlus />} />
             Create a room
           </Button>
@@ -90,11 +91,13 @@ export default function Home() {
               wrapperClassName={styles['join__input']}
               minLength={5}
               maxLength={5}
+              disabled={!user}
               required
             />
             <Button
               style='secondary'
               type='submit'
+              disabled={!user}
               loading={joinRoomLoading}>
               Join
               <ButtonIcon icon={<PixelarticonsArrowRight />} />

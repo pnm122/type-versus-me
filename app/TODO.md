@@ -5,7 +5,7 @@
 [x] Add (you) to leaderboard score
 [x] Create join room page
 [x] Create room loading UI
-[ ] Disable CursorSelector before user loads
+[x] Disable CursorSelector before user loads
 [ ] Show errors made in the game UI
 [ ] Open/close leaderboard
 [ ] Fix typer expanding beyond its max width when typing enough extra characters

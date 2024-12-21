@@ -6,15 +6,12 @@ import styles from './style.module.scss'
 import PixelarticonsDice from '~icons/pixelarticons/dice'
 import CursorSelector from '../CursorSelector/CursorSelector'
 import { useGlobalState } from '@/context/GlobalState'
-import { useNotification } from '@/context/Notification'
-import { useSocket } from '@/context/Socket'
+import CursorColors from '$shared/utils/CursorColors'
 
 export default function UsernameAndColorInput() {
   const globalState = useGlobalState()
-  const socket = useSocket()
-  const notifs = useNotification()
 
-  const { user, room } = globalState
+  const { user } = globalState
 
   function onUsernameChange(e: React.ChangeEvent<HTMLInputElement>) {
     setUser(
@@ -43,12 +40,14 @@ export default function UsernameAndColorInput() {
           className={styles['username__generate']}
           style='secondary'
           ariaLabel='Generate random username'
+          disabled={!user}
           onClick={() => setUser({ username: generateUsername() }, { globalState })}
         />
       </div>
       <CursorSelector
         selected={user?.color}
         onChange={c => setUser({ color: c }, { globalState })}
+        disabled={user ? undefined : CursorColors}
       />
     </div>
   )
