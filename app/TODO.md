@@ -3,8 +3,9 @@
 [x] Thinner failed bar
 [x] Smaller text for leaderboard on smaller screens so everything will fit
 [x] Add (you) to leaderboard score
-[ ] Create join room page
-[ ] Create room loading UI
+[x] Create join room page
+[x] Create room loading UI
+[ ] Disable CursorSelector before user loads
 [ ] Show errors made in the game UI
 [ ] Open/close leaderboard
 [ ] Fix typer expanding beyond its max width when typing enough extra characters
@@ -18,4 +19,5 @@
 [ ] Some way of editing your color and username within the room
 [ ] Room settings when created (i.e. test length, time limit, etc.)
 [ ] Have a room admin (the person who created the room) who can change room settings
+[ ] Add a basic header
 [ ] calculate statistics in realtime as the user types
