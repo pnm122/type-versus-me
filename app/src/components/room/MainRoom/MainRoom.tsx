@@ -1,6 +1,7 @@
 import { useGlobalState } from '@/context/GlobalState'
 import styles from './style.module.scss'
 import Game from '../Game/Game'
+import Leaderboard from '../Leaderboard/Leaderboard'
 
 export default function MainRoom() {
   const globalState = useGlobalState()
@@ -15,7 +16,7 @@ export default function MainRoom() {
       ) : room.state === 'in-progress' ? (
         <Game />
       ) : (
-        <></>
+        <Leaderboard />
       )}
     </div>
   )

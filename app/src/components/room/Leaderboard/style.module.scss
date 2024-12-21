@@ -1,0 +1,52 @@
+@use '@/scss/fonts' as *;
+
+.leaderboard {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  &__title {
+    @include font-heading(24);
+  }
+
+  &__results {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+.user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+
+  .username,
+  .wpm {
+    color: var(--heading);
+  }
+
+  .username {
+    @include font-heading(20);
+  }
+
+  .wpm {
+    @include font-heading(14);
+  }
+
+  &__bar {
+    height: 100%;
+    padding-inline: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .username,
+    .wpm {
+      color: var(--background);
+    }
+  }
+}
