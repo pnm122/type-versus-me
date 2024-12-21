@@ -11,5 +11,24 @@
     display: flex;
     flex-direction: column;
     gap: 32px;
+
+    &__inputs {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .cursor-preview {
+      background-color: var(--surface);
+      padding: 12px;
+      display: flex;
+      gap: 8px;
+
+      &::before {
+        content: '';
+        background-color: var(--border);
+        width: 2px;
+      }
+    }
   }
 }

@@ -11,6 +11,7 @@ import React from 'react'
 import { useNotification } from '@/context/Notification'
 import { useSocket } from '@/context/Socket'
 import { useGlobalState } from '@/context/GlobalState'
+import TyperPreview from '@/components/TyperPreview/TyperPreview'
 
 export default function JoinRoom() {
   const notifs = useNotification()
@@ -26,7 +27,15 @@ export default function JoinRoom() {
   return (
     <main className={styles['page']}>
       <div className={styles['main']}>
-        <UsernameAndColorInput />
+        <div className={styles['main__inputs']}>
+          <UsernameAndColorInput />
+          <div className={styles['cursor-preview']}>
+            <TyperPreview
+              text='Your cursor will look like this.'
+              cursorColor={globalState.user?.color}
+            />
+          </div>
+        </div>
         <Button
           onClick={handleJoinRoom}>
           Join room

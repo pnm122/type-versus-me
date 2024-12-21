@@ -64,7 +64,7 @@
 
 .cursor {
   height: 1.1em;
-  width: 0.1em;
+  width: max(0.1em, 2px);
   position: absolute;
   z-index: 2;
   top: 0;
