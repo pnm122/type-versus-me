@@ -14,4 +14,8 @@
 [ ] Add dark mode colors
 [ ] Animate state/page changes as often as possible for better UX/clarity
 [ ] Rename error color to negative
+[ ] Remove unnecessary 'complete' state from room
+[ ] Some way of editing your color and username within the room
+[ ] Room settings when created (i.e. test length, time limit, etc.)
+[ ] Have a room admin (the person who created the room) who can change room settings
 [ ] calculate statistics in realtime as the user types

@@ -12,6 +12,7 @@ import { Return } from "$shared/types/Return"
 import ErrorsOf from "$shared/types/ErrorsOf"
 import { LeaveRoomCallback } from "$shared/types/events/client/LeaveRoom"
 import { ChangeRoomDataPayload } from "$shared/types/events/server/ChangeRoomData"
+import { DoesRoomExistCallback } from "$shared/types/events/client/DoesRoomExist"
 
 interface Context {
   globalState: GlobalState
@@ -137,4 +138,21 @@ export async function leaveRoom(
   globalState.setRoom(null)
   await globalState.waitForStateChange()
   return { value: null, error: null }
+}
+
+export async function doesRoomExist(
+  roomId: Room['id'],
+  context: Pick<Context, 'notifs' | 'socket'>
+): Promise<Parameters<DoesRoomExistCallback>[0]> {
+  const { socket, notifs } = context
+
+  if(!checkSocket(socket.value, notifs)) {
+    return {
+      value: null,
+      error: {
+        reason: 'missing-argument'
+      }
+    }
+  }
+  return await socket.value.emitWithAck('does-room-exist', roomId)
 }

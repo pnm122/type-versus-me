@@ -26,20 +26,6 @@
       font-size: min(9vw, 3rem);
     }
 
-    .username {
-      display: flex;
-      align-items: flex-start;
-      width: 100%;
-
-      &__input {
-        flex: 1;
-      }
-
-      &__generate {
-        margin-top: calc((0.875rem * $line-height-body) + 2px);
-      }
-    }
-
     .join {
       display: flex;
       align-items: flex-start;

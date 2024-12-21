@@ -10,6 +10,7 @@ import InRoom from '@/components/room/pages/InRoom/InRoom'
 import JoinRoom from '@/components/room/pages/JoinRoom/JoinRoom'
 import LoadingRoom from '@/components/room/pages/LoadingRoom/LoadingRoom'
 import { useGlobalState } from '@/context/GlobalState'
+import { doesRoomExist } from '@/utils/room'
 
 export default function Room() {
   const { room } = useGlobalState()
@@ -31,20 +32,20 @@ export default function Room() {
   }, [room])
 
   useEffect(() => {
-    // Only check if room exists once, no need to call again after any socket changes
-    if(roomExists !== null) return
+    if(roomExists === false) {
+      notifs.push(errorNotification('room-does-not-exist'))
+      router.push('/')
+    }
+  }, [roomExists])
 
-    checkIfRoomExists()
-  }, [socket, roomExists])
-
-  async function checkIfRoomExists() {
+  useEffect(() => {
     if(socket.state !== 'valid') return
+    doesRoomExist(pathRoomId, { socket, notifs }).then(res => setRoomExists(res.value))
+  }, [socket.state])
 
-    const res = await socket.value.emitWithAck('does-room-exist', pathRoomId)
-    setRoomExists(res.value)
-  }
-
-  if(roomExists === null) {
+  // Show loading state even if the room doesn't exist or the user is in another room
+  // because the user will be re-routed and there's no reason to show the other displays
+  if(!roomExists || inOtherRoom) {
     return <LoadingRoom />
   }
 
