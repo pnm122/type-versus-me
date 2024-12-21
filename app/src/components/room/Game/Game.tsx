@@ -38,12 +38,12 @@ export default function Game() {
   useEffect(() => {
     if(timeToStart === 0) {
       typer.current?.focus()
+      setStartTime(Date.now())
     }
   }, [timeToStart])
 
   useEffect(() => {
     if(room?.state === 'in-progress') {
-      setStartTime(Date.now())
       setFinished(false)
       setCorrectTyped(0)
       setTimeToStart(5)
