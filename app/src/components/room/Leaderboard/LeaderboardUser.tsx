@@ -8,16 +8,16 @@ import sortUsersByScore from '@/utils/sortUsersByScore'
 export default function LeaderboardUser({ user }: { user: User }) {
   const { room, user: currentUser } = useGlobalState()
 
-  if(!room || !user.lastScore || !currentUser || !currentUser.lastScore) return <></>
+  if(!room || !user.lastScore || !currentUser) return <></>
 
   const winnerWPM = sortUsersByScore(room.users).at(0)!.lastScore!.netWPM
   const ratioToHighestWPM = user.lastScore.netWPM / winnerWPM
-  const nameInsideBar = ratioToHighestWPM > 0.5
+  const nameInsideBar = !user.lastScore.failed && ratioToHighestWPM > 0.5
 
   const nameAndStat = (
     <>
       <h2 className={styles['username']}>{user.username}</h2>
-      {user.state === 'failed' ? (
+      {user.lastScore.failed ? (
         <Pill
           backgroundColor='var(--error)'
           foregroundColor='var(--background)'

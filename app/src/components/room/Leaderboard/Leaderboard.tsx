@@ -6,7 +6,7 @@ import sortUsersByScore from "@/utils/sortUsersByScore"
 export default function Leaderboard() {
   const { room } = useGlobalState()
 
-  if(!room || !room.users.every(u => u.lastScore)) return <></>
+  if(!room) return <></>
 
   return (
     <div className={styles['leaderboard']}>
