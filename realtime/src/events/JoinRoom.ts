@@ -35,7 +35,7 @@ export default function JoinRoom(
   }
 
   if(check(
-    state.getRoom(roomId)!.state !== 'waiting',
+    state.getRoom(roomId)!.state === 'in-progress',
     'game-in-progress',
     callback
   )) {

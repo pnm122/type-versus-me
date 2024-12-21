@@ -147,37 +147,16 @@ describe('ChangeUserState', () => {
         { state: 'complete' }
       )
     })
-  })
 
-  describe('all users are in the complete or failed state and the new state is not-ready', () => {
-    function init(socket = mockSocket('userB')) {
-      const { room, user } = createRoomForTesting(mockUser({ id: 'userA' }), mockSocket('userA')).value!
-      state.updateRoom(room.id, { state: 'complete' })
-      state.updateUser(user.id, { state: 'failed', score: INITIAL_USER_SCORE })
-      state.addUserToRoom(room.id, mockUser({ id: socket.id, state: 'complete', score: INITIAL_USER_SCORE }))
-
-      ChangeUserState(socket, { id: socket.id, state: 'not-ready' }, () => {})
-
-      return { room }
-    }
-
-    it('changes the room state to waiting in the state', () => {
-      const { room } = init()
-
-      expect(state.getRoom(room.id)!.state).toBe('waiting')
-    })
-
-    it('emits a change room event with the waiting state and new test to all users in the room', () => {
-      const socket = mockSocket()
+    it('emits a change all user data event with the not-ready state to all users in the room', () => {
+      const socket = mockSocket('userB')
       const { inSpy, emitSpy } = ioSpies()
       const { room } = init(socket)
 
-      const { test: updatedTest } = state.getRoom(room.id)!
-
       expect(inSpy).toHaveBeenCalledWith(room.id)
       expect(emitSpy).toHaveBeenCalledWith(
-        'change-room-data',
-        { state: 'waiting', test: updatedTest }
+        'change-all-user-data',
+        { state: 'not-ready' }
       )
     })
   })
@@ -186,7 +165,7 @@ describe('ChangeUserState', () => {
     const callback = jest.fn()
     const socket = mockSocket()
 
-    const { room, user } = createRoomForTesting().value!
+    const { user } = createRoomForTesting().value!
     ChangeUserState(socket, { id: user.id, state: 'ready' }, callback)
 
     expect(callback).toHaveBeenLastCalledWith({

@@ -24,7 +24,7 @@ export default function ChangeUserState(
 
   // mapping of current room states to invalid requested user states
   const invalidStates: { [key in RoomState]: UserState[] } = {
-    'complete': ['failed', 'in-progress'],
+    'complete': ['in-progress', 'complete', 'failed'],
     'in-progress': ['not-ready', 'ready'],
     'waiting': ['in-progress', 'complete', 'failed']
   }
@@ -58,16 +58,9 @@ export default function ChangeUserState(
       'change-room-data',
       { state: 'complete' }
     )
-  }
-
-  const restart =
-    room!.users.every(u => u.state === 'complete' || u.state === 'failed') &&
-    value.state === 'not-ready'
-  if(restart) {
-    state.updateRoom(room!.id, { state: 'waiting' })
     io.in(room!.id).emit(
-      'change-room-data',
-      { state: 'waiting' }
+      'change-all-user-data',
+      { state: 'not-ready' }
     )
   }
 
