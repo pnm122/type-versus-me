@@ -32,6 +32,12 @@
 
   .username {
     @include font-heading(16);
+
+    &__you {
+      @include font-heading(12);
+      color: var(--placeholder);
+      display: inline;
+    }
   }
 
   .wpm {
@@ -41,6 +47,10 @@
   @media screen and (width > $screen-sm) {
     .username {
       @include font-heading(20);
+
+      &__you {
+        @include font-heading(14);
+      }
     }
   
     .wpm {
@@ -60,6 +70,7 @@
     }
 
     .username,
+    .username__you,
     .wpm {
       color: var(--background);
     }

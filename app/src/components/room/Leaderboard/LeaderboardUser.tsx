@@ -17,7 +17,10 @@ export default function LeaderboardUser({ user }: { user: User }) {
 
   const nameAndStat = (
     <>
-      <h2 className={styles['username']}>{user.username}</h2>
+      <h2 className={styles['username']}>
+        {user.username}
+        {currentUser.id === user.id && <span className={styles['username__you']}> (you)</span>}
+      </h2>
       {user.lastScore.failed ? (
         <Pill
           backgroundColor='var(--error)'

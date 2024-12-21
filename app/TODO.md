@@ -2,7 +2,7 @@
 [x] Fix failed state not showing in leaderboard
 [x] Thinner failed bar
 [x] Smaller text for leaderboard on smaller screens so everything will fit
-[ ] Add (you) to leaderboard score
+[x] Add (you) to leaderboard score
 [ ] Create join room page
 [ ] Create room loading UI
 [ ] Show errors made in the game UI
