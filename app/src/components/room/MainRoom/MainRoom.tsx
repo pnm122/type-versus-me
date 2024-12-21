@@ -11,12 +11,18 @@ export default function MainRoom() {
 
   return (
     <div className={styles['main']}>
-      {room.state === 'waiting' ? (
-        <h1 className={styles['main__waiting-text']}>The race will start when all players are ready.</h1>
-      ) : room.state === 'in-progress' ? (
+      {room.state === 'in-progress' ? (
         <Game />
       ) : (
-        <Leaderboard />
+        <>
+          {room.state === 'complete' && (
+            <>
+              <Leaderboard />
+              <hr></hr>
+            </>
+          )}
+          <h1 className={styles['main__waiting-text']}>The race will start when all players are ready.</h1>
+        </>
       )}
     </div>
   )

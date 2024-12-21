@@ -3,6 +3,9 @@
 .main {
   background-color: var(--surface);
   padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 
   &__waiting-text {
     @include font-body(32);

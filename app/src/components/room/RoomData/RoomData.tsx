@@ -62,7 +62,7 @@ export default function RoomData() {
           <User key={u.id} user={u} />
         ))}
       </ul>
-      {room.state === 'waiting' && (
+      {room.state !== 'in-progress' && (
         <Checkbox
           checked={predictedUserState ? predictedUserState === 'ready' : user.state === 'ready'}
           onChange={onCheckboxChange}>

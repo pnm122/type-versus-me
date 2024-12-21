@@ -3,14 +3,15 @@ import { useGlobalState } from '@/context/GlobalState'
 import styles from './style.module.scss'
 import Pill from '@/components/Pill/Pill'
 import PixelarticonsClose from '~icons/pixelarticons/close'
+import sortUsersByScore from '@/utils/sortUsersByScore'
 
 export default function LeaderboardUser({ user }: { user: User }) {
   const { room, user: currentUser } = useGlobalState()
 
-  if(!room || !user.score || !currentUser || !currentUser.score) return
+  if(!room || !user.lastScore || !currentUser || !currentUser.lastScore) return <></>
 
-  const winnerWPM = room.users.sort((a, b) => b.score!.netWPM - a.score!.netWPM).at(0)!.score!.netWPM
-  const ratioToHighestWPM = user.score.netWPM / winnerWPM
+  const winnerWPM = sortUsersByScore(room.users).at(0)!.lastScore!.netWPM
+  const ratioToHighestWPM = user.lastScore.netWPM / winnerWPM
   const nameInsideBar = ratioToHighestWPM > 0.5
 
   const nameAndStat = (
@@ -24,7 +25,7 @@ export default function LeaderboardUser({ user }: { user: User }) {
           icon={<PixelarticonsClose />}
         />
       ) : (
-        <div className={styles['wpm']}>{Math.round(user.score.netWPM)}wpm</div>
+        <div className={styles['wpm']}>{Math.round(user.lastScore.netWPM)}wpm</div>
       )}
     </>
   )
