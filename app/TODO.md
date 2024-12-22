@@ -10,14 +10,16 @@
 [x] Fix time stopping after completing a test
 [x] Keep showing other cursors after completing a test
 [x] Fix typer expanding beyond its max width when typing enough extra characters
-[ ] Open/close leaderboard
+[x] Open/close leaderboard
+[x] Add debounce to typer resizing
 [ ] Add linting and formatting on commit
-[ ] Time doesn't update correctly when the tab is hidden?
 [ ] Add aria-label to copy room link to clipboard
 [ ] Adjust cursor colors
+[ ] Rename error color to negative
 [ ] Add dark mode colors
 [ ] Animate state/page changes as often as possible for better UX/clarity
-[ ] Rename error color to negative
+[ ] Fix SCSS warnings
+[ ] Time doesn't update correctly when the tab is hidden?
 [ ] Remove unnecessary 'complete' state from room
 [ ] Some way of editing your color and username within the room
 [ ] Room settings when created (i.e. test length, time limit, etc.)

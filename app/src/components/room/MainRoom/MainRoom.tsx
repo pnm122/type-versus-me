@@ -9,19 +9,16 @@ export default function MainRoom() {
   
   if(!room) return <></>
 
+  const anyResults = room.users.some(u => u.lastScore)
+
   return (
     <div className={styles['main']}>
       {room.state === 'in-progress' ? (
         <Game />
       ) : (
         <>
-          {room.state === 'complete' && (
-            <>
-              <Leaderboard />
-              <hr></hr>
-            </>
-          )}
           <h1 className={styles['main__waiting-text']}>The race will start when all players are ready.</h1>
+          {anyResults && <Leaderboard />}
         </>
       )}
     </div>

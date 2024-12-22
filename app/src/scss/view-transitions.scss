@@ -14,21 +14,21 @@
 
 ::view-transition-group(.notification) {
   animation-duration: 0.25s;
-  animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  animation-timing-function: var(--timing);
 }
 
 // ENTRANCE ANIMATION: view-transition-new is the only child only when an element is appearing
 ::view-transition-new(.notification):only-child {
-  animation: 0.25s cubic-bezier(0.165, 0.84, 0.44, 1) enter forwards;
+  animation: 0.25s var(--timing) enter forwards;
 }
 
 // EXIT ANIMATION: view-transition-old is the only child only when an element is appearing
 ::view-transition-old(.notification-first):only-child {
-  animation: 0.25s cubic-bezier(0.165, 0.84, 0.44, 1) first-exit forwards;
+  animation: 0.25s var(--timing) first-exit forwards;
 }
 
 ::view-transition-old(.notification-not-first):only-child {
-  animation: 0.25s cubic-bezier(0.165, 0.84, 0.44, 1) not-first-exit forwards;
+  animation: 0.25s var(--timing) not-first-exit forwards;
 }
 
 @keyframes enter {

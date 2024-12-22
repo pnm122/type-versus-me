@@ -7,6 +7,7 @@ import { CursorColor, CursorPosition } from "$shared/types/Cursor"
 import { getCursorPosition, getTextRegions, words } from "@/utils/typer"
 import { Word } from "@/types/Typer"
 import { useGlobalState } from "@/context/GlobalState"
+import debounce from "debounce"
 
 export type TyperStats = Stats & {
   perWordStats: PerWordStats[]
@@ -296,11 +297,12 @@ export default function Typer({
   }
 
   useLayoutEffect(() => {
-    window.addEventListener('resize', setLinePosition)
+    const onresize = debounce(setLinePosition, 100)
+    window.addEventListener('resize', onresize)
     setLinePosition()
 
     return () => {
-      window.removeEventListener('resize', setLinePosition)
+      window.removeEventListener('resize', onresize)
     }
   }, [text, typed])
 
