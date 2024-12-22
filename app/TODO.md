@@ -6,10 +6,11 @@
 [x] Create join room page
 [x] Create room loading UI
 [x] Disable CursorSelector before user loads
-[ ] Show errors made in the game UI
-[ ] Open/close leaderboard
-[ ] Fix typer expanding beyond its max width when typing enough extra characters
+[x] Show errors left in the game UI
 [ ] Fix time stopping after completing a test
+[ ] Fix typer expanding beyond its max width when typing enough extra characters
+[ ] Open/close leaderboard
+[ ] Add linting and formatting on commit
 [ ] Keep showing other cursors after completing a test
 [ ] Time doesn't update correctly when the tab is hidden?
 [ ] Add aria-label to copy room link to clipboard

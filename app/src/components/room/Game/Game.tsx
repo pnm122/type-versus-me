@@ -17,6 +17,7 @@ export default function Game() {
   const [startTime, setStartTime] = useState(-1)
   const [finished, setFinished] = useState(false)
   const [correctTyped, setCorrectTyped] = useState(0)
+  const [errorsLeft, setErrorsLeft] = useState(0)
   const [timeToStart, setTimeToStart] = useState(0)
   const [timeLeft, setTimeLeft] = useState(0)
   const globalState = useGlobalState()
@@ -46,6 +47,7 @@ export default function Game() {
     if(room?.state === 'in-progress') {
       setFinished(false)
       setCorrectTyped(0)
+      setErrorsLeft(0)
       setTimeToStart(5)
       setTimeLeft(GAME_TIME)
     }
@@ -83,6 +85,7 @@ export default function Game() {
       { globalState, socket, notifs }
     )
     setCorrectTyped(stats.correctLeft)
+    setErrorsLeft(stats.errorsLeft)
   }
 
   function onTyperFinish() {
@@ -112,9 +115,19 @@ export default function Game() {
         ref={typer}
       />
       <div className={styles['game__info']}>
-        <p className={styles['typed']}>
-          {correctTyped}/{room.test.length}
-        </p>
+        <div className={styles['stats']}>
+          <p className={createClasses({
+            [styles['stats__typed']]: true,
+            [styles['stats__typed--error']]: errorsLeft > 0
+          })}>
+            {correctTyped}/{room.test.length}
+          </p>
+          {errorsLeft > 0 && (
+            <p className={styles['stats__errors-left']}>
+              {errorsLeft} mistake{errorsLeft > 1 ? 's' : ''}
+            </p>
+          )}
+        </div>
         <p className={createClasses({
           [styles['time-left']]: true,
           [styles['time-left--low']]: timeLeft <= 10

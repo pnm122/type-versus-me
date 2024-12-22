@@ -76,7 +76,7 @@ export function GlobalStateProvider({
     socket.value.on('change-room-data', handleChangeRoomData)
     socket.value.on('change-all-user-data', handleChangeAllUserData)
     socket.value.on('change-user-data', handleChangeUserData)
-    // socket.value.on('disconnect', handleDisconnect)
+    socket.value.on('disconnect', handleDisconnect)
 
     return () => {
       socket.value.off('join-room', handleJoinRoom)
@@ -84,7 +84,7 @@ export function GlobalStateProvider({
       socket.value.off('change-room-data', handleChangeRoomData)
       socket.value.off('change-all-user-data', handleChangeAllUserData)
       socket.value.off('change-user-data', handleChangeUserData)
-      // socket.value.off('disconnect', handleDisconnect)
+      socket.value.off('disconnect', handleDisconnect)
     }
   }, [socket, room])
 

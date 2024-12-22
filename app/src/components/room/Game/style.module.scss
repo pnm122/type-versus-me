@@ -10,7 +10,21 @@
     display: flex;
     justify-content: space-between;
 
-    .typed,
+    .stats {
+      display: flex;
+      gap: 12px;
+
+      &__typed,
+      &__errors-left {
+        @include font-body(14);
+      }
+
+      &__typed--error,
+      &__errors-left {
+        color: var(--error);
+      }
+    }
+
     .time-left {
       @include font-body(14);
     }
