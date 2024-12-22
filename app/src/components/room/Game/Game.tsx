@@ -28,7 +28,7 @@ export default function Game() {
 
   useInterval(
     nextTimeLeft,
-    room?.state === 'in-progress' && !finished && timeToStart === 0 ? 1000 : null
+    room?.state === 'in-progress' && timeToStart === 0 ? 1000 : null
   )
 
   useInterval(
@@ -60,7 +60,8 @@ export default function Game() {
   function nextTimeLeft() {
     if(timeLeft > 1) {
       setTimeLeft(t => t - 1)
-    } else {
+    // only fail the user if they didn't finish already
+    } else if(!finished) {
       setFinished(true)
       updateUser(
         'state',
