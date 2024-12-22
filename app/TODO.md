@@ -8,7 +8,7 @@
 [x] Disable CursorSelector before user loads
 [x] Show errors left in the game UI
 [x] Fix time stopping after completing a test
-[ ] Keep showing other cursors after completing a test
+[x] Keep showing other cursors after completing a test
 [ ] Fix typer expanding beyond its max width when typing enough extra characters
 [ ] Open/close leaderboard
 [ ] Add linting and formatting on commit
@@ -23,4 +23,7 @@
 [ ] Room settings when created (i.e. test length, time limit, etc.)
 [ ] Have a room admin (the person who created the room) who can change room settings
 [ ] Add a basic header
+[ ] Some very fast layout shift on loading the homepage?
+[ ] Some kind of congratulations on winning the room
+[ ] Something negative for failing
 [ ] calculate statistics in realtime as the user types
