@@ -24,6 +24,7 @@
     &__title {
       @include font-heading;
       font-size: min(9vw, 3rem);
+      color: var(--untyped);
     }
 
     .join {

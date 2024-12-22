@@ -66,12 +66,15 @@ export default function Home() {
   return (
     <main className={styles['page']}>
       <form onSubmit={onJoinRoomSubmit} className={styles['main']}>
-        <h1>
-          <TyperPreview
-            text='taptaptap.live'
-            cursorColor={user?.color}
-            className={styles['main__title']}
-          />
+        <h1 className={styles['main__title']}>
+          {user ? (
+            <TyperPreview
+              text='taptaptap.live'
+              cursorColor={user.color}
+            />
+          ): (
+            'taptaptap.live'
+          )}
         </h1>
         <UsernameAndColorInput />
         <div className={styles['main__group']}>

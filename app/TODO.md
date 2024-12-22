@@ -12,6 +12,8 @@
 [ ] Fix time stopping after completing a test
 [ ] Keep showing other cursors after completing a test
 [ ] Time doesn't update correctly when the tab is hidden?
+[ ] Add aria-label to copy room link to clipboard
+[ ] Adjust cursor colors
 [ ] Add dark mode colors
 [ ] Animate state/page changes as often as possible for better UX/clarity
 [ ] Rename error color to negative
