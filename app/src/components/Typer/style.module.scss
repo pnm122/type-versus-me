@@ -15,6 +15,7 @@
   height: 9rem;
   // Extra padding to ensure cursors are fully visible
   padding: 0.1em;
+  max-width: 100%;
 
   &:focus {
     outline: none;
@@ -46,6 +47,8 @@
   
     .extra {
       color: var(--_typer-extra-letter-color);
+      // Extra letters can cause words to go beyond max width, allow them to wrap anywhere
+      line-break: anywhere;
     }
   
     .correct {

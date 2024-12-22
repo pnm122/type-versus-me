@@ -9,7 +9,7 @@
 [x] Show errors left in the game UI
 [x] Fix time stopping after completing a test
 [x] Keep showing other cursors after completing a test
-[ ] Fix typer expanding beyond its max width when typing enough extra characters
+[x] Fix typer expanding beyond its max width when typing enough extra characters
 [ ] Open/close leaderboard
 [ ] Add linting and formatting on commit
 [ ] Time doesn't update correctly when the tab is hidden?
