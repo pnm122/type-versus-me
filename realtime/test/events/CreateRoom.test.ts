@@ -20,7 +20,7 @@ const validUserAfterCall = {
 
 describe('CreateRoom', () => {
   it('runs without failing if callback not provided', () => {
-    // @ts-ignore
+    // @ts-expect-error missing parameters on purpose
     CreateRoom(socket, null, null)
     expect(true).toBe(true)
   })
@@ -41,7 +41,7 @@ describe('CreateRoom', () => {
     it('gives the correct error when no value is passed', () => {
       const callback = jest.fn()
 
-      // @ts-ignore
+      // @ts-expect-error missing parameters on purpose
       CreateRoom(socket, null, callback)
   
       expect(callback).toHaveBeenCalledWith({

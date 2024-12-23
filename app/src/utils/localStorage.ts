@@ -14,10 +14,10 @@ function valueFromStorage<T = any>(s: string | null) {
   }
 }
 
-export function get<T extends Object = any>(key: string, insert: T): T
-export function get<T extends Object = any>(key: string): T | null
+export function get<T extends object | string | number | boolean>(key: string, insert: T): T
+export function get<T extends object | string | number | boolean>(key: string): T | null
 
-export function get<T extends Object = any>(key: string, insert?: T) {
+export function get<T extends object | string | number | boolean>(key: string, insert?: T) {
   const value = valueFromStorage<T>(localStorage.getItem(formatKey(key)))
 
   if(value) return value
@@ -27,7 +27,7 @@ export function get<T extends Object = any>(key: string, insert?: T) {
   }
 }
 
-export function set<T extends Object = any>(key: string, value: T) {
+export function set<T extends object | string | number | boolean>(key: string, value: T) {
   localStorage.setItem(formatKey(key), value.toString())
   return value
 }

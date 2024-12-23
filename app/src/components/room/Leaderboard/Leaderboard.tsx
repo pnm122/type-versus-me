@@ -13,6 +13,16 @@ export default function Leaderboard() {
   const results = useRef<HTMLDivElement>(null)
   const list = useRef<HTMLOListElement>(null)
 
+  useLayoutEffect(() => {
+    setResultsHeight()
+    const onresize = debounce(setResultsHeight, 100)
+    window.addEventListener('resize', onresize)
+
+    return () => {
+      window.removeEventListener('resize', onresize)
+    }
+  }, [open])
+
   if(!room) return <></>
 
   function setResultsHeight() {
@@ -26,16 +36,6 @@ export default function Leaderboard() {
       results.current.style.height = '0px'
     }
   }
-
-  useLayoutEffect(() => {
-    setResultsHeight()
-    const onresize = debounce(setResultsHeight, 100)
-    window.addEventListener('resize', onresize)
-
-    return () => {
-      window.removeEventListener('resize', onresize)
-    }
-  }, [open])
 
   return (
     <div

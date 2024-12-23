@@ -1,11 +1,11 @@
 import { User } from '../../User'
 import { Return } from '../../Return'
 
-type Payload = Pick<User, 'id' | 'score'>
+type Payload = Pick<Required<User>, 'id' | 'score'>
 
 type Callback = (
   value: Return<
-    Pick<User, 'score'>,
+    Pick<Required<User>, 'score'>,
     | 'missing-argument'
     | 'invalid-user-id'
     | 'invalid-room-state'

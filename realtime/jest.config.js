@@ -6,7 +6,7 @@ module.exports = {
   },
   moduleNameMapper: {
     '^@/(.*)': '<rootDir>/src/$1',
-    '^\\$shared\/(.*)': '<rootDir>/../shared/$1'
+    '^\\$shared/(.*)': '<rootDir>/../shared/$1'
   },
   setupFilesAfterEnv: ["<rootDir>/test/setup.ts"]
 };

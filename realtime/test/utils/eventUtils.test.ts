@@ -1,6 +1,6 @@
 import CustomSocket from "@/types/CustomSocket"
 import { check, isValidEventAndPayload, setRoomToInProgress } from "@/utils/eventUtils"
-import { createRoomForTesting, ioSpies, mockSocket, mockUser } from "../test-utils"
+import { createRoomForTesting, ioSpies, mockUser } from "../test-utils"
 import state from "@/global/state"
 import { INITIAL_USER_SCORE } from "$shared/constants"
 import io from "@/global/server"
@@ -12,7 +12,7 @@ const socket = {
 describe('isValidEventAndPayload', () => {
   it('returns false if no callback is provided', () => {
     expect(
-      // @ts-ignore
+      // @ts-expect-error missing parameters on purpose
       isValidEventAndPayload(socket, undefined, socket.id)
     ).toBeFalsy()
   })

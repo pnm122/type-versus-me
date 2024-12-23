@@ -16,7 +16,7 @@ function init(twoUsers = true) {
 
 describe('LeaveRoom', () => {
   it('runs without failing if callback not provided', () => {
-    // @ts-ignore
+    // @ts-expect-error missing parameters on purpose
     LeaveRoom(mockSocket(), null, null)
     expect(true).toBe(true)
   })

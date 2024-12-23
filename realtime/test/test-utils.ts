@@ -7,12 +7,13 @@ import CustomSocket from "@/types/CustomSocket";
 export function mockSocket(id = 'test') {
   // separate this out so that in().emit is always captured by the same mocked function
   const inEmit = jest.fn() as CustomSocket['emit']
-  const socketIn = jest.fn((room: string | string[]) => ({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const socketIn = jest.fn((_: string | string[]) => ({
     emit: inEmit
   } as any)) as CustomSocket['in']
-
   const broadcastToEmit = jest.fn() as CustomSocket['emit']
-  const broadcastTo = jest.fn((room: string | string[]) => ({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const broadcastTo = jest.fn((_: string | string[]) => ({
     emit: broadcastToEmit
   } as any)) as CustomSocket['broadcast']['to']
 

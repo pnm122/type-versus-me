@@ -19,7 +19,7 @@ const secondUserSocket = () => mockSocket('userB')
 
 describe('JoinRoom', () => {
   it('runs without failing if callback not provided', () => {
-    // @ts-ignore
+    // @ts-expect-error missing parameters on purpose
     JoinRoom(mockSocket(), null, null)
     expect(true).toBe(true)
   })
@@ -42,7 +42,7 @@ describe('JoinRoom', () => {
     it('gives the correct error when no roomId is provided', () => {
       initRoom()
       const callback = jest.fn()
-      // @ts-ignore
+      // @ts-expect-error missing parameters on purpose
       JoinRoom(secondUserSocket(), { user: secondUser() }, callback)
 
       expect(callback).toHaveBeenCalledWith({
@@ -57,7 +57,7 @@ describe('JoinRoom', () => {
       const callback = jest.fn()
       const { room: { id: roomId } } = initRoom()
       
-      // @ts-ignore
+      // @ts-expect-error missing parameters on purpose
       JoinRoom(secondUserSocket(), { roomId }, callback)
 
       expect(callback).toHaveBeenCalledWith({
@@ -134,7 +134,7 @@ describe('JoinRoom', () => {
 
     it('gives the correct error when the username is taken', () => {
       const callback = jest.fn()
-      const { room: { id: roomId }, user, socket } = initRoom()
+      const { room: { id: roomId }, user } = initRoom()
       
       JoinRoom(
         mockSocket('userB'),

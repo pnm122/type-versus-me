@@ -128,8 +128,6 @@ export default function Typer({
 
   const textRegions = getTextRegions(text, typed)
 
-  const displayedText = textRegions.map(w => w.regions.map(r => r.text).join('')).join(' ')
-
   const cursorPosition = getCursorPosition(typed)
 
   const cursorAtStartOfWord = cursorPosition.letter === 0

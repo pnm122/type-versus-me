@@ -3,14 +3,14 @@ import { createRoomForTesting } from "../test-utils"
 
 describe('DoesRoomExist', () => {
   it('runs without failing if callback not provided', () => {
-    // @ts-ignore
+    // @ts-expect-error missing parameters on purpose
     DoesRoomExist(null, null)
     expect(true).toBe(true)
   })
 
   it('gives the correct error if no room ID was provided', () => {
     const callback = jest.fn()
-    // @ts-ignore
+    // @ts-expect-error missing parameters on purpose
     DoesRoomExist(null, callback)
 
     expect(callback).toHaveBeenCalledWith({

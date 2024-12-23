@@ -6,7 +6,7 @@ const socket = mockSocket()
 
 describe('ChangeUsername', () => {
   it('runs without failing if callback not provided', () => {
-    // @ts-ignore
+    // @ts-expect-error missing parameters on purpose
     ChangeUsername(socket, null, null)
     expect(true).toBe(true)
   })
@@ -26,7 +26,7 @@ describe('ChangeUsername', () => {
 
     it('gives the correct error if the username is not provided', () => {
       const callback = jest.fn()
-      // @ts-ignore
+      // @ts-expect-error missing parameters on purpose
       ChangeUsername(mockSocket('test'), { id: 'test' }, callback)
 
       expect(callback).toHaveBeenCalledWith({
@@ -112,7 +112,7 @@ describe('ChangeUsername', () => {
     const callback = jest.fn()
     const userAfterChange = { ...user, username: 'Pierce' }
 
-    createRoomForTesting(user).value!
+    createRoomForTesting(user)
     ChangeUsername(socket, userAfterChange, callback)
 
     expect(callback.mock.lastCall[0].value).toEqual({ username: 'Pierce' })

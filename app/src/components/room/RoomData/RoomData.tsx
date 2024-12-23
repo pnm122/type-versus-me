@@ -8,7 +8,7 @@ import PixelarticonsCopy from '~icons/pixelarticons/copy'
 import { MAX_USERS_PER_ROOM } from '$shared/constants'
 import { useNotification } from '@/context/Notification'
 import Checkbox from '@/components/Checkbox/Checkbox'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { User as UserType } from '$shared/types/User'
 import { useGlobalState } from '@/context/GlobalState'
 import { updateUser } from '@/utils/user'
@@ -66,7 +66,7 @@ export default function RoomData() {
         <Checkbox
           checked={predictedUserState ? predictedUserState === 'ready' : user.state === 'ready'}
           onChange={onCheckboxChange}>
-          I'm ready
+          {"I'm ready"}
         </Checkbox>
       )}
       <hr></hr>

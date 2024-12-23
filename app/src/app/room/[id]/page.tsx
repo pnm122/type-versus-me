@@ -1,7 +1,6 @@
 "use client"
 
-import React, { use, useEffect, useState } from 'react'
-import styles from './style.module.scss'
+import React, { useEffect, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { useNotification } from '@/context/Notification'
 import { errorNotification } from '@/utils/errorNotifications'

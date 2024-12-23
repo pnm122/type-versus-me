@@ -6,7 +6,7 @@ const socket = mockSocket()
 
 describe('RequestColor', () => {
   it('runs without failing if callback not provided', () => {
-    // @ts-ignore
+    // @ts-expect-error missing parameters on purpose
     RequestColor(socket, null, null)
     expect(true).toBe(true)
   })
@@ -15,7 +15,7 @@ describe('RequestColor', () => {
     it('gives the correct error if the user ID does not match the session ID', () => {
       const callback = jest.fn()
       const { user } = createRoomForTesting(mockUser()).value!
-      // @ts-ignore
+
       RequestColor(mockSocket('INVALID_ID'), { id: user.id, color: 'red' }, callback)
 
       expect(callback).toHaveBeenCalledWith({
@@ -41,7 +41,7 @@ describe('RequestColor', () => {
     it('gives the correct error if the provided color is invalid', () => {
       const callback = jest.fn()
       const { user } = createRoomForTesting(mockUser()).value!
-      // @ts-ignore
+      // @ts-expect-error missing parameters on purpose
       RequestColor(socket, { id: user.id, color: 'INVALID_COLOR' }, callback)
 
       expect(callback).toHaveBeenCalledWith({

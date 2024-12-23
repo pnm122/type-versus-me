@@ -5,7 +5,7 @@ const socket = mockSocket()
 
 describe('Register', () => {
   it('runs without failing if callback not provided', () => {
-    // @ts-ignore
+    // @ts-expect-error missing parameters on purpose
     Register(socket, null, null)
     expect(true).toBe(true)
   })
@@ -67,7 +67,7 @@ describe('Register', () => {
       color: ''
     } as const
 
-    // @ts-ignore
+    // @ts-expect-error invalid parameter on purpose
     Register(socket, user, callback)
 
     expect(callback.mock.lastCall[0].value.color).not.toBe('')

@@ -1,0 +1,24 @@
+{
+  "scripts": {
+    "prepare": "husky && husky install",
+    "test:realtime": "cd realtime && npm run test",
+    "lint:app": "cd app && npm run lint",
+    "lint:realtime": "cd realtime && npm run lint",
+    "lint": "npm run lint:app && npm run lint:realtime",
+    "format": "prettier --write .",
+    "check": "prettier -c ."
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.17.0",
+    "eslint-plugin-react": "^7.37.2",
+    "globals": "^15.14.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.2.11",
+    "prettier": "^3.4.2",
+    "typescript-eslint": "^8.18.1"
+  },
+  "lint-staged": {
+		"*.{js,ts,jsx,tsx}": "npm run lint",
+    "realtime/**/*": "npm run test:realtime"
+	}
+}

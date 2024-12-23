@@ -1,12 +1,12 @@
 import ChangeUserScore from "@/events/ChangeUserScore"
-import { createRoomForTesting, ioSpies, mockSocket, mockUser } from "../test-utils"
+import { createRoomForTesting, ioSpies, mockSocket } from "../test-utils"
 import { INITIAL_USER_SCORE } from "$shared/constants"
 import state from "@/global/state"
 import { RoomState } from "$shared/types/Room"
 
 describe('ChangeUserScore', () => {
   it('runs without failing if callback not provided', () => {
-    // @ts-ignore
+    // @ts-expect-error missing parameters on purpose
     ChangeUserScore(mockSocket(), null, null)
     expect(true).toBe(true)
   })
@@ -26,7 +26,7 @@ describe('ChangeUserScore', () => {
 
     it('gives the correct error if the score is not provided', () => {
       const callback = jest.fn()
-      // @ts-ignore
+      // @ts-expect-error missing parameters on purpose
       ChangeUserScore(mockSocket('test'), { id: 'test' }, callback)
 
       expect(callback).toHaveBeenCalledWith({

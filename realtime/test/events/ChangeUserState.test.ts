@@ -1,7 +1,7 @@
 import ChangeUserState from "@/events/ChangeUserState"
 import { createRoomForTesting, ioSpies, mockSocket, mockUser } from "../test-utils"
 import { UserState } from "$shared/types/User"
-import { Room, RoomState } from "$shared/types/Room"
+import { RoomState } from "$shared/types/Room"
 import state from "@/global/state"
 import { INITIAL_USER_SCORE } from "$shared/constants"
 import * as eventUtils from "@/utils/eventUtils"
@@ -9,7 +9,7 @@ import * as eventUtils from "@/utils/eventUtils"
 describe('ChangeUserState', () => {
   it('runs without failing if callback not provided', () => {
     const socket = mockSocket()
-    // @ts-ignore
+    // @ts-expect-error missing parameters on purpose
     ChangeUserState(socket, null, null)
     expect(true).toBe(true)
   })
@@ -31,7 +31,7 @@ describe('ChangeUserState', () => {
 
     it('gives the correct error if the state is not provided', () => {
       const callback = jest.fn()
-      // @ts-ignore
+      // @ts-expect-error missing parameters on purpose
       ChangeUserState(mockSocket('test'), { id: 'test' }, callback)
 
       expect(callback).toHaveBeenCalledWith({
