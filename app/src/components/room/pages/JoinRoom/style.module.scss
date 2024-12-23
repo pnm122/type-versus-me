@@ -1,34 +1,34 @@
 @use '@/scss/mixins' as *;
 
 .page {
-  display: grid;
-  place-items: center;
-  height: 100vh;
-  max-height: -webkit-fill-available;
-  
-  .main {
-    @include max-width(400px, 24px);
-    display: flex;
-    flex-direction: column;
-    gap: 32px;
+	display: grid;
+	place-items: center;
+	height: 100vh;
+	max-height: -webkit-fill-available;
 
-    &__inputs {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
+	.main {
+		@include max-width(400px, 24px);
+		display: flex;
+		flex-direction: column;
+		gap: 32px;
 
-    .cursor-preview {
-      background-color: var(--surface);
-      padding: 12px;
-      display: flex;
-      gap: 8px;
+		&__inputs {
+			display: flex;
+			flex-direction: column;
+			gap: 12px;
+		}
 
-      &::before {
-        content: '';
-        background-color: var(--border);
-        width: 2px;
-      }
-    }
-  }
+		.cursor-preview {
+			background-color: var(--surface);
+			padding: 12px;
+			display: flex;
+			gap: 8px;
+
+			&::before {
+				content: '';
+				background-color: var(--border);
+				width: 2px;
+			}
+		}
+	}
 }

@@ -1,17 +1,17 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next'
 import UnpluginIcons from 'unplugin-icons/webpack'
 
 const nextConfig: NextConfig = {
-  webpack(config) {
-    config.plugins.push(
-      UnpluginIcons({
-        compiler: 'jsx',
-        jsx: 'react'
-      })
-    )
+	webpack(config) {
+		config.plugins.push(
+			UnpluginIcons({
+				compiler: 'jsx',
+				jsx: 'react'
+			})
+		)
 
-    return config
-  },
-};
+		return config
+	}
+}
 
-export default nextConfig;
+export default nextConfig

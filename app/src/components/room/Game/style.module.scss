@@ -1,50 +1,50 @@
 @use '@/scss/fonts' as *;
 
 .game {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  position: relative;
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	position: relative;
 
-  &__info {
-    display: flex;
-    justify-content: space-between;
+	&__info {
+		display: flex;
+		justify-content: space-between;
 
-    .stats {
-      display: flex;
-      gap: 12px;
+		.stats {
+			display: flex;
+			gap: 12px;
 
-      &__typed,
-      &__errors-left {
-        @include font-body(14);
-      }
+			&__typed,
+			&__errors-left {
+				@include font-body(14);
+			}
 
-      &__typed--error,
-      &__errors-left {
-        color: var(--error);
-      }
-    }
+			&__typed--error,
+			&__errors-left {
+				color: var(--error);
+			}
+		}
 
-    .time-left {
-      @include font-body(14);
-    }
+		.time-left {
+			@include font-body(14);
+		}
 
-    .time-left--low {
-      color: var(--error);
-    }
-  }
+		.time-left--low {
+			color: var(--error);
+		}
+	}
 
-  .start-overlay {
-    @include font-body(32);
-    position: absolute;
-    z-index: 5;
-    inset: 0;
-    color: var(--heading);
-    background-color: var(--surface);
-    display: none;
+	.start-overlay {
+		@include font-body(32);
+		position: absolute;
+		z-index: 5;
+		inset: 0;
+		color: var(--heading);
+		background-color: var(--surface);
+		display: none;
 
-    &--visible {
-      display: block;
-    }
-  }
+		&--visible {
+			display: block;
+		}
+	}
 }

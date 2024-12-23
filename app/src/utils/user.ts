@@ -16,163 +16,162 @@ import { ChangeAllUserDataPayload } from '$shared/types/events/server/ChangeAllU
 import { ChangeUserDataPayload } from '$shared/types/events/server/ChangeUserData'
 
 interface Context {
-  globalState: GlobalState
-  socket: SocketContextType
-  notifs: NotificationContextType
+	globalState: GlobalState
+	socket: SocketContextType
+	notifs: NotificationContextType
 }
 
 export function getUsername() {
-  const storedUsername = storage.get('username')
-  if(isValidUsername(storedUsername)) return storedUsername
+	const storedUsername = storage.get('username')
+	if (isValidUsername(storedUsername)) return storedUsername
 
-  const newUsername = generateUsername()
-  storage.set('username', newUsername)
-  return newUsername
+	const newUsername = generateUsername()
+	storage.set('username', newUsername)
+	return newUsername
 }
 
 export function getColor() {
-  const storedColor = storage.get('preferred-color')
-  if(isValidColor(storedColor)) return storedColor
+	const storedColor = storage.get('preferred-color')
+	if (isValidColor(storedColor)) return storedColor
 
-  const newColor = generateColor()
-  storage.set('preferred-color', newColor)
-  return newColor
+	const newColor = generateColor()
+	storage.set('preferred-color', newColor)
+	return newColor
 }
 
 /**
  * **WARNING: ONLY USE THIS FUNCTION TO UPDATE THE USER WHEN THE SERVER RETURNS AN UPDATED USER OR OUTSIDE OF A ROOM**
  * Directly update the state of the user.
  */
-export function setUser(
-  u: Partial<Omit<User, 'id'>>,
-  context: Pick<Context, 'globalState'>
-) {
-  const { globalState } = context
+export function setUser(u: Partial<Omit<User, 'id'>>, context: Pick<Context, 'globalState'>) {
+	const { globalState } = context
 
-  if(u.username) storage.set('username', u.username)
-  if(u.color) storage.set('preferred-color', u.color)
+	if (u.username) storage.set('username', u.username)
+	if (u.color) storage.set('preferred-color', u.color)
 
-  globalState.setUser({
-    ...globalState.user!,
-    ...u
-  })
-  globalState.setRoom(r => r ? ({
-    ...r,
-    users: r.users.map(user => (
-      user.id === globalState.user?.id
-        ? { ...user, ...u }
-        : user
-    ))
-  }) : null)
+	globalState.setUser({
+		...globalState.user!,
+		...u
+	})
+	globalState.setRoom((r) =>
+		r
+			? {
+					...r,
+					users: r.users.map((user) =>
+						user.id === globalState.user?.id ? { ...user, ...u } : user
+					)
+				}
+			: null
+	)
 }
 
 /**
  * Request to change some value of the user, then update the state if successful.
  */
 export async function updateUser<T extends keyof Omit<User, 'id'>>(
-  key: T,
-  value: Required<User>[T],
-  context: Context
+	key: T,
+	value: Required<User>[T],
+	context: Context
 ): Promise<
-T extends 'username'
-  ? Parameters<ChangeUsernameCallback>[0]
-  : T extends 'score'
-    ? Parameters<ChangeUserScoreCallback>[0]
-    : T extends 'state'
-      ? Parameters<ChangeUserStateCallback>[0]
-      : Parameters<RequestColorCallback>[0]
+	T extends 'username'
+		? Parameters<ChangeUsernameCallback>[0]
+		: T extends 'score'
+			? Parameters<ChangeUserScoreCallback>[0]
+			: T extends 'state'
+				? Parameters<ChangeUserStateCallback>[0]
+				: Parameters<RequestColorCallback>[0]
 > {
-  const { socket, globalState, notifs } = context
+	const { socket, globalState, notifs } = context
 
-  if(!checkSocket(socket.value, notifs) || !globalState.user) {
-    return {
-      value: null,
-      error: {
-        reason: 'missing-argument'
-      }
-    } as any
-  }
-  const res = await (() => {
-    if(key === 'username') {
-      return socket.value.emitWithAck(
-        'change-username',
-        {
-          id: globalState.user.id,
-          username: value as User['username']
-        }
-      )
-    } else if(key === 'color') {
-      return socket.value.emitWithAck(
-        'request-color',
-        {
-          id: globalState.user.id,
-          color: value as User['color']
-        }
-      )
-    } else if(key === 'state') {
-      return socket.value.emitWithAck(
-        'change-user-state',
-        {
-          id: globalState.user.id,
-          state: value as Required<User>['state']
-        }
-      )
-    } else {
-      return socket.value.emitWithAck(
-        'change-user-score',
-        {
-          id: globalState.user.id,
-          score: value as Required<User>['score']
-        }
-      )
-    }
-  })()
+	if (!checkSocket(socket.value, notifs) || !globalState.user) {
+		return {
+			value: null,
+			error: {
+				reason: 'missing-argument'
+			}
+		} as any
+	}
+	const res = await (() => {
+		if (key === 'username') {
+			return socket.value.emitWithAck('change-username', {
+				id: globalState.user.id,
+				username: value as User['username']
+			})
+		} else if (key === 'color') {
+			return socket.value.emitWithAck('request-color', {
+				id: globalState.user.id,
+				color: value as User['color']
+			})
+		} else if (key === 'state') {
+			return socket.value.emitWithAck('change-user-state', {
+				id: globalState.user.id,
+				state: value as Required<User>['state']
+			})
+		} else {
+			return socket.value.emitWithAck('change-user-score', {
+				id: globalState.user.id,
+				score: value as Required<User>['score']
+			})
+		}
+	})()
 
-  if(res.error) {
-    notifs.push(errorNotification(res.error.reason))
-    // This is typed correctly but it's a hassle to get typescript to like it
-    // Besides, the whole benefit is knowing the type outside of this function
-    return res as any
-  }
+	if (res.error) {
+		notifs.push(errorNotification(res.error.reason))
+		// This is typed correctly but it's a hassle to get typescript to like it
+		// Besides, the whole benefit is knowing the type outside of this function
+		return res as any
+	}
 
-  return res as any
+	return res as any
 }
 
 export async function onChangeAllUserData(
-  data: ChangeAllUserDataPayload,
-  { globalState }: Pick<Context, 'globalState'>
+	data: ChangeAllUserDataPayload,
+	{ globalState }: Pick<Context, 'globalState'>
 ) {
-  globalState.setRoom(r => r ? ({
-    ...r,
-    users: r.users.map(u => ({ ...u, ...data }))
-  }) : null)
+	globalState.setRoom((r) =>
+		r
+			? {
+					...r,
+					users: r.users.map((u) => ({ ...u, ...data }))
+				}
+			: null
+	)
 
-  globalState.setUser(u => u ? ({
-    ...u,
-    ...data
-  }) : null)
-  await globalState.waitForStateChange()
-  return
+	globalState.setUser((u) =>
+		u
+			? {
+					...u,
+					...data
+				}
+			: null
+	)
+	await globalState.waitForStateChange()
+	return
 }
 
 export async function onChangeUserData(
-  data: ChangeUserDataPayload,
-  { globalState }: Pick<Context, 'globalState'>
+	data: ChangeUserDataPayload,
+	{ globalState }: Pick<Context, 'globalState'>
 ) {
-  globalState.setRoom(r => r ? ({
-    ...r,
-    users: r.users.map(u => (
-      u.id === data.id
-        ? { ...u, ...data }
-        : u
-    ))
-  }) : null)
-  if(data.id === globalState.user?.id) {
-    globalState.setUser(u => u ? ({
-      ...u,
-      ...data
-    }) : null)
-  }
-  await globalState.waitForStateChange()
-  return
+	globalState.setRoom((r) =>
+		r
+			? {
+					...r,
+					users: r.users.map((u) => (u.id === data.id ? { ...u, ...data } : u))
+				}
+			: null
+	)
+	if (data.id === globalState.user?.id) {
+		globalState.setUser((u) =>
+			u
+				? {
+						...u,
+						...data
+					}
+				: null
+		)
+	}
+	await globalState.waitForStateChange()
+	return
 }

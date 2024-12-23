@@ -17,82 +17,77 @@ import { leaveRoom } from '@/utils/room'
 import { useRouter } from 'next/navigation'
 
 export default function RoomData() {
-  const globalState = useGlobalState()
-  const notifs = useNotification()
-  const socket = useSocket()
-  const router = useRouter()
-  // 'Predict' what state the user will be in before waiting for server
-  // This way, the state changes can feel instantaneous, but still be verified by the server
-  const [predictedUserState, setPredictedUserState] = useState<UserType['state'] | null>(null)
+	const globalState = useGlobalState()
+	const notifs = useNotification()
+	const socket = useSocket()
+	const router = useRouter()
+	// 'Predict' what state the user will be in before waiting for server
+	// This way, the state changes can feel instantaneous, but still be verified by the server
+	const [predictedUserState, setPredictedUserState] = useState<UserType['state'] | null>(null)
 
-  const { room, user } = globalState
-  if(!room || !user) return <></>
+	const { room, user } = globalState
+	if (!room || !user) return <></>
 
-  function onInviteClicked() {
-    window.navigator.clipboard.writeText(window.location.href)
-    notifs.push({
-      style: 'success',
-      text: 'Copied link to clipboard!'
-    })
-  }
+	function onInviteClicked() {
+		window.navigator.clipboard.writeText(window.location.href)
+		notifs.push({
+			style: 'success',
+			text: 'Copied link to clipboard!'
+		})
+	}
 
-  async function onCheckboxChange(ready: boolean) {
-    setPredictedUserState(ready ? 'ready' : 'not-ready')
-    await updateUser(
-      'state',
-      ready ? 'ready' : 'not-ready',
-      {
-        globalState,
-        notifs,
-        socket
-      }
-    )
-    setPredictedUserState(null)
-  }
+	async function onCheckboxChange(ready: boolean) {
+		setPredictedUserState(ready ? 'ready' : 'not-ready')
+		await updateUser('state', ready ? 'ready' : 'not-ready', {
+			globalState,
+			notifs,
+			socket
+		})
+		setPredictedUserState(null)
+	}
 
-  function handleLeaveRoom() {
-    router.push('/')
-    leaveRoom({ globalState, socket, notifs })
-  }
+	function handleLeaveRoom() {
+		router.push('/')
+		leaveRoom({ globalState, socket, notifs })
+	}
 
-  return (
-    <div className={styles['data']}>
-      <ul className={styles['data__users']}>
-        {room.users.map(u => (
-          <User key={u.id} user={u} />
-        ))}
-      </ul>
-      {room.state !== 'in-progress' && (
-        <Checkbox
-          checked={predictedUserState ? predictedUserState === 'ready' : user.state === 'ready'}
-          onChange={onCheckboxChange}>
-          {"I'm ready"}
-        </Checkbox>
-      )}
-      <hr></hr>
-      <div className={styles['data__room']}>
-        <div className={styles['room-metadata']}>
-          <div className={styles['room-metadata__title']}>
-            <h2 className={styles['room-name']}>Room {room.id}</h2>
-            <h3 className={styles['players']}>{room.users.length}/{MAX_USERS_PER_ROOM} players</h3>
-          </div>
-          <Button
-            style='tertiary'
-            onClick={handleLeaveRoom}>
-            <ButtonIcon icon={<PixelarticonsLogout />} />
-            Leave room
-          </Button>
-        </div>
-        <div className={styles['invite']}>
-          <h2 className={styles['invite__title']}>Invite</h2>
-          <button
-            onClick={onInviteClicked}
-            className={styles['invite__button']}>
-            {window.location.href}
-            <PixelarticonsCopy />
-          </button>
-        </div>
-      </div>
-    </div>
-  )
+	return (
+		<div className={styles['data']}>
+			<ul className={styles['data__users']}>
+				{room.users.map((u) => (
+					<User key={u.id} user={u} />
+				))}
+			</ul>
+			{room.state !== 'in-progress' && (
+				<Checkbox
+					checked={predictedUserState ? predictedUserState === 'ready' : user.state === 'ready'}
+					onChange={onCheckboxChange}
+				>
+					{"I'm ready"}
+				</Checkbox>
+			)}
+			<hr></hr>
+			<div className={styles['data__room']}>
+				<div className={styles['room-metadata']}>
+					<div className={styles['room-metadata__title']}>
+						<h2 className={styles['room-name']}>Room {room.id}</h2>
+						<h3 className={styles['players']}>
+							{room.users.length}/{MAX_USERS_PER_ROOM} players
+						</h3>
+					</div>
+					<Button style="tertiary" onClick={handleLeaveRoom}>
+						<ButtonIcon icon={<PixelarticonsLogout />} />
+						Leave room
+					</Button>
+				</div>
+				<div className={styles['invite']}>
+					<h2 className={styles['invite__title']}>Invite</h2>
+					<button onClick={onInviteClicked} className={styles['invite__button']}>
+						{window.location.href}
+						<PixelarticonsCopy />
+					</button>
+				</div>
+			</div>
+		</div>
+	)
 }

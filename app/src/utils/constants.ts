@@ -1,7 +1,7 @@
-import Data from "@/types/Data";
+import Data from '@/types/Data'
 
 export const LOADING: Data<any, any> = {
-  state: 'loading',
-  value: null,
-  error: null
+	state: 'loading',
+	value: null,
+	error: null
 }

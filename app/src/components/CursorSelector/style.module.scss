@@ -1,17 +1,17 @@
 .selector {
-  width: 100%;
-  display: flex;
-  gap: 4px;
+	width: 100%;
+	display: flex;
+	gap: 4px;
 
-  &__item {
-    aspect-ratio: 1;
-    flex: 1;
-    display: grid;
-    place-items: center;
-    background-color: var(--surface);
+	&__item {
+		aspect-ratio: 1;
+		flex: 1;
+		display: grid;
+		place-items: center;
+		background-color: var(--surface);
 
-    &:disabled {
-      background-color: var(--disabled);
-    }
-  }
+		&:disabled {
+			background-color: var(--disabled);
+		}
+	}
 }

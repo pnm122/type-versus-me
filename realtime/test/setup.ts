@@ -1,6 +1,6 @@
-import state from "@/global/state"
+import state from '@/global/state'
 
 // Clear global state before every test
 beforeEach(() => {
-  state.reset()
+	state.reset()
 })

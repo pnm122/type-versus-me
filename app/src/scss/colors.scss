@@ -1,77 +1,76 @@
 $themeless-colors: (
-  'white': #FDFCF9,
-  'black': #10100E
+	'white': #fdfcf9,
+	'black': #10100e
 );
 
 $theme-base-colors: (
-  'light': (
-    'primary': #FFCD2A,
-    'primary-light': #FFE07C,
-    'primary-dark': #805A00,
-    'gray-10': #F6F4F1,
-    'gray-20': #E1DFDA,
-    'gray-30': #C7C4BE,
-    'gray-40': #B2AFAB,
-    'gray-50': #9B9892,
-    'gray-60': #7F7D79,
-    'gray-70': #585754,
-    'gray-80': #373634,
-    'gray-90': #1D1C1C,
-    'cursor-red': #D31900,
-    'cursor-red-light': #FFDCD7,
-    'cursor-orange': #F67300,
-    'cursor-orange-light': #FFE6CF,
-    'cursor-yellow': #CAB300,
-    'cursor-yellow-light': #FCF3B0,
-    'cursor-green': #16A600,
-    'cursor-green-light': #C9FAC1,
-    'cursor-blue': #0069D1,
-    'cursor-blue-light': #D5EAFF,
-    'cursor-purple': #8F00E2,
-    'cursor-purple-light': #F1D8FF,
-    'cursor-pink': #E50091,
-    'cursor-pink-light': #FFD9F1,
-    'error': #EA1C1C,
-    'error-dark': #840C0C,
-    'positive': #5CFF5C
-  )
+	'light': (
+		'primary': #ffcd2a,
+		'primary-light': #ffe07c,
+		'primary-dark': #805a00,
+		'gray-10': #f6f4f1,
+		'gray-20': #e1dfda,
+		'gray-30': #c7c4be,
+		'gray-40': #b2afab,
+		'gray-50': #9b9892,
+		'gray-60': #7f7d79,
+		'gray-70': #585754,
+		'gray-80': #373634,
+		'gray-90': #1d1c1c,
+		'cursor-red': #d31900,
+		'cursor-red-light': #ffdcd7,
+		'cursor-orange': #f67300,
+		'cursor-orange-light': #ffe6cf,
+		'cursor-yellow': #cab300,
+		'cursor-yellow-light': #fcf3b0,
+		'cursor-green': #16a600,
+		'cursor-green-light': #c9fac1,
+		'cursor-blue': #0069d1,
+		'cursor-blue-light': #d5eaff,
+		'cursor-purple': #8f00e2,
+		'cursor-purple-light': #f1d8ff,
+		'cursor-pink': #e50091,
+		'cursor-pink-light': #ffd9f1,
+		'error': #ea1c1c,
+		'error-dark': #840c0c,
+		'positive': #5cff5c
+	)
 );
 
 $theme-alias-colors: (
-  'light': (
-    'surface': map-get(map-get($theme-base-colors, 'light'), 'gray-10'),
-    'border': map-get(map-get($theme-base-colors, 'light'), 'gray-20'),
-    'disabled': map-get(map-get($theme-base-colors, 'light'), 'gray-20'),
-    'on-disabled': map-get(map-get($theme-base-colors, 'light'), 'gray-60'),
-    'placeholder': map-get(map-get($theme-base-colors, 'light'), 'gray-50'),
-    'untyped': map-get(map-get($theme-base-colors, 'light'), 'gray-50'),
-    'text': map-get(map-get($theme-base-colors, 'light'), 'gray-80'),
-    'background': map-get($themeless-colors, 'white'),
-    'heading': map-get($themeless-colors, 'black'),
-    'correct': map-get($themeless-colors, 'black'),
-    'extra': map-get(map-get($theme-base-colors, 'light'), 'error-dark')
-  )
+	'light': (
+		'surface': map-get(map-get($theme-base-colors, 'light'), 'gray-10'),
+		'border': map-get(map-get($theme-base-colors, 'light'), 'gray-20'),
+		'disabled': map-get(map-get($theme-base-colors, 'light'), 'gray-20'),
+		'on-disabled': map-get(map-get($theme-base-colors, 'light'), 'gray-60'),
+		'placeholder': map-get(map-get($theme-base-colors, 'light'), 'gray-50'),
+		'untyped': map-get(map-get($theme-base-colors, 'light'), 'gray-50'),
+		'text': map-get(map-get($theme-base-colors, 'light'), 'gray-80'),
+		'background': map-get($themeless-colors, 'white'),
+		'heading': map-get($themeless-colors, 'black'),
+		'correct': map-get($themeless-colors, 'black'),
+		'extra': map-get(map-get($theme-base-colors, 'light'), 'error-dark')
+	)
 );
 
 body {
-  @each $key, $value in $themeless-colors {
-    --#{$key}: #{$value};
-  }    
+	@each $key, $value in $themeless-colors {
+		--#{$key}: #{$value};
+	}
 }
 
-
 @each $theme, $vars in $theme-base-colors {
-  body:has([data-theme=#{$theme}]) {
-    @each $key, $value in $vars {
-      --#{$key}: #{$value};
-    }
-  }
+	body:has([data-theme='#{$theme}']) {
+		@each $key, $value in $vars {
+			--#{$key}: #{$value};
+		}
+	}
 }
 
 @each $theme, $vars in $theme-alias-colors {
-  body:has([data-theme=#{$theme}]) {
-    @each $key, $value in $vars {
-      --#{$key}: #{$value};
-    }
-  }
+	body:has([data-theme='#{$theme}']) {
+		@each $key, $value in $vars {
+			--#{$key}: #{$value};
+		}
+	}
 }

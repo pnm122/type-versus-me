@@ -1,43 +1,43 @@
 @use '@/scss/fonts';
 
 .checkbox {
-  border: 2px solid var(--border);
-  color: var(--heading);
-  height: 40px;
-  padding-inline: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 8px;
-  font-size: font-body(14);
-  line-height: 1;
+	border: 2px solid var(--border);
+	color: var(--heading);
+	height: 40px;
+	padding-inline: 8px;
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 8px;
+	font-size: font-body(14);
+	line-height: 1;
 
-  &[aria-checked="true"] {
-    border-color: var(--positive);
-    background-color: var(--positive);
+	&[aria-checked='true'] {
+		border-color: var(--positive);
+		background-color: var(--positive);
 
-    .checkbox__box {
-      border: none;
-      background-color: var(--heading);
+		.checkbox__box {
+			border: none;
+			background-color: var(--heading);
 
-      .check {
-        display: block;
-      }
-    }
-  }
+			.check {
+				display: block;
+			}
+		}
+	}
 
-  &__box {
-    border: 2px solid var(--border);
-    width: 16px;
-    height: 16px;
-    display: grid;
-    place-items: center;
+	&__box {
+		border: 2px solid var(--border);
+		width: 16px;
+		height: 16px;
+		display: grid;
+		place-items: center;
 
-    .check {
-      color: var(--positive);
-      width: 100%;
-      height: 100%;
-      display: none;
-    }
-  }
+		.check {
+			color: var(--positive);
+			width: 100%;
+			height: 100%;
+			display: none;
+		}
+	}
 }

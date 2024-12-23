@@ -1,13 +1,13 @@
 @use '@/scss/fonts' as *;
 
 .pill {
-  @include font-heading(12);
+	@include font-heading(12);
 
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  height: 18px;
-  padding-inline: 4px;
-  text-transform: uppercase;
-  line-height: 1;
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	height: 18px;
+	padding-inline: 4px;
+	text-transform: uppercase;
+	line-height: 1;
 }

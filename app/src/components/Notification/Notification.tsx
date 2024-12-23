@@ -8,75 +8,68 @@ import IconButton from '../Button/IconButton'
 import { useEffect } from 'react'
 
 export type NotificationProps = React.PropsWithChildren<{
-  id: string
-  onClose: (id: string) => void
-  closeDelay?: number
-  style?: 'default' | 'error' | 'success'
-  icon?: 'notification' | 'check' | 'alert'
+	id: string
+	onClose: (id: string) => void
+	closeDelay?: number
+	style?: 'default' | 'error' | 'success'
+	icon?: 'notification' | 'check' | 'alert'
 }>
 
 export default function Notification({
-  id,
-  onClose,
-  closeDelay,
-  style = 'default',
-  children,
-  icon
+	id,
+	onClose,
+	closeDelay,
+	style = 'default',
+	children,
+	icon
 }: NotificationProps) {
-  const displayedIcon = icon ?? getIconFromStyle()
+	const displayedIcon = icon ?? getIconFromStyle()
 
-  function getIconFromStyle(): NotificationProps['icon'] {
-    return (
-      style === 'default'
-        ? 'notification'
-        : style === 'error'
-          ? 'alert'
-          : 'check'
-    )
-  }
+	function getIconFromStyle(): NotificationProps['icon'] {
+		return style === 'default' ? 'notification' : style === 'error' ? 'alert' : 'check'
+	}
 
-  const iconElement =
-    displayedIcon === 'notification'
-      ? <PixelarticonsNotification />
-      : displayedIcon === 'alert'
-        ? <PixelarticonsAlert />
-        : <PixelarticonsCheck />
+	const iconElement =
+		displayedIcon === 'notification' ? (
+			<PixelarticonsNotification />
+		) : displayedIcon === 'alert' ? (
+			<PixelarticonsAlert />
+		) : (
+			<PixelarticonsCheck />
+		)
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      if(closeDelay) {
-        onClose(id)
-      }
-    }, closeDelay ?? 0)
+	useEffect(() => {
+		const timeout = setTimeout(() => {
+			if (closeDelay) {
+				onClose(id)
+			}
+		}, closeDelay ?? 0)
 
-    return () => {
-      clearTimeout(timeout)
-    }
-  }, [])
+		return () => {
+			clearTimeout(timeout)
+		}
+	}, [])
 
-  return (
-    <div
-      style={{
-        viewTransitionName: id
-      }}
-      aria-live='polite'
-      className={createClasses({
-        [styles['notification']]: true,
-        [styles[`notification--${style}`]]: true
-      })}>
-      <div className={styles['notification__icon']}>
-        {iconElement}
-      </div>
-      <div className={styles['notification__content']}>
-        {children}
-      </div>
-      <IconButton
-        icon={<PixelarticonsClose />}
-        style='tertiary'
-        onClick={() => onClose(id)}
-        className={styles['notification__close']}
-        ariaLabel='Close notification'
-      />
-    </div>
-  )
+	return (
+		<div
+			style={{
+				viewTransitionName: id
+			}}
+			aria-live="polite"
+			className={createClasses({
+				[styles['notification']]: true,
+				[styles[`notification--${style}`]]: true
+			})}
+		>
+			<div className={styles['notification__icon']}>{iconElement}</div>
+			<div className={styles['notification__content']}>{children}</div>
+			<IconButton
+				icon={<PixelarticonsClose />}
+				style="tertiary"
+				onClick={() => onClose(id)}
+				className={styles['notification__close']}
+				ariaLabel="Close notification"
+			/>
+		</div>
+	)
 }

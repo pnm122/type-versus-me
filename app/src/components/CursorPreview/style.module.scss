@@ -1,15 +1,15 @@
 .cursor {
-  aspect-ratio: 1 / 8;
+	aspect-ratio: 1 / 8;
 
-  &--small {
-    height: 1rem;
-  }
+	&--small {
+		height: 1rem;
+	}
 
-  &--medium {
-    height: 1.5rem;
-  }
+	&--medium {
+		height: 1.5rem;
+	}
 
-  &--large {
-    height: 2rem;
-  }
+	&--large {
+		height: 2rem;
+	}
 }

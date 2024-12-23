@@ -2,111 +2,111 @@
 @use '@/scss/breakpoints' as *;
 
 .leaderboard {
-  border-top: 2px solid var(--border);
-  padding-top: 16px;
+	border-top: 2px solid var(--border);
+	padding-top: 16px;
 
-  .expand {
-    @include font-heading(16);
-    color: var(--heading);
-    display: flex;
-    align-items: center;
-    gap: 8px;
+	.expand {
+		@include font-heading(16);
+		color: var(--heading);
+		display: flex;
+		align-items: center;
+		gap: 8px;
 
-    &__title {
-      transition: font-size 0.25s var(--timing);
-    }
-    
-    &__icon {
-      transition: rotate 0.25s var(--timing);
-    }
+		&__title {
+			transition: font-size 0.25s var(--timing);
+		}
 
-    &[aria-expanded="true"] .expand__icon {
-      rotate: 180deg;
-    }
-  }
+		&__icon {
+			transition: rotate 0.25s var(--timing);
+		}
 
-  &__results {
-    overflow: hidden;
-    // Let calculated height in JS not worry about padding when setting the height
-    box-sizing: content-box;
-    transition:
-      height 0.25s var(--timing),
-      padding 0.25s var(--timing);
+		&[aria-expanded='true'] .expand__icon {
+			rotate: 180deg;
+		}
+	}
 
-    .list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin: 0;
-      padding: 0;
-    }
-  }
+	&__results {
+		overflow: hidden;
+		// Let calculated height in JS not worry about padding when setting the height
+		box-sizing: content-box;
+		transition:
+			height 0.25s var(--timing),
+			padding 0.25s var(--timing);
 
-  &--open {
-    .leaderboard__results {
-      padding-top: 16px;
-    }
+		.list {
+			display: flex;
+			flex-direction: column;
+			gap: 12px;
+			margin: 0;
+			padding: 0;
+		}
+	}
 
-    .expand {
-      @include font-heading(24);
-    }
-  }
+	&--open {
+		.leaderboard__results {
+			padding-top: 16px;
+		}
+
+		.expand {
+			@include font-heading(24);
+		}
+	}
 }
 
 .user {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  height: 40px;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	height: 40px;
 
-  .username,
-  .wpm {
-    color: var(--heading);
-  }
+	.username,
+	.wpm {
+		color: var(--heading);
+	}
 
-  .username {
-    @include font-heading(16);
+	.username {
+		@include font-heading(16);
 
-    &__you {
-      @include font-heading(12);
-      color: var(--placeholder);
-      display: inline;
-    }
-  }
+		&__you {
+			@include font-heading(12);
+			color: var(--placeholder);
+			display: inline;
+		}
+	}
 
-  .wpm {
-    @include font-heading(12);
-  }
+	.wpm {
+		@include font-heading(12);
+	}
 
-  @media screen and (width > $screen-sm) {
-    .username {
-      @include font-heading(20);
+	@media screen and (width > $screen-sm) {
+		.username {
+			@include font-heading(20);
 
-      &__you {
-        @include font-heading(14);
-      }
-    }
-  
-    .wpm {
-      @include font-heading(14);
-    }
-  }
+			&__you {
+				@include font-heading(14);
+			}
+		}
 
-  &__bar {
-    height: 100%;
-    padding-inline: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+		.wpm {
+			@include font-heading(14);
+		}
+	}
 
-    &--failed {
-      padding-inline: 0;
-    }
+	&__bar {
+		height: 100%;
+		padding-inline: 12px;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
 
-    .username,
-    .username__you,
-    .wpm {
-      color: var(--background);
-    }
-  }
+		&--failed {
+			padding-inline: 0;
+		}
+
+		.username,
+		.username__you,
+		.wpm {
+			color: var(--background);
+		}
+	}
 }

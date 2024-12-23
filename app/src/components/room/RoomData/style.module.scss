@@ -1,67 +1,67 @@
 @use '@/scss/fonts' as *;
 
 .data {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
 
-  &__users {
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
+	&__users {
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 20px;
+	}
 
-  &__room {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+	&__room {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
 
-    .room-metadata {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+		.room-metadata {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
 
-      &__title {
-        .room-name {
-          @include font-heading(20);
-        }
+			&__title {
+				.room-name {
+					@include font-heading(20);
+				}
 
-        .players {
-          @include font-body(14);
-          color: var(--placeholder);
-        }
-      }
-    }
+				.players {
+					@include font-body(14);
+					color: var(--placeholder);
+				}
+			}
+		}
 
-    .invite {
-      background-color: var(--surface);
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      
-      &__title {
-        @include font-heading(16);
-      }
-      
-      &__button {
-        @include font-body(14);
-        line-height: 1;
-        background-color: var(--gray-20);
-        color: var(--text);
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        height: 28px;
-        padding-inline: 4px;
-        width: fit-content;
+		.invite {
+			background-color: var(--surface);
+			padding: 12px;
+			display: flex;
+			flex-direction: column;
+			gap: 4px;
 
-        svg {
-          color: var(--heading);
-        }
-      }
-    }
-  }
+			&__title {
+				@include font-heading(16);
+			}
+
+			&__button {
+				@include font-body(14);
+				line-height: 1;
+				background-color: var(--gray-20);
+				color: var(--text);
+				display: flex;
+				align-items: center;
+				gap: 8px;
+				height: 28px;
+				padding-inline: 4px;
+				width: fit-content;
+
+				svg {
+					color: var(--heading);
+				}
+			}
+		}
+	}
 }

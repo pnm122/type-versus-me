@@ -6,7 +6,7 @@
 
 body {
 	margin: 0;
-  line-height: 1.5;
+	line-height: 1.5;
 }
 
 button,
@@ -47,7 +47,7 @@ h5,
 h6 {
 	/* Low browser support but not incredibly important */
 	text-wrap: balance;
-  font: inherit;
+	font: inherit;
 }
 
 a,
@@ -73,7 +73,7 @@ svg {
 input,
 textarea,
 button {
-  background: none;
+	background: none;
 }
 
 button {
@@ -92,6 +92,6 @@ hr {
 }
 
 :disabled,
-[aria-disabled="true"] {
-  cursor: default;
+[aria-disabled='true'] {
+	cursor: default;
 }

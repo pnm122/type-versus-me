@@ -1,131 +1,134 @@
-@import "@/scss/fonts";
+@import '@/scss/fonts';
 
 .typer {
-  --_typer-correct-letter-color: var(--typer-correct-letter-color, var(--correct));
-  --_typer-wrong-letter-color: var(--typer-wrong-letter-color, var(--error));
-  --_typer-extra-letter-color: var(--typer-extra-letter-color, var(--extra));
-  --_typer-untyped-letter-color: var(--typer-untyped-letter-color, var(--untyped));
-  --_typer-cursor-color: var(--typer-cursor-color, var(--cursor-blue));
-  --_typer-wrong-word-decoration: var(--typer-wrong-word-decoration, underline var(--error));
+	--_typer-correct-letter-color: var(--typer-correct-letter-color, var(--correct));
+	--_typer-wrong-letter-color: var(--typer-wrong-letter-color, var(--error));
+	--_typer-extra-letter-color: var(--typer-extra-letter-color, var(--extra));
+	--_typer-untyped-letter-color: var(--typer-untyped-letter-color, var(--untyped));
+	--_typer-cursor-color: var(--typer-cursor-color, var(--cursor-blue));
+	--_typer-wrong-word-decoration: var(--typer-wrong-word-decoration, underline var(--error));
 
-  @include font-body(32);
-  position: relative;
-  // Cut off cursors and text so only 3 lines show
-  overflow: hidden;
-  height: 9rem;
-  // Extra padding to ensure cursors are fully visible
-  padding: 0.1em;
-  max-width: 100%;
+	@include font-body(32);
+	position: relative;
+	// Cut off cursors and text so only 3 lines show
+	overflow: hidden;
+	height: 9rem;
+	// Extra padding to ensure cursors are fully visible
+	padding: 0.1em;
+	max-width: 100%;
 
-  &:focus {
-    outline: none;
+	&:focus {
+		outline: none;
 
-    .cursor:not(.cursor--opponent) {
-      visibility: visible;
-    }
-  }
+		.cursor:not(.cursor--opponent) {
+			visibility: visible;
+		}
+	}
 
-  &__inner {
-    display: block;
-  }
+	&__inner {
+		display: block;
+	}
 
-  .cursor:not(.cursor--opponent) {
-    visibility: hidden;
-  }
+	.cursor:not(.cursor--opponent) {
+		visibility: hidden;
+	}
 
-  .word {
-    display: inline;
-    word-wrap: break-word;
-  
-    &--incorrect {
-      text-decoration: var(--_typer-wrong-word-decoration);
-    }
-  
-    .untyped {
-      color: var(--_typer-untyped-letter-color);
-    }
-  
-    .extra {
-      color: var(--_typer-extra-letter-color);
-      // Extra letters can cause words to go beyond max width, allow them to wrap anywhere
-      line-break: anywhere;
-    }
-  
-    .correct {
-      color: var(--_typer-correct-letter-color);
-    }
-  
-    .incorrect {
-      color: var(--_typer-wrong-letter-color);
-    }
-  }
+	.word {
+		display: inline;
+		word-wrap: break-word;
 
-  .character {
-    display: inline;
-  }
+		&--incorrect {
+			text-decoration: var(--_typer-wrong-word-decoration);
+		}
+
+		.untyped {
+			color: var(--_typer-untyped-letter-color);
+		}
+
+		.extra {
+			color: var(--_typer-extra-letter-color);
+			// Extra letters can cause words to go beyond max width, allow them to wrap anywhere
+			line-break: anywhere;
+		}
+
+		.correct {
+			color: var(--_typer-correct-letter-color);
+		}
+
+		.incorrect {
+			color: var(--_typer-wrong-letter-color);
+		}
+	}
+
+	.character {
+		display: inline;
+	}
 }
 
 .cursor {
-  height: 1.1em;
-  width: max(0.1em, 2px);
-  position: absolute;
-  z-index: 2;
-  top: 0;
-  left: -0.05em;
-  display: none;
-  // Makes the cursor look roughly centered vertically
-  // Pretty sure this is dependent on font, oh well
-  margin-top: 0.1em;
-  // Initial transform to move the cursor relative to padding of Typer
-  transform: translate(0.1em, 0.1em);
-  transition:
-    transform 0.1s cubic-bezier(0.215, 0.610, 0.355, 1),
-    opacity 0.5s;
+	height: 1.1em;
+	width: max(0.1em, 2px);
+	position: absolute;
+	z-index: 2;
+	top: 0;
+	left: -0.05em;
+	display: none;
+	// Makes the cursor look roughly centered vertically
+	// Pretty sure this is dependent on font, oh well
+	margin-top: 0.1em;
+	// Initial transform to move the cursor relative to padding of Typer
+	transform: translate(0.1em, 0.1em);
+	transition:
+		transform 0.1s cubic-bezier(0.215, 0.61, 0.355, 1),
+		opacity 0.5s;
 
-  &--red {
-    background-color: var(--cursor-red);
-  }
-  
-  &--orange {
-    background-color: var(--cursor-orange);
-  }
+	&--red {
+		background-color: var(--cursor-red);
+	}
 
-  &--yellow {
-    background-color: var(--cursor-yellow);
-  }
+	&--orange {
+		background-color: var(--cursor-orange);
+	}
 
-  &--green {
-    background-color: var(--cursor-green);
-  }
+	&--yellow {
+		background-color: var(--cursor-yellow);
+	}
 
-  &--blue {
-    background-color: var(--cursor-blue);
-  }
+	&--green {
+		background-color: var(--cursor-green);
+	}
 
-  &--purple {
-    background-color: var(--cursor-purple);
-  }
+	&--blue {
+		background-color: var(--cursor-blue);
+	}
 
-  &--pink {
-    background-color: var(--cursor-pink);
-  }
+	&--purple {
+		background-color: var(--cursor-purple);
+	}
 
-  &--opponent {
-    filter: opacity(0.333);
-    z-index: 1;
-  }
-  
-  &--blinking:not(.cursor--opponent) {
-    animation: blink 1.25s infinite;
-  }
+	&--pink {
+		background-color: var(--cursor-pink);
+	}
 
-  @keyframes blink {
-    0%, 15%, 85%, 100% {
-      opacity: 1;
-    }
+	&--opponent {
+		filter: opacity(0.333);
+		z-index: 1;
+	}
 
-    50% {
-      opacity: 0;
-    }
-  }
+	&--blinking:not(.cursor--opponent) {
+		animation: blink 1.25s infinite;
+	}
+
+	@keyframes blink {
+		0%,
+		15%,
+		85%,
+		100% {
+			opacity: 1;
+		}
+
+		50% {
+			opacity: 0;
+		}
+	}
 }

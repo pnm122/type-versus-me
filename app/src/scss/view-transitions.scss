@@ -4,57 +4,57 @@
 // Override this explicitly for elements that should have a view transition animation
 ::view-transition-new(*),
 ::view-transition-old(*) {
-  /* Prevent the default animation,
+	/* Prevent the default animation,
   so both views remain opacity:1 throughout the transition */
-  animation: none;
-  /* Use normal blending,
+	animation: none;
+	/* Use normal blending,
   so the new view sits on top and obscures the old view */
-  mix-blend-mode: normal;
+	mix-blend-mode: normal;
 }
 
 ::view-transition-group(.notification) {
-  animation-duration: 0.25s;
-  animation-timing-function: var(--timing);
+	animation-duration: 0.25s;
+	animation-timing-function: var(--timing);
 }
 
 // ENTRANCE ANIMATION: view-transition-new is the only child only when an element is appearing
 ::view-transition-new(.notification):only-child {
-  animation: 0.25s var(--timing) enter forwards;
+	animation: 0.25s var(--timing) enter forwards;
 }
 
 // EXIT ANIMATION: view-transition-old is the only child only when an element is appearing
 ::view-transition-old(.notification-first):only-child {
-  animation: 0.25s var(--timing) first-exit forwards;
+	animation: 0.25s var(--timing) first-exit forwards;
 }
 
 ::view-transition-old(.notification-not-first):only-child {
-  animation: 0.25s var(--timing) not-first-exit forwards;
+	animation: 0.25s var(--timing) not-first-exit forwards;
 }
 
 @keyframes enter {
-  from {
-    transform: translateY(calc(-100% - 12px));
-  }
-  to {
-    transform: none;
-  }
+	from {
+		transform: translateY(calc(-100% - 12px));
+	}
+	to {
+		transform: none;
+	}
 }
 
 @keyframes first-exit {
-  from {
-    transform: none;
-  }
-  to {
-    transform: translateY(calc(-100% - 12px));
-  }
+	from {
+		transform: none;
+	}
+	to {
+		transform: translateY(calc(-100% - 12px));
+	}
 }
 
 @keyframes not-first-exit {
-  from {
-    transform: none;
-  }
-  to {
-    opacity: 0;
-    transform: scale(0.85);
-  }
+	from {
+		transform: none;
+	}
+	to {
+		opacity: 0;
+		transform: scale(0.85);
+	}
 }

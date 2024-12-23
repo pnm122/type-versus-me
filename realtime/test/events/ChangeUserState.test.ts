@@ -1,235 +1,247 @@
-import ChangeUserState from "@/events/ChangeUserState"
-import { createRoomForTesting, ioSpies, mockSocket, mockUser } from "../test-utils"
-import { UserState } from "$shared/types/User"
-import { RoomState } from "$shared/types/Room"
-import state from "@/global/state"
-import { INITIAL_USER_SCORE } from "$shared/constants"
-import * as eventUtils from "@/utils/eventUtils"
+import ChangeUserState from '@/events/ChangeUserState'
+import { createRoomForTesting, ioSpies, mockSocket, mockUser } from '../test-utils'
+import { UserState } from '$shared/types/User'
+import { RoomState } from '$shared/types/Room'
+import state from '@/global/state'
+import { INITIAL_USER_SCORE } from '$shared/constants'
+import * as eventUtils from '@/utils/eventUtils'
 
 describe('ChangeUserState', () => {
-  it('runs without failing if callback not provided', () => {
-    const socket = mockSocket()
-    // @ts-expect-error missing parameters on purpose
-    ChangeUserState(socket, null, null)
-    expect(true).toBe(true)
-  })
+	it('runs without failing if callback not provided', () => {
+		const socket = mockSocket()
+		// @ts-expect-error missing parameters on purpose
+		ChangeUserState(socket, null, null)
+		expect(true).toBe(true)
+	})
 
-  describe('errors', () => {
-    it('gives the correct error if the user ID does not match the session ID', () => {
-      const callback = jest.fn()
-      const { user } = createRoomForTesting().value!
+	describe('errors', () => {
+		it('gives the correct error if the user ID does not match the session ID', () => {
+			const callback = jest.fn()
+			const { user } = createRoomForTesting().value!
 
-      ChangeUserState(mockSocket('userA'), mockUser({ id: user.id, state: 'in-progress' }), callback)
+			ChangeUserState(
+				mockSocket('userA'),
+				mockUser({ id: user.id, state: 'in-progress' }),
+				callback
+			)
 
-      expect(callback).toHaveBeenCalledWith({
-        value: null,
-        error: {
-          reason: 'invalid-user-id'
-        }
-      })
-    })
+			expect(callback).toHaveBeenCalledWith({
+				value: null,
+				error: {
+					reason: 'invalid-user-id'
+				}
+			})
+		})
 
-    it('gives the correct error if the state is not provided', () => {
-      const callback = jest.fn()
-      // @ts-expect-error missing parameters on purpose
-      ChangeUserState(mockSocket('test'), { id: 'test' }, callback)
+		it('gives the correct error if the state is not provided', () => {
+			const callback = jest.fn()
+			// @ts-expect-error missing parameters on purpose
+			ChangeUserState(mockSocket('test'), { id: 'test' }, callback)
 
-      expect(callback).toHaveBeenCalledWith({
-        value: null,
-        error: {
-          reason: 'missing-argument'
-        }
-      })
-    })
+			expect(callback).toHaveBeenCalledWith({
+				value: null,
+				error: {
+					reason: 'missing-argument'
+				}
+			})
+		})
 
-    it('gives the correct error if the user is not in a room', () => {
-      const callback = jest.fn()
-      ChangeUserState(mockSocket('test'), { id: 'test', state: 'ready' }, callback)
+		it('gives the correct error if the user is not in a room', () => {
+			const callback = jest.fn()
+			ChangeUserState(mockSocket('test'), { id: 'test', state: 'ready' }, callback)
 
-      expect(callback).toHaveBeenCalledWith({
-        value: null,
-        error: {
-          reason: 'user-not-in-room'
-        }
-      })
-    })
+			expect(callback).toHaveBeenCalledWith({
+				value: null,
+				error: {
+					reason: 'user-not-in-room'
+				}
+			})
+		})
 
-    describe('requested state is not possible given the room state', () => {
-      const invalidStates: { [key in RoomState]: UserState[] } = {
-        'complete': ['in-progress', 'complete', 'failed'],
-        'in-progress': ['not-ready', 'ready'],
-        'waiting': ['in-progress', 'complete', 'failed']
-      }
-      
-      Object.keys(invalidStates).forEach(roomState => {
-        invalidStates[roomState as RoomState].forEach(userState => {
-          it(`gives the correct error when requesting ${userState} and the room state is ${roomState}`, () => {
-            const { user, room } = createRoomForTesting().value!
-            state.updateRoom(room.id, { state: roomState as RoomState })
+		describe('requested state is not possible given the room state', () => {
+			const invalidStates: { [key in RoomState]: UserState[] } = {
+				complete: ['in-progress', 'complete', 'failed'],
+				'in-progress': ['not-ready', 'ready'],
+				waiting: ['in-progress', 'complete', 'failed']
+			}
 
-            const callback = jest.fn()
-            ChangeUserState(mockSocket(user.id), { id: user.id, state: userState }, callback)
+			Object.keys(invalidStates).forEach((roomState) => {
+				invalidStates[roomState as RoomState].forEach((userState) => {
+					it(`gives the correct error when requesting ${userState} and the room state is ${roomState}`, () => {
+						const { user, room } = createRoomForTesting().value!
+						state.updateRoom(room.id, { state: roomState as RoomState })
 
-            expect(callback).toHaveBeenCalledWith({
-              value: null,
-              error: {
-                reason: 'invalid-state'
-              }
-            })
-          })
-        })
-      })
-    })
-  })
+						const callback = jest.fn()
+						ChangeUserState(mockSocket(user.id), { id: user.id, state: userState }, callback)
 
-  it('changes the user state in the state', () => {
-    const { user, room } = createRoomForTesting().value!
-    // Make sure that not all users will be in the ready state
-    state.addUserToRoom(room.id, mockUser({ id: 'ADDITIONAL_USER' }))
+						expect(callback).toHaveBeenCalledWith({
+							value: null,
+							error: {
+								reason: 'invalid-state'
+							}
+						})
+					})
+				})
+			})
+		})
+	})
 
-    ChangeUserState(mockSocket(user.id), { id: user.id, state: 'ready' }, () => {})
+	it('changes the user state in the state', () => {
+		const { user, room } = createRoomForTesting().value!
+		// Make sure that not all users will be in the ready state
+		state.addUserToRoom(room.id, mockUser({ id: 'ADDITIONAL_USER' }))
 
-    expect(state.getRoom(room.id)!.users[0].state).toBe('ready')
-  })
+		ChangeUserState(mockSocket(user.id), { id: user.id, state: 'ready' }, () => {})
 
-  it('emits an event to all other users in the room to change the user state', () => {
-    const { inSpy, emitSpy } = ioSpies()
-    const { user, room } = createRoomForTesting().value!
-    const socket = mockSocket()
+		expect(state.getRoom(room.id)!.users[0].state).toBe('ready')
+	})
 
-    ChangeUserState(socket, { id: user.id, state: 'ready' }, () => {})
+	it('emits an event to all other users in the room to change the user state', () => {
+		const { inSpy, emitSpy } = ioSpies()
+		const { user, room } = createRoomForTesting().value!
+		const socket = mockSocket()
 
-    expect(inSpy).toHaveBeenCalledWith(room.id)
-    expect(emitSpy).toHaveBeenCalledWith(
-      'change-user-data',
-      { id: user.id, state: 'ready' }
-    )
-  })
+		ChangeUserState(socket, { id: user.id, state: 'ready' }, () => {})
 
-  it('sets the room to in progress if all users will be in the ready state', () => {
-    const spy = jest.spyOn(eventUtils, 'setRoomToInProgress')
-    const { room, user } = createRoomForTesting().value!
-    const socket = mockSocket(user.id)
+		expect(inSpy).toHaveBeenCalledWith(room.id)
+		expect(emitSpy).toHaveBeenCalledWith('change-user-data', { id: user.id, state: 'ready' })
+	})
 
-    ChangeUserState(socket, { id: user.id, state: 'ready' }, () => {})
+	it('sets the room to in progress if all users will be in the ready state', () => {
+		const spy = jest.spyOn(eventUtils, 'setRoomToInProgress')
+		const { room, user } = createRoomForTesting().value!
+		const socket = mockSocket(user.id)
 
-    expect(spy).toHaveBeenCalledWith(
-      room.id
-    )
-  })
+		ChangeUserState(socket, { id: user.id, state: 'ready' }, () => {})
 
-  describe('the user is changing state to complete or failed', () => {
-    function init(failed = false) {
-      const score = { netWPM: 85, cursorPosition: { word: 50, letter: 5 }}
-      const { room, user } = createRoomForTesting(mockUser({ id: 'userA' }), mockSocket('userA')).value!
-      state.updateRoom(room.id, { state: 'in-progress' })
-      state.updateUser(user.id, { state: 'in-progress', score: score })
-      ChangeUserState(mockSocket('userA'), { id: 'userA', state: failed ? 'failed' : 'complete' }, () => {})
-      return { score, room, user }
-    }
+		expect(spy).toHaveBeenCalledWith(room.id)
+	})
 
-    it('updates the user last score to their last recorded score in the state when changing to complete', () => {
-      const { score, room, user } = init()
-      expect(state.getUserInRoom(room.id, user.id)).toMatchObject({
-        lastScore: {
-          netWPM: score.netWPM,
-          failed: false
-        }
-      })
-    })
+	describe('the user is changing state to complete or failed', () => {
+		function init(failed = false) {
+			const score = { netWPM: 85, cursorPosition: { word: 50, letter: 5 } }
+			const { room, user } = createRoomForTesting(
+				mockUser({ id: 'userA' }),
+				mockSocket('userA')
+			).value!
+			state.updateRoom(room.id, { state: 'in-progress' })
+			state.updateUser(user.id, { state: 'in-progress', score: score })
+			ChangeUserState(
+				mockSocket('userA'),
+				{ id: 'userA', state: failed ? 'failed' : 'complete' },
+				() => {}
+			)
+			return { score, room, user }
+		}
 
-    it('emits their last recorded score in the state to all users when changing to complete', () => {
-      const { inSpy, emitSpy } = ioSpies()
-      const { score, room } = init()
-      expect(inSpy).toHaveBeenCalledWith(room.id)
+		it('updates the user last score to their last recorded score in the state when changing to complete', () => {
+			const { score, room, user } = init()
+			expect(state.getUserInRoom(room.id, user.id)).toMatchObject({
+				lastScore: {
+					netWPM: score.netWPM,
+					failed: false
+				}
+			})
+		})
 
-      // One of the calls should have change-user-data w/ an object matching the lastScore provided below
-      const hasMatchingCall = emitSpy.mock.calls.some(call => (
-        call[0] === 'change-user-data' &&
-        expect.objectContaining({
-          lastScore: {
-            netWPM: score.netWPM,
-            failed: false
-          }
-        }).asymmetricMatch(call[1])
-      ))
+		it('emits their last recorded score in the state to all users when changing to complete', () => {
+			const { inSpy, emitSpy } = ioSpies()
+			const { score, room } = init()
+			expect(inSpy).toHaveBeenCalledWith(room.id)
 
-      expect(hasMatchingCall).toBeTruthy()
-    })
+			// One of the calls should have change-user-data w/ an object matching the lastScore provided below
+			const hasMatchingCall = emitSpy.mock.calls.some(
+				(call) =>
+					call[0] === 'change-user-data' &&
+					expect
+						.objectContaining({
+							lastScore: {
+								netWPM: score.netWPM,
+								failed: false
+							}
+						})
+						.asymmetricMatch(call[1])
+			)
 
-    it('updates the user last score to their last recorded score in the state when changing to failed', () => {
-      const { score, room , user} = init(true)
-      expect(state.getUserInRoom(room.id, user.id)).toMatchObject({
-        lastScore: {
-          netWPM: score.netWPM,
-          failed: true
-        }
-      })
-    })
-  })
+			expect(hasMatchingCall).toBeTruthy()
+		})
 
-  describe('all users will be in the complete or failed state and the room state is in-progress', () => {
-    function init(socket = mockSocket('userB')) {
-      const { room, user } = createRoomForTesting(mockUser({ id: 'userA' }), mockSocket('userA')).value!
-      state.updateRoom(room.id, { state: 'in-progress' })
-      state.updateUser(user.id, { state: 'failed', score: INITIAL_USER_SCORE })
-      state.addUserToRoom(room.id, mockUser({ id: socket.id, state: 'in-progress', score: INITIAL_USER_SCORE }))
+		it('updates the user last score to their last recorded score in the state when changing to failed', () => {
+			const { score, room, user } = init(true)
+			expect(state.getUserInRoom(room.id, user.id)).toMatchObject({
+				lastScore: {
+					netWPM: score.netWPM,
+					failed: true
+				}
+			})
+		})
+	})
 
-      ChangeUserState(socket, { id: socket.id, state: 'complete' }, () => {})
+	describe('all users will be in the complete or failed state and the room state is in-progress', () => {
+		function init(socket = mockSocket('userB')) {
+			const { room, user } = createRoomForTesting(
+				mockUser({ id: 'userA' }),
+				mockSocket('userA')
+			).value!
+			state.updateRoom(room.id, { state: 'in-progress' })
+			state.updateUser(user.id, { state: 'failed', score: INITIAL_USER_SCORE })
+			state.addUserToRoom(
+				room.id,
+				mockUser({ id: socket.id, state: 'in-progress', score: INITIAL_USER_SCORE })
+			)
 
-      return { room }
-    }
+			ChangeUserState(socket, { id: socket.id, state: 'complete' }, () => {})
 
-    it('sets the room state to complete', () => {
-      const { room } = init()
+			return { room }
+		}
 
-      expect(state.getRoom(room.id)!.state).toBe('complete')
-    })
+		it('sets the room state to complete', () => {
+			const { room } = init()
 
-    it('emits a change room event with the complete state to all users in the room', () => {
-      const socket = mockSocket('userB')
-      const { inSpy, emitSpy } = ioSpies()
-      const { room } = init(socket)
+			expect(state.getRoom(room.id)!.state).toBe('complete')
+		})
 
-      expect(inSpy).toHaveBeenCalledWith(room.id)
-      expect(emitSpy).toHaveBeenCalledWith(
-        'change-room-data',
-        { state: 'complete' }
-      )
-    })
+		it('emits a change room event with the complete state to all users in the room', () => {
+			const socket = mockSocket('userB')
+			const { inSpy, emitSpy } = ioSpies()
+			const { room } = init(socket)
 
-    it('updates all user scores and states in the state', () => {
-      const { room } = init()
+			expect(inSpy).toHaveBeenCalledWith(room.id)
+			expect(emitSpy).toHaveBeenCalledWith('change-room-data', { state: 'complete' })
+		})
 
-      state.getRoom(room.id)!.users.forEach((u) => {
-        expect(u.score).toBe(INITIAL_USER_SCORE)
-        expect(u.state).toBe('not-ready')
-      })
-    })
+		it('updates all user scores and states in the state', () => {
+			const { room } = init()
 
-    it('emits a change all user data event with the not-ready state and initial score to all users in the room', () => {
-      const socket = mockSocket('userB')
-      const { inSpy, emitSpy } = ioSpies()
-      const { room } = init(socket)
+			state.getRoom(room.id)!.users.forEach((u) => {
+				expect(u.score).toBe(INITIAL_USER_SCORE)
+				expect(u.state).toBe('not-ready')
+			})
+		})
 
-      expect(inSpy).toHaveBeenCalledWith(room.id)
-      expect(emitSpy).toHaveBeenCalledWith(
-        'change-all-user-data',
-        { state: 'not-ready', score: INITIAL_USER_SCORE }
-      )
-    })
-  })
+		it('emits a change all user data event with the not-ready state and initial score to all users in the room', () => {
+			const socket = mockSocket('userB')
+			const { inSpy, emitSpy } = ioSpies()
+			const { room } = init(socket)
 
-  it('calls the callback with the new state', () => {
-    const callback = jest.fn()
-    const socket = mockSocket()
+			expect(inSpy).toHaveBeenCalledWith(room.id)
+			expect(emitSpy).toHaveBeenCalledWith('change-all-user-data', {
+				state: 'not-ready',
+				score: INITIAL_USER_SCORE
+			})
+		})
+	})
 
-    const { user } = createRoomForTesting().value!
-    ChangeUserState(socket, { id: user.id, state: 'ready' }, callback)
+	it('calls the callback with the new state', () => {
+		const callback = jest.fn()
+		const socket = mockSocket()
 
-    expect(callback).toHaveBeenLastCalledWith({
-      value: { state: 'ready' },
-      error: null
-    })
-  })
+		const { user } = createRoomForTesting().value!
+		ChangeUserState(socket, { id: user.id, state: 'ready' }, callback)
+
+		expect(callback).toHaveBeenLastCalledWith({
+			value: { state: 'ready' },
+			error: null
+		})
+	})
 })

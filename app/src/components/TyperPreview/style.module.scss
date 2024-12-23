@@ -1,19 +1,19 @@
 .typer-preview {
-  position: relative;
+	position: relative;
 
-  .word {
-    display: inline;
-  }
-  
-  .character {
-    display: inline;
-  
-    &.correct {
-      color: var(--correct);
-    }
-  
-    &.untyped {
-      color: var(--untyped);
-    }
-  }
+	.word {
+		display: inline;
+	}
+
+	.character {
+		display: inline;
+
+		&.correct {
+			color: var(--correct);
+		}
+
+		&.untyped {
+			color: var(--untyped);
+		}
+	}
 }

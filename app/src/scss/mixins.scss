@@ -1,8 +1,8 @@
 @mixin container {
-  @include max-width(1040px, 24px)
+	@include max-width(1040px, 24px);
 }
 
 @mixin max-width($max-width, $side-padding) {
-  width: min($max-width, calc(100% - (2 * $side-padding)));
-  margin-inline: auto;
+	width: min($max-width, calc(100% - (2 * $side-padding)));
+	margin-inline: auto;
 }

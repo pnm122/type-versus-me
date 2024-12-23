@@ -1,62 +1,62 @@
 @import '@/scss/fonts';
 
 .input {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
 
-  &--error {
-    .input__label {
-      color: var(--error);
-    }
+	&--error {
+		.input__label {
+			color: var(--error);
+		}
 
-    .input__input {
-      border-color: var(--error);
-    }
-  }
+		.input__input {
+			border-color: var(--error);
+		}
+	}
 
-  &:not(.input--error) {
-    .input__input:focus-visible {
-      border-color: var(--gray-70);
-    }
-  }
+	&:not(.input--error) {
+		.input__input:focus-visible {
+			border-color: var(--gray-70);
+		}
+	}
 
-  &__label {
-    @include font-body(14);
+	&__label {
+		@include font-body(14);
 
-    .input__required-star {
-      color: red;
-      display: inline;
-    }
-  }
+		.input__required-star {
+			color: red;
+			display: inline;
+		}
+	}
 
-  &__input {
-    padding-inline: 12px;
-    height: 40px;
-    border: 2px solid var(--border);
-    outline: none;
+	&__input {
+		padding-inline: 12px;
+		height: 40px;
+		border: 2px solid var(--border);
+		outline: none;
 
-    &:disabled {
-      background-color: var(--disabled);
-      color: var(--on-disabled);
-      border-color: var(--disabled);
-    }
+		&:disabled {
+			background-color: var(--disabled);
+			color: var(--on-disabled);
+			border-color: var(--disabled);
+		}
 
-    &::placeholder {
-      color: var(--placeholder);
-    }
-  }
+		&::placeholder {
+			color: var(--placeholder);
+		}
+	}
 
-  &__error {
-    @include font-body(14);
-    color: var(--error);
-    display: flex;
-    gap: 2px;
-    
-    svg {
-      margin-top: 0.1em;
-      min-width: 1.2em;
-      min-height: 1.2em;
-    }
-  }
+	&__error {
+		@include font-body(14);
+		color: var(--error);
+		display: flex;
+		gap: 2px;
+
+		svg {
+			margin-top: 0.1em;
+			min-width: 1.2em;
+			min-height: 1.2em;
+		}
+	}
 }
