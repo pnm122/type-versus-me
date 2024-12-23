@@ -12,8 +12,8 @@
 [x] Fix typer expanding beyond its max width when typing enough extra characters
 [x] Open/close leaderboard
 [x] Add debounce to typer resizing
-[ ] Add linting and formatting on commit
-[ ] Add aria-label to copy room link to clipboard
+[x] Add linting and formatting on commit
+[x] Add aria-label to copy room link to clipboard
 [ ] Adjust cursor colors
 [ ] Rename error color to negative
 [ ] Add dark mode colors

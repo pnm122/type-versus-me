@@ -82,7 +82,11 @@ export default function RoomData() {
 				</div>
 				<div className={styles['invite']}>
 					<h2 className={styles['invite__title']}>Invite</h2>
-					<button onClick={onInviteClicked} className={styles['invite__button']}>
+					<button
+						aria-label="Copy room link to clipboard"
+						onClick={onInviteClicked}
+						className={styles['invite__button']}
+					>
 						{window.location.href}
 						<PixelarticonsCopy />
 					</button>
