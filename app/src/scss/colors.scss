@@ -1,78 +1,103 @@
-$themeless-colors: (
-	'white': #fdfcf9,
-	'black': #10100e
-);
+:root:has([data-theme='light']) {
+	// Base colors
+	--white: #fdfcf9;
+	--black: #10100e;
+	--primary: #ffcd2a;
+	--primary-light: #ffe07c;
+	--primary-dark: #805a00;
+	--gray-10: #f6f4f1;
+	--gray-20: #e1dfda;
+	--gray-30: #c7c4be;
+	--gray-40: #b2afab;
+	--gray-50: #9b9892;
+	--gray-60: #7f7d79;
+	--gray-70: #585754;
+	--gray-80: #373634;
+	--gray-90: #1d1c1c;
+	--cursor-red: #f70000;
+	--cursor-red-light: #ffd6cc;
+	--cursor-orange: #ca5c00;
+	--cursor-orange-light: #ffd8b6;
+	--cursor-yellow: #b79f00;
+	--cursor-yellow-light: #f1e7a9;
+	--cursor-green: #009f00;
+	--cursor-green-light: #c4f3c4;
+	--cursor-cyan: #009790;
+	--cursor-cyan-light: #a5f6f0;
+	--cursor-blue: #0673ff;
+	--cursor-blue-light: #c6e9ff;
+	--cursor-purple: #874dff;
+	--cursor-purple-light: #e3deff;
+	--cursor-pink: #d600d0;
+	--cursor-pink-light: #ffd2fe;
+	--negative: #d50323;
+	--negative-contrast: #620000;
+	--positive: #02891b;
 
-$theme-base-colors: (
-	'light': (
-		'primary': #ffcd2a,
-		'primary-light': #ffe07c,
-		'primary-dark': #805a00,
-		'gray-10': #f6f4f1,
-		'gray-20': #e1dfda,
-		'gray-30': #c7c4be,
-		'gray-40': #b2afab,
-		'gray-50': #9b9892,
-		'gray-60': #7f7d79,
-		'gray-70': #585754,
-		'gray-80': #373634,
-		'gray-90': #1d1c1c,
-		'cursor-red': #f70000,
-		'cursor-red-light': #ffd6cc,
-		'cursor-orange': #ca5c00,
-		'cursor-orange-light': #ffd8b6,
-		'cursor-yellow': #b79f00,
-		'cursor-yellow-light': #f1e7a9,
-		'cursor-green': #009f00,
-		'cursor-green-light': #c4f3c4,
-		'cursor-cyan': #009790,
-		'cursor-cyan-light': #a5f6f0,
-		'cursor-blue': #0673ff,
-		'cursor-blue-light': #c6e9ff,
-		'cursor-purple': #874dff,
-		'cursor-purple-light': #e3deff,
-		'cursor-pink': #d600d0,
-		'cursor-pink-light': #ffd2fe,
-		'negative': #d50323,
-		'negative-contrast': #620000,
-		'positive': #02891b
-	)
-);
+	// Aliases
+	--surface: var(--gray-10);
+	--border: var(--gray-20);
+	--disabled: var(--gray-20);
+	--on-disabled: var(--gray-60);
+	--placeholder: var(--gray-50);
+	--untyped: var(--gray-50);
+	--text: var(--gray-80);
+	--background: var(--white);
+	--heading: var(--black);
+	--correct: var(--black);
+	--extra: var(--negative-contrast);
 
-$theme-alias-colors: (
-	'light': (
-		'surface': map-get(map-get($theme-base-colors, 'light'), 'gray-10'),
-		'border': map-get(map-get($theme-base-colors, 'light'), 'gray-20'),
-		'disabled': map-get(map-get($theme-base-colors, 'light'), 'gray-20'),
-		'on-disabled': map-get(map-get($theme-base-colors, 'light'), 'gray-60'),
-		'placeholder': map-get(map-get($theme-base-colors, 'light'), 'gray-50'),
-		'untyped': map-get(map-get($theme-base-colors, 'light'), 'gray-50'),
-		'text': map-get(map-get($theme-base-colors, 'light'), 'gray-80'),
-		'background': map-get($themeless-colors, 'white'),
-		'heading': map-get($themeless-colors, 'black'),
-		'correct': map-get($themeless-colors, 'black'),
-		'extra': map-get(map-get($theme-base-colors, 'light'), 'negative-contrast')
-	)
-);
-
-body {
-	@each $key, $value in $themeless-colors {
-		--#{$key}: #{$value};
-	}
+	color-scheme: light;
 }
 
-@each $theme, $vars in $theme-base-colors {
-	body:has([data-theme='#{$theme}']) {
-		@each $key, $value in $vars {
-			--#{$key}: #{$value};
-		}
-	}
-}
+:root:has([data-theme='dark']) {
+	// Base colors
+	--white: #fdfcf9;
+	--black: #10100e;
+	--primary: #ffcd2a;
+	--primary-light: #876c0b;
+	--primary-dark: #ffda68;
+	--gray-10: #1e1e1d;
+	--gray-20: #2b2b29;
+	--gray-30: #403f3b;
+	--gray-40: #605d58;
+	--gray-50: #898680;
+	--gray-60: #b1aea9;
+	--gray-70: #d0ceca;
+	--gray-80: #e4e3e1;
+	--gray-90: #f3f2f2;
+	--cursor-red: #fa5263;
+	--cursor-red-light: #430e14;
+	--cursor-orange: #ec7b34;
+	--cursor-orange-light: #411400;
+	--cursor-yellow: #cdb430;
+	--cursor-yellow-light: #2e2300;
+	--cursor-green: #3abc34;
+	--cursor-green-light: #052d04;
+	--cursor-cyan: #3ab3ac;
+	--cursor-cyan-light: #002d2b;
+	--cursor-blue: #5e9aff;
+	--cursor-blue-light: #0a224a;
+	--cursor-purple: #a481ff;
+	--cursor-purple-light: #271a46;
+	--cursor-pink: #e560de;
+	--cursor-pink-light: #381236;
+	--negative: #ff5e5a;
+	--negative-contrast: #feaaa3;
+	--positive: #2bca2b;
 
-@each $theme, $vars in $theme-alias-colors {
-	body:has([data-theme='#{$theme}']) {
-		@each $key, $value in $vars {
-			--#{$key}: #{$value};
-		}
-	}
+	// Aliases
+	--surface: var(--gray-10);
+	--border: var(--gray-20);
+	--disabled: var(--gray-20);
+	--on-disabled: var(--gray-60);
+	--placeholder: var(--gray-50);
+	--untyped: var(--gray-50);
+	--text: var(--gray-80);
+	--background: var(--black);
+	--heading: var(--white);
+	--correct: var(--white);
+	--extra: var(--negative-contrast);
+
+	color-scheme: dark;
 }

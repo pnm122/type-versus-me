@@ -25,14 +25,14 @@
 	}
 
 	&--secondary {
-		--loader-color: var(--white);
-		background-color: var(--black);
-		color: var(--white);
+		--loader-color: var(--background);
+		background-color: var(--heading);
+		color: var(--background);
 	}
 
 	&--tertiary {
-		--loader-color: var(--black);
-		color: var(--black);
+		--loader-color: var(--heading);
+		color: var(--heading);
 	}
 
 	&--loading {

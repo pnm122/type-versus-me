@@ -18,7 +18,11 @@
 [x] Rename error color to negative
 [x] Broken view transition timing
 [x] Timer doesn't hit 0 when a user has finished but the other user's timer is behind
-[ ] Add dark mode colors
+[x] Add dark mode colors
+[ ] Add light/dark mode switch
+[ ] Is there any better way of initializing a theme?
+[ ] Missing results from leaderboard for new users
+[ ] Add bottom padding to body/pages
 [ ] Join code on homepage doesn't make sense given that we copy room links
 [ ] Animate state/page changes as often as possible for better UX/clarity
 [ ] Fix SCSS warnings
