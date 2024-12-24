@@ -16,7 +16,7 @@
 [x] Add aria-label to copy room link to clipboard
 [x] Adjust cursor colors
 [x] Rename error color to negative
-[ ] Broken view transition timing
+[x] Broken view transition timing
 [ ] Timer doesn't hit 0 when a user has finished but the other user's timer is behind
 [ ] Add dark mode colors
 [ ] Join code on homepage doesn't make sense given that we copy room links
@@ -32,4 +32,5 @@
 [ ] Some very fast layout shift on loading the homepage?
 [ ] Some kind of congratulations on winning the room
 [ ] Something negative for failing
+[ ] Information/walkthrough for new users
 [ ] calculate statistics in realtime as the user types

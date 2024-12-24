@@ -1,6 +1,6 @@
 @use 'fonts' as *;
 
-body {
+:root {
 	--timing: cubic-bezier(0.165, 0.84, 0.44, 1);
 
 	@include font-body;
