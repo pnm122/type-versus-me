@@ -18,15 +18,18 @@ export default function Game() {
 	const [finished, setFinished] = useState(false)
 	const [correctTyped, setCorrectTyped] = useState(0)
 	const [errorsLeft, setErrorsLeft] = useState(0)
-	const [timeToStart, setTimeToStart] = useState(0)
-	const [timeLeft, setTimeLeft] = useState(0)
+	const [timeToStart, setTimeToStart] = useState(-1)
+	const [timeLeft, setTimeLeft] = useState(-1)
 	const globalState = useGlobalState()
 	const socket = useSocket()
 	const notifs = useNotification()
 	const typer = useRef<TyperRef>(null)
 	const { room, user } = globalState
 
-	useInterval(nextTimeLeft, room?.state === 'in-progress' && timeToStart === 0 ? 1000 : null)
+	useInterval(
+		nextTimeLeft,
+		room?.state === 'in-progress' && timeToStart === 0 && timeLeft > 0 ? 1000 : null
+	)
 
 	useInterval(nextTimeToStart, timeToStart > 0 ? 1000 : null)
 
@@ -36,6 +39,13 @@ export default function Game() {
 			setStartTime(Date.now())
 		}
 	}, [timeToStart])
+
+	useEffect(() => {
+		if (timeLeft === 0 && !finished) {
+			setFinished(true)
+			updateUser('state', 'failed', { globalState, notifs, socket })
+		}
+	}, [timeLeft])
 
 	useEffect(() => {
 		if (room?.state === 'in-progress') {
@@ -52,13 +62,7 @@ export default function Game() {
 	}
 
 	function nextTimeLeft() {
-		if (timeLeft > 1) {
-			setTimeLeft((t) => t - 1)
-			// only fail the user if they didn't finish already
-		} else if (!finished) {
-			setFinished(true)
-			updateUser('state', 'failed', { globalState, notifs, socket })
-		}
+		setTimeLeft((t) => t - 1)
 	}
 
 	if (!room || !room.test) return <></>

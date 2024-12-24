@@ -17,7 +17,7 @@
 [x] Adjust cursor colors
 [x] Rename error color to negative
 [x] Broken view transition timing
-[ ] Timer doesn't hit 0 when a user has finished but the other user's timer is behind
+[x] Timer doesn't hit 0 when a user has finished but the other user's timer is behind
 [ ] Add dark mode colors
 [ ] Join code on homepage doesn't make sense given that we copy room links
 [ ] Animate state/page changes as often as possible for better UX/clarity

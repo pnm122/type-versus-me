@@ -27,7 +27,7 @@ export default function Leaderboard() {
 
 	function setResultsHeight() {
 		if (!results.current || !list.current) return
-		console.log(getComputedStyle(results.current).paddingTop)
+
 		if (open) {
 			results.current.style.height = `${list.current.getBoundingClientRect().height}px`
 		} else {
