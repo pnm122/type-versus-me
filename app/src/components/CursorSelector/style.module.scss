@@ -9,9 +9,11 @@
 		display: grid;
 		place-items: center;
 		background-color: var(--surface);
+		border: 2px solid var(--surface);
 
 		&:disabled {
 			background-color: var(--disabled);
+			border-color: var(--disabled);
 		}
 	}
 }

@@ -21,7 +21,8 @@
 [x] Add dark mode colors
 [ ] Add light/dark mode switch
 [ ] Is there any better way of initializing a theme?
-[ ] Missing results from leaderboard for new users
+[ ] Missing results from leaderboard for new users (seems to be missing the last joined player?)
+[ ] Leaderboard resize on users changing
 [ ] Add bottom padding to body/pages
 [ ] Join code on homepage doesn't make sense given that we copy room links
 [ ] Animate state/page changes as often as possible for better UX/clarity
@@ -33,6 +34,7 @@
 [ ] Room settings when created (i.e. test length, time limit, etc.)
 [ ] Have a room admin (the person who created the room) who can change room settings
 [ ] Add a basic header
+[ ] Add active user count
 [ ] Some very fast layout shift on loading the homepage?
 [ ] Some kind of congratulations on winning the room
 [ ] Something negative for failing

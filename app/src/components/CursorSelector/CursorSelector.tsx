@@ -24,7 +24,8 @@ export default function CursorSelector({ selected, onChange, disabled }: Props) 
 					className={styles['selector__item']}
 					style={{
 						backgroundColor:
-							selected === c && !isDisabled(c) ? `var(--cursor-${c}-light)` : undefined
+							selected === c && !isDisabled(c) ? `var(--cursor-${c}-light)` : undefined,
+						borderColor: selected === c && !isDisabled(c) ? `var(--cursor-${c})` : undefined
 					}}
 					onClick={() => onChange(c)}
 				>
