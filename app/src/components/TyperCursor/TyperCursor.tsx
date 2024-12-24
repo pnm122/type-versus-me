@@ -93,9 +93,9 @@ export default function TyperCursor({
 		<div
 			className={createClasses({
 				[styles['cursor']]: true,
-				[styles[`cursor--${color}`]]: true,
 				[styles['cursor--opponent']]: opponent
 			})}
+			style={{ backgroundColor: `var(--cursor-${color})` }}
 			ref={cursor}
 		/>
 	)

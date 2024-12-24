@@ -17,23 +17,25 @@ $theme-base-colors: (
 		'gray-70': #585754,
 		'gray-80': #373634,
 		'gray-90': #1d1c1c,
-		'cursor-red': #d31900,
-		'cursor-red-light': #ffdcd7,
-		'cursor-orange': #f67300,
-		'cursor-orange-light': #ffe6cf,
-		'cursor-yellow': #cab300,
-		'cursor-yellow-light': #fcf3b0,
-		'cursor-green': #16a600,
-		'cursor-green-light': #c9fac1,
-		'cursor-blue': #0069d1,
-		'cursor-blue-light': #d5eaff,
-		'cursor-purple': #8f00e2,
-		'cursor-purple-light': #f1d8ff,
-		'cursor-pink': #e50091,
-		'cursor-pink-light': #ffd9f1,
-		'error': #ea1c1c,
-		'error-dark': #840c0c,
-		'positive': #5cff5c
+		'cursor-red': #f70000,
+		'cursor-red-light': #ffd6cc,
+		'cursor-orange': #ca5c00,
+		'cursor-orange-light': #ffd8b6,
+		'cursor-yellow': #b79f00,
+		'cursor-yellow-light': #f1e7a9,
+		'cursor-green': #009f00,
+		'cursor-green-light': #c4f3c4,
+		'cursor-cyan': #009790,
+		'cursor-cyan-light': #a5f6f0,
+		'cursor-blue': #0673ff,
+		'cursor-blue-light': #c6e9ff,
+		'cursor-purple': #874dff,
+		'cursor-purple-light': #e3deff,
+		'cursor-pink': #d600d0,
+		'cursor-pink-light': #ffd2fe,
+		'negative': #d50323,
+		'negative-contrast': #620000,
+		'positive': #02891b
 	)
 );
 
@@ -49,7 +51,7 @@ $theme-alias-colors: (
 		'background': map-get($themeless-colors, 'white'),
 		'heading': map-get($themeless-colors, 'black'),
 		'correct': map-get($themeless-colors, 'black'),
-		'extra': map-get(map-get($theme-base-colors, 'light'), 'error-dark')
+		'extra': map-get(map-get($theme-base-colors, 'light'), 'negative-contrast')
 	)
 );
 

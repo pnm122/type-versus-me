@@ -7,11 +7,11 @@
 
 	&--error {
 		.input__label {
-			color: var(--error);
+			color: var(--negative);
 		}
 
 		.input__input {
-			border-color: var(--error);
+			border-color: var(--negative);
 		}
 	}
 
@@ -49,7 +49,7 @@
 
 	&__error {
 		@include font-body(14);
-		color: var(--error);
+		color: var(--negative);
 		display: flex;
 		gap: 2px;
 

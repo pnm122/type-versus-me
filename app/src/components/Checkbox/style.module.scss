@@ -15,10 +15,11 @@
 	&[aria-checked='true'] {
 		border-color: var(--positive);
 		background-color: var(--positive);
+		color: var(--background);
 
 		.checkbox__box {
 			border: none;
-			background-color: var(--heading);
+			background-color: var(--background);
 
 			.check {
 				display: block;

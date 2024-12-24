@@ -21,7 +21,7 @@
 
 			&__typed--error,
 			&__errors-left {
-				color: var(--error);
+				color: var(--negative);
 			}
 		}
 
@@ -30,7 +30,7 @@
 		}
 
 		.time-left--low {
-			color: var(--error);
+			color: var(--negative);
 		}
 	}
 

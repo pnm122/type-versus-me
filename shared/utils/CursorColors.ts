@@ -1,3 +1,3 @@
-const CursorColors = ['red', 'orange', 'yellow', 'green', 'blue', 'purple', 'pink'] as const
+const CursorColors = ['red', 'orange', 'yellow', 'green', 'cyan', 'blue', 'purple', 'pink'] as const
 
 export default CursorColors

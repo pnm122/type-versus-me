@@ -14,11 +14,15 @@
 [x] Add debounce to typer resizing
 [x] Add linting and formatting on commit
 [x] Add aria-label to copy room link to clipboard
-[ ] Adjust cursor colors
-[ ] Rename error color to negative
+[x] Adjust cursor colors
+[x] Rename error color to negative
+[ ] Broken view transition timing
+[ ] Timer doesn't hit 0 when a user has finished but the other user's timer is behind
 [ ] Add dark mode colors
+[ ] Join code on homepage doesn't make sense given that we copy room links
 [ ] Animate state/page changes as often as possible for better UX/clarity
 [ ] Fix SCSS warnings
+[ ] Small layout shift when user is done/has failed
 [ ] Time doesn't update correctly when the tab is hidden?
 [ ] Remove unnecessary 'complete' state from room
 [ ] Some way of editing your color and username within the room

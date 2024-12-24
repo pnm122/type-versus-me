@@ -34,7 +34,7 @@ export default function User({ user: { id, username, color, score, state } }: Pr
 				) : state === 'ready' ? (
 					<Pill
 						backgroundColor="var(--positive)"
-						foregroundColor="var(--heading)"
+						foregroundColor="var(--background)"
 						text="Ready"
 						icon={<PixelarticonsCheck />}
 					/>
@@ -48,13 +48,13 @@ export default function User({ user: { id, username, color, score, state } }: Pr
 				) : state === 'complete' ? (
 					<Pill
 						backgroundColor="var(--positive)"
-						foregroundColor="var(--heading)"
+						foregroundColor="var(--background)"
 						text="Done"
 						icon={<PixelarticonsCheck />}
 					/>
 				) : (
 					<Pill
-						backgroundColor="var(--error)"
+						backgroundColor="var(--negative)"
 						foregroundColor="var(--background)"
 						text="Failed"
 						icon={<PixelarticonsClose />}

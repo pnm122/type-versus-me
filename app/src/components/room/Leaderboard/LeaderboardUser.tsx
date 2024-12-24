@@ -23,7 +23,7 @@ export default function LeaderboardUser({ user }: { user: User }) {
 			</h2>
 			{user.lastScore.failed ? (
 				<Pill
-					backgroundColor="var(--error)"
+					backgroundColor="var(--negative)"
 					foregroundColor="var(--background)"
 					text="Failed"
 					icon={<PixelarticonsClose />}

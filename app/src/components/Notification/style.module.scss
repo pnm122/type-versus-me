@@ -22,7 +22,7 @@
 	}
 
 	&--error {
-		background-color: var(--error);
+		background-color: var(--negative);
 		color: var(--background);
 
 		.notification__close {
@@ -32,10 +32,10 @@
 
 	&--success {
 		background-color: var(--positive);
-		color: var(--heading);
+		color: var(--background);
 
 		.notification__close {
-			color: var(--heading);
+			color: var(--background);
 		}
 	}
 

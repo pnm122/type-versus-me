@@ -12,7 +12,7 @@ import createClasses from '@/utils/createClasses'
 import useInterval from '@/hooks/useInterval'
 
 export default function Game() {
-	const GAME_TIME = 5
+	const GAME_TIME = 120
 
 	const [startTime, setStartTime] = useState(-1)
 	const [finished, setFinished] = useState(false)
