@@ -14,6 +14,7 @@ import { NotificationContextType } from '@/context/Notification'
 import { errorNotification } from './errorNotifications'
 import { ChangeAllUserDataPayload } from '$shared/types/events/server/ChangeAllUserData'
 import { ChangeUserDataPayload } from '$shared/types/events/server/ChangeUserData'
+import { CursorColor } from '$shared/types/Cursor'
 
 interface Context {
 	globalState: GlobalState
@@ -23,7 +24,7 @@ interface Context {
 
 export function getUsername() {
 	const storedUsername = storage.get('username')
-	if (isValidUsername(storedUsername)) return storedUsername
+	if (isValidUsername(storedUsername)) return storedUsername!
 
 	const newUsername = generateUsername()
 	storage.set('username', newUsername)
@@ -31,8 +32,8 @@ export function getUsername() {
 }
 
 export function getColor() {
-	const storedColor = storage.get('preferred-color')
-	if (isValidColor(storedColor)) return storedColor
+	const storedColor = storage.get<CursorColor>('preferred-color')
+	if (isValidColor(storedColor)) return storedColor!
 
 	const newColor = generateColor()
 	storage.set('preferred-color', newColor)

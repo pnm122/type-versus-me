@@ -14,8 +14,11 @@ function valueFromStorage<T = any>(s: string | null) {
 	}
 }
 
-export function get<T extends object | string | number | boolean>(key: string, insert: T): T
-export function get<T extends object | string | number | boolean>(key: string): T | null
+export function get<T extends object | string | number | boolean = string>(
+	key: string,
+	insert: T
+): T
+export function get<T extends object | string | number | boolean = string>(key: string): T | null
 
 export function get<T extends object | string | number | boolean>(key: string, insert?: T) {
 	const value = valueFromStorage<T>(localStorage.getItem(formatKey(key)))
