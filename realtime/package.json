@@ -4,6 +4,7 @@
   "scripts": {
     "dev": "npx tsx watch src/index.ts",
     "test": "jest",
+    "test:related": "jest --findRelatedTests",
     "test:watch": "jest --watch",
     "coverage": "jest --coverage",
     "lint": "eslint ."

@@ -81,7 +81,7 @@ export default function Home() {
 						<Input
 							id="join"
 							text={joinRoomCode}
-							onChange={(e) => setJoinRoomCode(e.target.value)}
+							onChange={(e) => setJoinRoomCode(e.target.value.toUpperCase())}
 							placeholder="Room code (i.e. ABCDE)"
 							wrapperClassName={styles['join__input']}
 							minLength={5}

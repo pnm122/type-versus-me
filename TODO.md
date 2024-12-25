@@ -43,4 +43,5 @@
 [ ] Some kind of congratulations on winning the room
 [ ] Something negative for failing
 [ ] Information/walkthrough for new users
+[ ] Getting kicked out of a room from a socket change should send the user back to the homepage
 [ ] calculate statistics in realtime as the user types

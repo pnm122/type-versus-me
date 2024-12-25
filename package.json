@@ -1,7 +1,7 @@
 {
   "scripts": {
     "prepare": "husky && husky install",
-    "test:realtime": "cd realtime && npm run test",
+    "test:realtime": "cd realtime && npm run test:related",
     "lint:app": "cd app && npm run lint",
     "lint:realtime": "cd realtime && npm run lint",
     "lint": "npm run lint:app && npm run lint:realtime",
@@ -20,6 +20,6 @@
   "lint-staged": {
 		"*.{js,ts,jsx,tsx}": "npm run lint",
     "*.{js,ts,jsx,tsx,css,scss,md}": "npm run format",
-    "realtime/**/*": "npm run test:realtime"
+    "realtime/**/*.{js,ts}": "npm run test:realtime --"
 	}
 }

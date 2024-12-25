@@ -16,7 +16,9 @@ export default function JoinRoom(
 		return
 	}
 
-	const { roomId, user } = value
+	const { roomId: tempRoomId, user } = value
+	// Casing doesn't matter, since all room codes are uppercase
+	const roomId = tempRoomId.toUpperCase()
 
 	if (check(state.getRoomFromUser(user.id), 'user-in-room-already', callback)) {
 		return
