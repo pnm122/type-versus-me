@@ -17,6 +17,7 @@ import { errorNotification } from '@/utils/errorNotifications'
 import { useGlobalState } from '@/context/GlobalState'
 import { createRoom, joinRoom } from '@/utils/room'
 import UsernameAndColorInput from '@/components/UsernameAndColorInput/UsernameAndColorInput'
+import ThemeSwitcher from '@/components/ThemeSwitcher/ThemeSwitcher'
 
 export default function Home() {
 	const [joinRoomCode, setJoinRoomCode] = useState('')
@@ -95,6 +96,7 @@ export default function Home() {
 					</div>
 				</div>
 			</form>
+			<ThemeSwitcher />
 		</main>
 	)
 }

@@ -1,0 +1,48 @@
+@use '@/scss/fonts' as *;
+
+.switcher {
+	--outside-padding: 4px;
+	--gap: 6px;
+
+	display: flex;
+	background-color: var(--surface);
+	padding: var(--outside-padding);
+	height: 40px;
+	position: relative;
+
+	&__selected-background {
+		position: absolute;
+		top: var(--outside-padding);
+		bottom: var(--outside-padding);
+		left: 0;
+		z-index: 0;
+		background-color: var(--primary);
+	}
+
+	.theme {
+		@include font-heading(14);
+		position: relative;
+		display: flex;
+		align-items: center;
+		gap: var(--gap);
+		height: 100%;
+		padding-inline: 8px;
+		line-height: 1;
+		z-index: 1;
+		color: var(--placeholder);
+	}
+
+	&--rendered {
+		.switcher__selected-background {
+			// Only start showing transitions after the first position has been rendered
+			transition:
+				transform 0.25s var(--timing),
+				width 0.25s var(--timing);
+		}
+
+		.theme--selected {
+			// Only show selected state when the background has been set
+			color: var(--black);
+		}
+	}
+}

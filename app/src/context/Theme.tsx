@@ -1,7 +1,7 @@
 'use client'
 
 import * as storage from '@/utils/localStorage'
-import { createContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
 
 export type Theme = 'light' | 'dark'
 
@@ -9,10 +9,10 @@ export interface ThemeContext {
 	/** Theme of the application */
 	theme: Theme
 	/** Update the theme of the application */
-	setTheme: (t: Theme) => void
+	setTheme: React.Dispatch<React.SetStateAction<Theme>>
 }
 
-export const ThemeContext = createContext<ThemeContext>({
+const ThemeContext = createContext<ThemeContext>({
 	theme: 'light',
 	setTheme: () => {}
 })
@@ -41,3 +41,5 @@ export function ThemeProvider({ children }: React.PropsWithChildren) {
 		</ThemeContext.Provider>
 	)
 }
+
+export const useTheme = () => useContext(ThemeContext)
