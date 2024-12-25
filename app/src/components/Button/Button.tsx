@@ -39,7 +39,8 @@ export default function Button({
 			aria-label={ariaLabel}
 			onClick={(e) => !disabled && onClick(e)}
 		>
-			{children}
+			<div className={styles['button__content']}>{children}</div>
+			<Loader className={styles['button__loader']} size={16} />
 		</Link>
 	) : (
 		<button

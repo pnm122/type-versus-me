@@ -28,7 +28,7 @@
 [x] Capitalization of room codes shouldn't matter
 [x] Notify user if their color was taken when they joined a room
 [x] lastScore needs to be reset after leaving a room
-[ ] Error page
+[x] Error page
 [ ] Animate state/page changes as often as possible for better UX/clarity
 [ ] Fix SCSS warnings
 [ ] Small layout shift when user is done/has failed
@@ -42,6 +42,7 @@
 [ ] Some very fast layout shift on loading the homepage?
 [ ] Some kind of congratulations on winning the room
 [ ] Something negative for failing
+[ ] Create a favicon
 [ ] Information/walkthrough for new users
 [ ] Getting kicked out of a room from a socket change should send the user back to the homepage
 [ ] calculate statistics in realtime as the user types
