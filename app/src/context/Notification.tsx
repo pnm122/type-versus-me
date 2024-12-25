@@ -2,8 +2,8 @@
 
 import { NotificationProps } from '@/components/Notification/Notification'
 import NotificationStack from '@/components/NotificationStack/NotificationStack'
+import transition from '@/utils/transition'
 import { createContext, useContext, useRef, useState } from 'react'
-import { flushSync } from 'react-dom'
 
 export type NotificationData = Pick<NotificationProps, 'style'> & { text: string }
 
@@ -22,15 +22,7 @@ export function NotificationProvider({ children }: React.PropsWithChildren) {
 	const counter = useRef(0)
 
 	function updateNotifs(x: React.SetStateAction<NotificationProps[]>) {
-		if (!document.startViewTransition) return setNotifs(x)
-
-		document.startViewTransition(async () => {
-			// Update the DOM synchronously so the view transition API can reliably get
-			// a before and after snapshot of the DOM
-			flushSync(() => {
-				setNotifs(x)
-			})
-		})
+		transition(() => setNotifs(x))
 	}
 
 	function onClose(id: string) {
