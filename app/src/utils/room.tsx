@@ -105,6 +105,24 @@ export async function joinRoom(
 		return res
 	}
 
+	if (globalState.user!.color !== res.value.user.color) {
+		notifs.push({
+			text: (
+				<span>
+					Your cursor color was updated to{' '}
+					<span style={{ display: 'inline', color: `var(--cursor-${res.value.user.color})` }}>
+						{res.value.user.color}
+					</span>
+					, since{' '}
+					<span style={{ display: 'inline', color: `var(--cursor-${globalState.user!.color})` }}>
+						{globalState.user!.color}
+					</span>{' '}
+					was taken.
+				</span>
+			)
+		})
+	}
+
 	globalState.setUser(res.value.user)
 	globalState.setRoom(res.value.room)
 	await globalState.waitForStateChange()

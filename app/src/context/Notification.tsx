@@ -5,7 +5,9 @@ import NotificationStack from '@/components/NotificationStack/NotificationStack'
 import transition from '@/utils/transition'
 import { createContext, useContext, useRef, useState } from 'react'
 
-export type NotificationData = Pick<NotificationProps, 'style'> & { text: string }
+export type NotificationData = Pick<NotificationProps, 'style'> & {
+	text: Required<NotificationProps>['children']
+}
 
 export interface NotificationContextType {
 	push: (data: NotificationData) => void
