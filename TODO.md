@@ -24,7 +24,10 @@
 [-] (Couldn't replicate this?) Missing results from leaderboard for new users (seems to be missing the last joined player?)
 [x] Leaderboard resize on users leaving
 [x] Add bottom padding to body/pages
-[ ] Join code on homepage doesn't make sense given that we copy room links
+[x] Join code on homepage doesn't make sense given that we copy room links
+[ ] Capitalization of room codes shouldn't matter
+[ ] Notify user if their color was taken when they joined a room
+[ ] lastScore needs to be reset after leaving a room
 [ ] Error page
 [ ] Animate state/page changes as often as possible for better UX/clarity
 [ ] Fix SCSS warnings

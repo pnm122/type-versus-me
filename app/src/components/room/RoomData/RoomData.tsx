@@ -29,10 +29,10 @@ export default function RoomData() {
 	if (!room || !user) return <></>
 
 	function onInviteClicked() {
-		window.navigator.clipboard.writeText(window.location.href)
+		window.navigator.clipboard.writeText(room!.id)
 		notifs.push({
 			style: 'success',
-			text: 'Copied link to clipboard!'
+			text: 'Copied room code to clipboard!'
 		})
 	}
 
@@ -58,6 +58,9 @@ export default function RoomData() {
 					<User key={u.id} user={u} />
 				))}
 			</ul>
+			<h3 className={styles['data__num-players']}>
+				{room.users.length}/{MAX_USERS_PER_ROOM} players
+			</h3>
 			{room.state !== 'in-progress' && (
 				<Checkbox
 					checked={predictedUserState ? predictedUserState === 'ready' : user.state === 'ready'}
@@ -68,29 +71,20 @@ export default function RoomData() {
 			)}
 			<hr></hr>
 			<div className={styles['data__room']}>
-				<div className={styles['room-metadata']}>
-					<div className={styles['room-metadata__title']}>
-						<h2 className={styles['room-name']}>Room {room.id}</h2>
-						<h3 className={styles['players']}>
-							{room.users.length}/{MAX_USERS_PER_ROOM} players
-						</h3>
-					</div>
-					<Button style="tertiary" onClick={handleLeaveRoom}>
-						<ButtonIcon icon={<PixelarticonsLogout />} />
-						Leave room
-					</Button>
-				</div>
-				<div className={styles['invite']}>
-					<h2 className={styles['invite__title']}>Invite</h2>
-					<button
-						aria-label="Copy room link to clipboard"
-						onClick={onInviteClicked}
-						className={styles['invite__button']}
-					>
-						{window.location.href}
+				<button
+					title="Copy room code to clipboard"
+					onClick={onInviteClicked}
+					className={styles['invite']}
+				>
+					<span className={styles['invite__text']}>Room code: {room.id}</span>
+					<div className={styles['invite__icon']}>
 						<PixelarticonsCopy />
-					</button>
-				</div>
+					</div>
+				</button>
+				<Button className={styles['leave']} style="tertiary" onClick={handleLeaveRoom}>
+					<ButtonIcon icon={<PixelarticonsLogout />} />
+					Leave room
+				</Button>
 			</div>
 		</div>
 	)
