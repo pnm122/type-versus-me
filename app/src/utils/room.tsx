@@ -148,6 +148,13 @@ export async function leaveRoom(
 		return res
 	}
 	globalState.setRoom(null)
+	globalState.setUser((u) => {
+		if (!u) return null
+
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		const { score, state, lastScore, ...newUser } = u
+		return newUser
+	})
 	await globalState.waitForStateChange()
 	return { value: null, error: null }
 }

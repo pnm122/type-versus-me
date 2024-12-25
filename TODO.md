@@ -27,7 +27,7 @@
 [x] Join code on homepage doesn't make sense given that we copy room links
 [x] Capitalization of room codes shouldn't matter
 [x] Notify user if their color was taken when they joined a room
-[ ] lastScore needs to be reset after leaving a room
+[x] lastScore needs to be reset after leaving a room
 [ ] Error page
 [ ] Animate state/page changes as often as possible for better UX/clarity
 [ ] Fix SCSS warnings
