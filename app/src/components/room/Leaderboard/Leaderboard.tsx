@@ -21,7 +21,7 @@ export default function Leaderboard() {
 		return () => {
 			window.removeEventListener('resize', onresize)
 		}
-	}, [open])
+	}, [open, room?.users.length])
 
 	if (!room) return <></>
 

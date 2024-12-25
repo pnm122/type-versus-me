@@ -21,8 +21,8 @@
 [x] Add dark mode colors
 [x] Add light/dark mode switch
 [x] Is there any better way of initializing a theme?
-[ ] Missing results from leaderboard for new users (seems to be missing the last joined player?)
-[ ] Leaderboard resize on users changing
+[-] (Couldn't replicate this?) Missing results from leaderboard for new users (seems to be missing the last joined player?)
+[x] Leaderboard resize on users leaving
 [ ] Add bottom padding to body/pages
 [ ] Join code on homepage doesn't make sense given that we copy room links
 [ ] Animate state/page changes as often as possible for better UX/clarity
