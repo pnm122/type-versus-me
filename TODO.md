@@ -19,8 +19,8 @@
 [x] Broken view transition timing
 [x] Timer doesn't hit 0 when a user has finished but the other user's timer is behind
 [x] Add dark mode colors
-[ ] Add light/dark mode switch
-[ ] Is there any better way of initializing a theme?
+[x] Add light/dark mode switch
+[x] Is there any better way of initializing a theme?
 [ ] Missing results from leaderboard for new users (seems to be missing the last joined player?)
 [ ] Leaderboard resize on users changing
 [ ] Add bottom padding to body/pages

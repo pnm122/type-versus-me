@@ -1,4 +1,4 @@
-:root:has([data-theme='light']) {
+[data-theme='light'] {
 	// Base colors
 	--white: #fdfcf9;
 	--black: #10100e;
@@ -50,7 +50,7 @@
 	color-scheme: light;
 }
 
-:root:has([data-theme='dark']) {
+[data-theme='dark'] {
 	// Base colors
 	--white: #fdfcf9;
 	--black: #10100e;

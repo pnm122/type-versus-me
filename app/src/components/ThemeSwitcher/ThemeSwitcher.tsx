@@ -1,27 +1,27 @@
 import styles from './style.module.scss'
-import { useTheme } from '@/context/Theme'
 import PixelarticonsSunAlt from '~icons/pixelarticons/sun-alt'
 import PixelarticonsMoon from '~icons/pixelarticons/moon'
 import createClasses from '@/utils/createClasses'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useTheme } from 'next-themes'
 
 export default function ThemeSwitcher() {
 	const { theme, setTheme } = useTheme()
 	const background = useRef<HTMLDivElement>(null)
 	const lightTheme = useRef<HTMLDivElement>(null)
 	const darkTheme = useRef<HTMLDivElement>(null)
-	const [rendered, setRendered] = useState(false)
+	// Set to true after the initial render
+	// Suppresses hydration warning caused by next-themes
+	const [mounted, setMounted] = useState(false)
 
 	const isLightTheme = theme === 'light'
 
 	useLayoutEffect(() => {
 		updateBackgroundPosition()
-	}, [theme])
+	}, [theme, mounted])
 
 	useEffect(() => {
-		// Force setRendered to be called after the width and transform of the background have been set
-		// Otherwise, they seem to get batched together, causing the transition to still appear
-		requestAnimationFrame(() => setRendered(true))
+		setMounted(true)
 	}, [])
 
 	function updateBackgroundPosition() {
@@ -30,17 +30,19 @@ export default function ThemeSwitcher() {
 		const { offsetLeft, offsetWidth } = isLightTheme ? lightTheme.current : darkTheme.current
 		background.current.style.width = `${offsetWidth}px`
 		background.current.style.transform = `translate(${offsetLeft}px)`
+		// Add transition class AFTER render so the transition doesn't happen on the first render
+		requestAnimationFrame(() => {
+			background.current?.classList.add(styles['switcher__selected-background--transition'])
+		})
 	}
 
 	return (
 		<button
 			role="checkbox"
-			aria-checked={isLightTheme}
+			// Only set properties relying on the theme state after mounting to avoid hydration errors
+			aria-checked={mounted && isLightTheme}
 			aria-label="Use light mode"
-			className={createClasses({
-				[styles['switcher']]: true,
-				[styles['switcher--rendered']]: rendered
-			})}
+			className={styles['switcher']}
 			onClick={() => setTheme(isLightTheme ? 'dark' : 'light')}
 		>
 			<div ref={background} className={styles['switcher__selected-background']} />
@@ -48,7 +50,7 @@ export default function ThemeSwitcher() {
 				ref={darkTheme}
 				className={createClasses({
 					[styles['theme']]: true,
-					[styles['theme--selected']]: !isLightTheme
+					[styles['theme--selected']]: mounted && !isLightTheme
 				})}
 			>
 				<PixelarticonsMoon className={styles['theme__icon']} />
@@ -58,7 +60,7 @@ export default function ThemeSwitcher() {
 				ref={lightTheme}
 				className={createClasses({
 					[styles['theme']]: true,
-					[styles['theme--selected']]: isLightTheme
+					[styles['theme--selected']]: mounted && isLightTheme
 				})}
 			>
 				<PixelarticonsSunAlt className={styles['theme__icon']} />

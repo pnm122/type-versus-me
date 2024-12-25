@@ -1,10 +1,10 @@
 import type { Metadata } from 'next'
 import '@/scss/index.scss'
-import { ThemeProvider } from '@/context/Theme'
 import { SocketProvider } from '@/context/Socket'
 import { NotificationProvider } from '@/context/Notification'
 import { GlobalStateProvider } from '@/context/GlobalState'
 import LeaveRoomHandler from '@/components/LeaveRoomHandler/LeaveRoomHandler'
+import { ThemeProvider } from 'next-themes'
 
 export const metadata: Metadata = {
 	title: 'Typing Race',
@@ -17,18 +17,23 @@ export default function RootLayout({
 	children: React.ReactNode
 }>) {
 	return (
-		<html lang="en">
+		<html lang="en" suppressHydrationWarning>
 			<body>
-				<NotificationProvider>
-					<SocketProvider>
-						<GlobalStateProvider>
-							<ThemeProvider>
+				<ThemeProvider
+					storageKey="app-theme"
+					themes={['light', 'dark']}
+					defaultTheme="system"
+					enableSystem
+				>
+					<NotificationProvider>
+						<SocketProvider>
+							<GlobalStateProvider>
 								<LeaveRoomHandler />
 								{children}
-							</ThemeProvider>
-						</GlobalStateProvider>
-					</SocketProvider>
-				</NotificationProvider>
+							</GlobalStateProvider>
+						</SocketProvider>
+					</NotificationProvider>
+				</ThemeProvider>
 			</body>
 		</html>
 	)
