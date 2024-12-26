@@ -44,7 +44,7 @@ export default function Room() {
 
 	// Show loading state even if the room doesn't exist or the user is in another room
 	// because the user will be re-routed and there's no reason to show the other displays
-	if (!roomExists || inOtherRoom) {
+	if ((!room && !roomExists) || inOtherRoom) {
 		return <LoadingRoom />
 	}
 

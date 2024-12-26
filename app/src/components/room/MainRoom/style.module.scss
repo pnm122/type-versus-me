@@ -3,10 +3,13 @@
 .main {
 	background-color: var(--surface);
 	padding: 16px;
-	display: flex;
-	flex-direction: column;
-	gap: 16px;
 	height: fit-content;
+
+	.top {
+		transition:
+			height 0.25s var(--timing),
+			visibility 0.25s var(--timing);
+	}
 
 	&__waiting-text {
 		@include font-body(32);

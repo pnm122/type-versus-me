@@ -1,9 +1,27 @@
 @use '@/scss/fonts' as *;
 @use '@/scss/breakpoints' as *;
 
+.container {
+	transition:
+		height 0.25s var(--timing),
+		visibility 0.25s var(--timing);
+	overflow: hidden;
+	height: 0;
+	visibility: hidden;
+
+	&--open {
+		// interpolate-size will animate this for me in supported browsers
+		height: auto;
+		visibility: visible;
+	}
+}
+
 .leaderboard {
-	border-top: 2px solid var(--border);
-	padding-top: 16px;
+	.divider {
+		margin-block: 16px;
+		height: 2px;
+		background-color: var(--border);
+	}
 
 	.expand {
 		@include font-heading(16);

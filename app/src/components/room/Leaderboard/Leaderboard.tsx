@@ -13,6 +13,8 @@ export default function Leaderboard() {
 	const results = useRef<HTMLDivElement>(null)
 	const list = useRef<HTMLOListElement>(null)
 
+	const sortedScores = sortUsersByScore(room?.users ?? [])
+
 	useLayoutEffect(() => {
 		setResultsHeight()
 		const onresize = debounce(setResultsHeight, 100)
@@ -21,7 +23,7 @@ export default function Leaderboard() {
 		return () => {
 			window.removeEventListener('resize', onresize)
 		}
-	}, [open, room?.users.length])
+	}, [open, sortedScores, room?.users.length])
 
 	if (!room) return <></>
 
@@ -38,26 +40,34 @@ export default function Leaderboard() {
 	return (
 		<div
 			className={createClasses({
-				[styles['leaderboard']]: true,
-				[styles['leaderboard--open']]: open
+				[styles['container']]: true,
+				[styles['container--open']]: room.state !== 'in-progress' && sortedScores.length !== 0
 			})}
 		>
-			<button
-				className={styles['expand']}
-				aria-label="Show results"
-				aria-expanded={open}
-				aria-controls="leaderboard-results"
-				onClick={() => setOpen((o) => !o)}
+			<div
+				className={createClasses({
+					[styles['leaderboard']]: true,
+					[styles['leaderboard--open']]: open
+				})}
 			>
-				<h1 className={styles['expand__title']}>Results</h1>
-				<PixelarticonsChevronUp className={styles['expand__icon']} />
-			</button>
-			<div ref={results} className={styles['leaderboard__results']}>
-				<ol ref={list} className={styles['list']} id="leaderboard-results">
-					{sortUsersByScore(room.users).map((u) => (
-						<LeaderboardUser key={u.id} user={u} />
-					))}
-				</ol>
+				<div className={styles['divider']} />
+				<button
+					className={styles['expand']}
+					aria-label="Show results"
+					aria-expanded={open}
+					aria-controls="leaderboard-results"
+					onClick={() => setOpen((o) => !o)}
+				>
+					<h1 className={styles['expand__title']}>Results</h1>
+					<PixelarticonsChevronUp className={styles['expand__icon']} />
+				</button>
+				<div ref={results} className={styles['leaderboard__results']}>
+					<ol ref={list} className={styles['list']} id="leaderboard-results">
+						{sortedScores.map((u) => (
+							<LeaderboardUser key={u.id} user={u} />
+						))}
+					</ol>
+				</div>
 			</div>
 		</div>
 	)

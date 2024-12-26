@@ -13,6 +13,6 @@
 	}
 
 	@media screen and (width > $screen-lg) {
-		grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+		grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
 	}
 }

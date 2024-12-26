@@ -2,7 +2,7 @@
 
 import Typer, { TyperRef, TyperStats } from '@/components/Typer/Typer'
 import styles from './style.module.scss'
-import { useEffect, useRef, useState } from 'react'
+import { RefObject, useEffect, useRef, useState } from 'react'
 import { useGlobalState } from '@/context/GlobalState'
 import { useNotification } from '@/context/Notification'
 import { useSocket } from '@/context/Socket'
@@ -11,7 +11,7 @@ import { updateUser } from '@/utils/user'
 import createClasses from '@/utils/createClasses'
 import useInterval from '@/hooks/useInterval'
 
-export default function Game() {
+export default function Game({ ref }: { ref?: RefObject<HTMLDivElement> }) {
 	const GAME_TIME = 120
 
 	const [startTime, setStartTime] = useState(-1)
@@ -91,7 +91,7 @@ export default function Game() {
 	}
 
 	return (
-		<div className={styles['game']}>
+		<div className={styles['game']} ref={ref}>
 			<h1
 				className={createClasses({
 					[styles['start-overlay']]: true,
