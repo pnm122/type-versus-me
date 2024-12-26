@@ -53,22 +53,30 @@ export default function RoomData() {
 
 	return (
 		<div className={styles['data']}>
-			<ul className={styles['data__users']}>
-				{room.users.map((u) => (
-					<User key={u.id} user={u} />
-				))}
-			</ul>
-			<h3 className={styles['data__num-players']}>
-				{room.users.length}/{MAX_USERS_PER_ROOM} players
-			</h3>
-			{room.state !== 'in-progress' && (
-				<Checkbox
-					checked={predictedUserState ? predictedUserState === 'ready' : user.state === 'ready'}
-					onChange={onCheckboxChange}
-				>
-					{"I'm ready"}
-				</Checkbox>
-			)}
+			<div className={styles['user-info']}>
+				<ul className={styles['user-info__users']}>
+					{room.users.map((u) => (
+						<User key={u.id} user={u} />
+					))}
+				</ul>
+				<h3 className={styles['user-info__num-players']}>
+					{room.users.length}/{MAX_USERS_PER_ROOM} players
+				</h3>
+				<div className={styles['checkbox']}>
+					<Checkbox
+						checked={
+							predictedUserState
+								? predictedUserState === 'ready'
+								: user.state === 'ready' || room.state === 'in-progress'
+						}
+						onChange={onCheckboxChange}
+						disabled={room.state === 'in-progress'}
+						className={styles['checkbox__button']}
+					>
+						{"I'm ready"}
+					</Checkbox>
+				</div>
+			</div>
 			<hr></hr>
 			<div className={styles['data__room']}>
 				<button
