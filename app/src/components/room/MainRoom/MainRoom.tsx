@@ -2,13 +2,14 @@ import { useGlobalState } from '@/context/GlobalState'
 import styles from './style.module.scss'
 import Game from '../Game/Game'
 import Leaderboard from '../Leaderboard/Leaderboard'
-import { useLayoutEffect, useRef } from 'react'
+import { useEffect, useLayoutEffect, useRef } from 'react'
 
 export default function MainRoom() {
 	const globalState = useGlobalState()
 	const gameRef = useRef<HTMLDivElement>(null)
 	const waitingTextRef = useRef<HTMLHeadingElement>(null)
 	const topRef = useRef<HTMLDivElement>(null)
+	const resetHeightTimeout = useRef<NodeJS.Timeout | null>(null)
 	const { room } = globalState
 
 	useLayoutEffect(() => {
@@ -19,7 +20,21 @@ export default function MainRoom() {
 		} else {
 			topRef.current.style.height = `${waitingTextRef.current!.getBoundingClientRect().height}px`
 		}
+		resetTopHeight()
 	}, [room?.state])
+
+	useEffect(() => {
+		return () => {
+			if (resetHeightTimeout.current) clearTimeout(resetHeightTimeout.current)
+		}
+	}, [])
+
+	function resetTopHeight() {
+		resetHeightTimeout.current = setTimeout(() => {
+			topRef.current!.style.height = ''
+			resetHeightTimeout.current = null
+		}, 250)
+	}
 
 	if (!room) return <></>
 
