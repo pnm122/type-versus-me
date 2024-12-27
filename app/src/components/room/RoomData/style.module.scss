@@ -21,22 +21,10 @@
 		}
 
 		.checkbox {
-			overflow: hidden;
-			width: 100%;
-			// 40px for checkbox, 12px for top padding
-			height: 52px;
-			transition:
-				height 0.25s var(--timing) 0.25s,
-				padding 0.25s var(--timing) 0.25s;
-
-			&:has(.checkbox__button:disabled) {
-				height: 0;
-				padding-top: 0;
-			}
+			padding-top: 12px;
 
 			&__button {
 				width: 100%;
-				margin-top: 12px;
 			}
 		}
 	}

@@ -15,6 +15,7 @@ import { updateUser } from '@/utils/user'
 import { useSocket } from '@/context/Socket'
 import { leaveRoom } from '@/utils/room'
 import { useRouter } from 'next/navigation'
+import Collapsible from '@/components/Collapsible/Collapsible'
 
 export default function RoomData() {
 	const globalState = useGlobalState()
@@ -62,20 +63,22 @@ export default function RoomData() {
 				<h3 className={styles['user-info__num-players']}>
 					{room.users.length}/{MAX_USERS_PER_ROOM} players
 				</h3>
-				<div className={styles['checkbox']}>
-					<Checkbox
-						checked={
-							predictedUserState
-								? predictedUserState === 'ready'
-								: user.state === 'ready' || room.state === 'in-progress'
-						}
-						onChange={onCheckboxChange}
-						disabled={room.state === 'in-progress'}
-						className={styles['checkbox__button']}
-					>
-						{"I'm ready"}
-					</Checkbox>
-				</div>
+				<Collapsible open={room.state !== 'in-progress'} openDirection="down" delay={375}>
+					<div className={styles['checkbox']}>
+						<Checkbox
+							checked={
+								predictedUserState
+									? predictedUserState === 'ready'
+									: user.state === 'ready' || room.state === 'in-progress'
+							}
+							onChange={onCheckboxChange}
+							disabled={room.state === 'in-progress'}
+							className={styles['checkbox__button']}
+						>
+							{"I'm ready"}
+						</Checkbox>
+					</div>
+				</Collapsible>
 			</div>
 			<hr></hr>
 			<div className={styles['data__room']}>

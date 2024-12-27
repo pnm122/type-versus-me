@@ -6,8 +6,8 @@
 	&--left,
 	&--right {
 		transition:
-			width var(--collapsible-duration) var(--collapsible-ease),
-			visibility var(--collapsible-duration) var(--collapsible-ease);
+			width var(--collapsible-duration) var(--collapsible-ease) var(--collapsible-delay),
+			visibility var(--collapsible-duration) var(--collapsible-ease) var(--collapsible-delay);
 
 		&.collapsible--open {
 			width: fit-content;
@@ -26,8 +26,8 @@
 	&--up,
 	&--down {
 		transition:
-			height var(--collapsible-duration) var(--collapsible-ease),
-			visibility var(--collapsible-duration) var(--collapsible-ease);
+			height var(--collapsible-duration) var(--collapsible-ease) var(--collapsible-delay),
+			visibility var(--collapsible-duration) var(--collapsible-ease) var(--collapsible-delay);
 
 		&.collapsible--open {
 			height: fit-content;

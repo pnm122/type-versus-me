@@ -19,6 +19,11 @@ type Props = PropsWithChildren<{
 	 */
 	duration?: number
 	/**
+	 * Delay between open changing and the start of the ensuing transition.
+	 * @default 0
+	 */
+	delay?: number
+	/**
 	 * Whether to fit the collapsible to its content in the direction perpendicular to `openDirection`
 	 * @default false
 	 */
@@ -32,6 +37,7 @@ export default function Collapsible({
 	openDirection = 'down',
 	ease = 'var(--timing)',
 	duration = 250,
+	delay = 0,
 	fitContent = false,
 	open,
 	id,
@@ -49,8 +55,10 @@ export default function Collapsible({
 		if (!container.current || !content.current) return
 
 		// Don't show the animation on first render, but initialize its height when closed
-		if (!rendered && !open) {
-			container.current!.style[transitioningProperty] = '0px'
+		if (!rendered) {
+			if (!open) {
+				container.current!.style[transitioningProperty] = '0px'
+			}
 			return
 		}
 
@@ -91,7 +99,7 @@ export default function Collapsible({
 		revertTimeout.current = setTimeout(() => {
 			container.current!.style[transitioningProperty] = ''
 			revertTimeout.current = null
-		}, duration)
+		}, duration + delay)
 	}
 
 	return (
@@ -107,7 +115,8 @@ export default function Collapsible({
 			style={
 				{
 					'--collapsible-ease': ease,
-					'--collapsible-duration': `${duration}ms`
+					'--collapsible-duration': `${duration}ms`,
+					'--collapsible-delay': `${delay}ms`
 				} as React.CSSProperties
 			}
 		>
