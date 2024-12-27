@@ -15,7 +15,11 @@ export default function CursorPreview({ color, disabled, size = 'medium' }: Prop
 				[styles['cursor']]: true,
 				[styles[`cursor--${size}`]]: true
 			})}
-			style={{ backgroundColor: disabled ? 'var(--on-disabled)' : `var(--cursor-${color})` }}
+			style={
+				{
+					'--_cursor-color': disabled ? 'var(--on-disabled)' : `var(--cursor-${color})`
+				} as React.CSSProperties
+			}
 		/>
 	)
 }

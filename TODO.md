@@ -38,16 +38,17 @@
 [x] Show current user's WPM in game UI as well
 [x] Fix layout issues in game
 [x] Small layout shift when user is done/has failed
-[ ] Time doesn't update correctly when the tab is hidden?
-[ ] Remove unnecessary 'complete' state from room
 [ ] Some way of editing your color and username within the room
+[ ] Add a basic header
 [ ] Room settings when created (i.e. test length, time limit, etc.)
 [ ] Have a room admin (the person who created the room) who can change room settings
-[ ] Add a basic header
+[ ] Show a crown next to the room admin's name
 [ ] Add active user count
 [ ] Create a favicon
 [ ] Domain name?
 [ ] Figure out hosting
+[ ] Time doesn't update correctly when the tab is hidden?
+[ ] Remove unnecessary 'complete' state from room
 [ ] Some very fast layout shift on loading the homepage?
 [ ] Some kind of congratulations on winning the room
 [ ] Something negative for failing

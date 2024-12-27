@@ -7,14 +7,57 @@ import PixelarticonsDice from '~icons/pixelarticons/dice'
 import CursorSelector from '../CursorSelector/CursorSelector'
 import { useGlobalState } from '@/context/GlobalState'
 import CursorColors from '$shared/utils/CursorColors'
+import { CursorColor } from '$shared/types/Cursor'
 
-export default function UsernameAndColorInput() {
+interface Props {
+	/**
+	 * Username state to use.
+	 * @default globalState.user.username
+	 **/
+	username?: string
+	/**
+	 * Color state to use.
+	 * @default globalState.user.color
+	 **/
+	color?: CursorColor
+	/**
+	 * Handler for username changes. *Must be provided if also providing a username.*
+	 */
+	onUsernameChange?: (u: string) => void
+	/**
+	 * Handler for color changes. *Must be provided if also providing a color.*
+	 */
+	onColorChange?: (c: CursorColor) => void
+	/** Change the styling for when the component is on a surface. */
+	isOnSurface?: boolean
+	/** List of colors to disable in the color input. */
+	disabledColors?: CursorColor[]
+}
+
+export default function UsernameAndColorInput({
+	username,
+	color,
+	onUsernameChange,
+	onColorChange,
+	isOnSurface,
+	disabledColors
+}: Props) {
 	const globalState = useGlobalState()
 
 	const { user } = globalState
 
-	function onUsernameChange(e: React.ChangeEvent<HTMLInputElement>) {
-		setUser({ username: e.target.value }, { globalState })
+	function onUsernameChangeDefault(username: string) {
+		if (onUsernameChange) {
+			return onUsernameChange(username)
+		}
+		setUser({ username }, { globalState })
+	}
+
+	function onColorChangeDefault(c: CursorColor) {
+		if (onColorChange) {
+			return onColorChange(c)
+		}
+		setUser({ color: c }, { globalState })
 	}
 
 	return (
@@ -24,9 +67,9 @@ export default function UsernameAndColorInput() {
 					id="username"
 					label="Username"
 					placeholder="Username"
-					disabled={!user}
-					text={user?.username ?? ''}
-					onChange={onUsernameChange}
+					disabled={!username && !user}
+					text={username ?? user?.username ?? ''}
+					onChange={(e) => onUsernameChangeDefault(e.target.value)}
 					wrapperClassName={styles['username__input']}
 					minLength={3}
 					maxLength={16}
@@ -37,14 +80,15 @@ export default function UsernameAndColorInput() {
 					className={styles['username__generate']}
 					style="secondary"
 					ariaLabel="Generate random username"
-					disabled={!user}
-					onClick={() => setUser({ username: generateUsername() }, { globalState })}
+					disabled={!username && !user}
+					onClick={() => onUsernameChangeDefault(generateUsername())}
 				/>
 			</div>
 			<CursorSelector
-				selected={user?.color}
-				onChange={(c) => setUser({ color: c }, { globalState })}
-				disabled={user ? undefined : CursorColors}
+				selected={color ?? user?.color}
+				onChange={onColorChangeDefault}
+				disabled={color || user ? disabledColors : CursorColors}
+				isOnSurface={isOnSurface}
 			/>
 		</div>
 	)

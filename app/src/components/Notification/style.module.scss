@@ -3,7 +3,7 @@
 	max-width: min(350px, calc(100vw - (2 * 24px)));
 	display: grid;
 	grid-template-columns: 40px 1fr 40px;
-	box-shadow: 2px 3px 16px rgb(0, 0, 0, 0.15);
+	box-shadow: var(--shadow);
 
 	&:nth-of-type(1) {
 		view-transition-class: notification notification-first;

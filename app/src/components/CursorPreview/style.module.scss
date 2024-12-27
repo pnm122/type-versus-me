@@ -1,4 +1,7 @@
 .cursor {
+	// Allow cursor color to be overridden by an outside component using --cursor-color
+	--__cursor-color: var(--cursor-color, var(--_cursor-color));
+	background-color: var(--__cursor-color);
 	aspect-ratio: 1 / 8;
 
 	&--small {
