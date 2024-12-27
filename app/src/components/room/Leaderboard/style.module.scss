@@ -14,10 +14,8 @@
 		display: flex;
 		align-items: center;
 		gap: 8px;
-
-		&__title {
-			transition: font-size 0.25s var(--timing);
-		}
+		transform-origin: left center;
+		transition: scale 0.25s var(--timing);
 
 		&__icon {
 			transition: rotate 0.25s var(--timing);
@@ -38,7 +36,7 @@
 
 	&--open {
 		.expand {
-			@include font-heading(24);
+			scale: 1.5;
 		}
 	}
 }
