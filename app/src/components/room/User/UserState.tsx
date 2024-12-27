@@ -12,6 +12,7 @@ type Props = Pick<User, 'score' | 'state'>
 export default function UserState({ score, state }: Props) {
 	const [lastFinishState, setLastFinishState] = useState<'complete' | 'failed' | null>(null)
 
+	// Keep track of the last finish state so that it can animate back to the not-ready state without showing the incorrect finish state
 	useEffect(() => {
 		if (state === 'complete' || state === 'failed') {
 			setLastFinishState(state)
