@@ -12,43 +12,13 @@ import styles from './style.module.scss'
 import { Cursor } from '@/types/Cursor'
 import TyperCursor from '../TyperCursor/TyperCursor'
 import { CursorColor, CursorPosition } from '$shared/types/Cursor'
-import { getCursorPosition, getTextRegions, words } from '@/utils/typer'
-import { Word } from '@/types/Typer'
+import { getCursorPosition, getInitialStats, getTextRegions, words } from '@/utils/typer'
+import { TyperStats, Word } from '@/types/Typer'
 import { useGlobalState } from '@/context/GlobalState'
 import debounce from 'debounce'
 
-export type TyperStats = Stats & {
-	perWordStats: PerWordStats[]
-}
-
 export interface TyperRef {
 	focus: () => void
-}
-
-type PerWordStats = Stats & {
-	aggregateRawWPM: number
-	aggregateNetWPM: number
-}
-
-interface Stats {
-	/** Number of errors made while typing */
-	errorsMade: number
-	/** Number of errors still left in typed text */
-	errorsLeft: number
-	/** Number of correct keystrokes made while typing */
-	correctMade: number
-	/** Number of correct keystrokes left in typed text */
-	correctLeft: number
-	/** End time in ms since epoch */
-	endTime: number
-	/** Words per minute without accounting for errors. (Keystrokes / 5) / (Elapsed time in minutes) */
-	rawWPM: number
-	/** Words for minute, counting only correct keystrokes. (Correct keystrokes / 5) / (Elapsed time in minutes) */
-	netWPM: number
-	/** Percentage of correct keystrokes. (Correct keystrokes) / (Total keystrokes) */
-	accuracy: number
-	/** Current position of the user's cursor */
-	cursorPosition: CursorPosition
 }
 
 interface LineInfo {
@@ -93,29 +63,6 @@ export default function Typer({
 	cursors,
 	ref
 }: Props) {
-	function getInitialStats(numWords = 0): TyperStats {
-		const INIT: Stats = {
-			errorsMade: 0,
-			errorsLeft: 0,
-			correctMade: 0,
-			correctLeft: 0,
-			endTime: -1,
-			rawWPM: -1,
-			netWPM: -1,
-			accuracy: 0,
-			cursorPosition: { word: 0, letter: 0 }
-		}
-
-		return {
-			...INIT,
-			perWordStats: Array<PerWordStats>(numWords).fill({
-				...INIT,
-				aggregateRawWPM: -1,
-				aggregateNetWPM: -1
-			})
-		}
-	}
-
 	useImperativeHandle(ref, () => ({
 		focus() {
 			input.current?.focus({})

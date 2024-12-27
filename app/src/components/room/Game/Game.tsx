@@ -1,6 +1,6 @@
 'use client'
 
-import Typer, { TyperRef, TyperStats } from '@/components/Typer/Typer'
+import Typer, { TyperRef } from '@/components/Typer/Typer'
 import styles from './style.module.scss'
 import { RefObject, useEffect, useRef, useState } from 'react'
 import { useGlobalState } from '@/context/GlobalState'
@@ -10,14 +10,15 @@ import { Cursor } from '@/types/Cursor'
 import { updateUser } from '@/utils/user'
 import createClasses from '@/utils/createClasses'
 import useInterval from '@/hooks/useInterval'
+import { getInitialStats } from '@/utils/typer'
+import { TyperStats } from '@/types/Typer'
 
 export default function Game({ ref }: { ref?: RefObject<HTMLDivElement> }) {
-	const GAME_TIME = 2
+	const GAME_TIME = 120
 
 	const [startTime, setStartTime] = useState(-1)
 	const [finished, setFinished] = useState(false)
-	const [correctTyped, setCorrectTyped] = useState(0)
-	const [errorsLeft, setErrorsLeft] = useState(0)
+	const [stats, setStats] = useState<TyperStats>(getInitialStats())
 	const [timeToStart, setTimeToStart] = useState(-1)
 	const [timeLeft, setTimeLeft] = useState(-1)
 	const globalState = useGlobalState()
@@ -50,8 +51,7 @@ export default function Game({ ref }: { ref?: RefObject<HTMLDivElement> }) {
 	useEffect(() => {
 		if (room?.state === 'in-progress') {
 			setFinished(false)
-			setCorrectTyped(0)
-			setErrorsLeft(0)
+			setStats(getInitialStats())
 			setTimeToStart(5)
 			setTimeLeft(GAME_TIME)
 		}
@@ -81,8 +81,7 @@ export default function Game({ ref }: { ref?: RefObject<HTMLDivElement> }) {
 			{ cursorPosition: stats.cursorPosition, netWPM: stats.netWPM },
 			{ globalState, socket, notifs }
 		)
-		setCorrectTyped(stats.correctLeft)
-		setErrorsLeft(stats.errorsLeft)
+		setStats(stats)
 	}
 
 	function onTyperFinish() {
@@ -111,17 +110,18 @@ export default function Game({ ref }: { ref?: RefObject<HTMLDivElement> }) {
 			/>
 			<div className={styles['game__info']}>
 				<div className={styles['stats']}>
+					<p className={styles['stats__wpm']}>{Math.round(user?.score?.netWPM ?? 0)}wpm</p>
 					<p
 						className={createClasses({
 							[styles['stats__typed']]: true,
-							[styles['stats__typed--error']]: errorsLeft > 0
+							[styles['stats__typed--error']]: stats.errorsLeft > 0
 						})}
 					>
-						{correctTyped}/{room.test.length}
+						{stats.correctMade}/{room.test.length}
 					</p>
-					{errorsLeft > 0 && (
+					{stats.errorsLeft > 0 && (
 						<p className={styles['stats__errors-left']}>
-							{errorsLeft} mistake{errorsLeft > 1 ? 's' : ''}
+							{stats.errorsLeft} mistake{stats.errorsLeft > 1 ? 's' : ''}
 						</p>
 					)}
 				</div>

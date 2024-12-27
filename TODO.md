@@ -35,7 +35,7 @@
 [x] Fix cursor selector not centered on mobile Safari
 [x] Fix results expanding broken animation on mobile Safari
 [x] Enable Typer touchscreen support
-[ ] Show current user's WPM in game UI as well
+[x] Show current user's WPM in game UI as well
 [ ] Fix layout issues in game
 [x] Small layout shift when user is done/has failed
 [ ] Time doesn't update correctly when the tab is hidden?

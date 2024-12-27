@@ -1,4 +1,4 @@
-import { Word, WordRegion, WordRegionType } from '@/types/Typer'
+import { PerWordStats, TyperStats, Word, WordRegion, WordRegionType } from '@/types/Typer'
 
 export function getCursorPosition(typed: string) {
 	return {
@@ -87,5 +87,28 @@ function getCharacterType(
 		return 'correct'
 	} else {
 		return 'incorrect'
+	}
+}
+
+export function getInitialStats(numWords = 0): TyperStats {
+	const INIT: Omit<TyperStats, 'perWordStats'> = {
+		errorsMade: 0,
+		errorsLeft: 0,
+		correctMade: 0,
+		correctLeft: 0,
+		endTime: -1,
+		rawWPM: 0,
+		netWPM: 0,
+		accuracy: 0,
+		cursorPosition: { word: 0, letter: 0 }
+	}
+
+	return {
+		...INIT,
+		perWordStats: Array<PerWordStats>(numWords).fill({
+			...INIT,
+			aggregateRawWPM: -1,
+			aggregateNetWPM: -1
+		})
 	}
 }
