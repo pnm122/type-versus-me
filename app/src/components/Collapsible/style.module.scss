@@ -5,13 +5,16 @@
 
 	&--left,
 	&--right {
-		height: fit-content;
 		transition:
 			width var(--collapsible-duration) var(--collapsible-ease),
 			visibility var(--collapsible-duration) var(--collapsible-ease);
 
 		&.collapsible--open {
 			width: fit-content;
+		}
+
+		&.collapsible--fit-content {
+			height: fit-content;
 		}
 
 		// Try to account for squishing text
@@ -22,13 +25,16 @@
 
 	&--up,
 	&--down {
-		width: fit-content;
 		transition:
 			height var(--collapsible-duration) var(--collapsible-ease),
 			visibility var(--collapsible-duration) var(--collapsible-ease);
 
 		&.collapsible--open {
 			height: fit-content;
+		}
+
+		&.collapsible--fit-content {
+			width: fit-content;
 		}
 	}
 

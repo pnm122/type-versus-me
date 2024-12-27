@@ -18,15 +18,23 @@ type Props = PropsWithChildren<{
 	 * @default 250
 	 */
 	duration?: number
+	/**
+	 * Whether to fit the collapsible to its content in the direction perpendicular to `openDirection`
+	 * @default false
+	 */
+	fitContent?: boolean
 	/** Open state of the collapsible. */
 	open: boolean
+	id?: string
 }>
 
 export default function Collapsible({
 	openDirection = 'down',
 	ease = 'var(--timing)',
 	duration = 250,
+	fitContent = false,
 	open,
+	id,
 	children
 }: Props) {
 	const container = useRef<HTMLDivElement>(null)
@@ -38,8 +46,13 @@ export default function Collapsible({
 		openDirection === 'left' || openDirection === 'right' ? 'width' : 'height'
 
 	useLayoutEffect(() => {
-		// Don't show the animation on first render
-		if (!container.current || !content.current || !rendered) return
+		if (!container.current || !content.current) return
+
+		// Don't show the animation on first render, but initialize its height when closed
+		if (!rendered && !open) {
+			container.current!.style[transitioningProperty] = '0px'
+			return
+		}
 
 		// If the user clicks fast enough, the applied styles could get reverted in the middle of a transition
 		// Because the revert was meant to be after the last transition. This stops that from happening.
@@ -84,10 +97,12 @@ export default function Collapsible({
 	return (
 		<div
 			ref={container}
+			id={id}
 			className={createClasses({
 				[styles['collapsible']]: true,
 				[styles['collapsible--open']]: open,
-				[styles[`collapsible--${openDirection}`]]: true
+				[styles[`collapsible--${openDirection}`]]: true,
+				[styles['collapsible--fit-content']]: fitContent
 			})}
 			style={
 				{
