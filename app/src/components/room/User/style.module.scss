@@ -21,3 +21,35 @@
 		}
 	}
 }
+
+.state {
+	display: grid;
+	grid-auto-flow: row;
+	place-items: flex-end;
+	height: 1.5rem;
+	overflow: hidden;
+
+	&__option {
+		height: 1.5rem;
+		display: flex;
+		align-items: center;
+		transition: transform 0.25s var(--timing);
+	}
+
+	&--not-ready .state__option {
+		transform: translateY(-300%);
+	}
+
+	&--ready .state__option {
+		transform: translateY(-200%);
+	}
+
+	&--in-progress .state__option {
+		transform: translateY(-100%);
+	}
+
+	&--complete .state__option,
+	&--failed .state__option {
+		transform: translateY(0);
+	}
+}

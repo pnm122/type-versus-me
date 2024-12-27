@@ -31,7 +31,9 @@
 [x] Error page
 [ ] Animate state/page changes as often as possible for better UX/clarity
 [ ] Fix SCSS warnings
-[ ] Small layout shift when user is done/has failed
+[ ] Figure out how to host locally
+[ ] Show current user's WPM in game UI as well
+[x] Small layout shift when user is done/has failed
 [ ] Time doesn't update correctly when the tab is hidden?
 [ ] Remove unnecessary 'complete' state from room
 [ ] Some way of editing your color and username within the room

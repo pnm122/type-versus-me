@@ -1,11 +1,8 @@
 import { User as UserType } from '$shared/types/User'
 import CursorPreview from '@/components/CursorPreview/CursorPreview'
 import styles from './style.module.scss'
-import Pill from '@/components/Pill/Pill'
-import PixelarticonsMinus from '~icons/pixelarticons/minus'
-import PixelarticonsCheck from '~icons/pixelarticons/check'
-import PixelarticonsClose from '~icons/pixelarticons/close'
 import { useGlobalState } from '@/context/GlobalState'
+import UserState from './UserState'
 
 interface Props {
 	user: UserType
@@ -24,42 +21,7 @@ export default function User({ user: { id, username, color, score, state } }: Pr
 				</p>
 			</div>
 			<div className={styles['user__info']}>
-				{state === 'not-ready' ? (
-					<Pill
-						backgroundColor="var(--disabled)"
-						foregroundColor="var(--heading)"
-						text="Not Ready"
-						icon={<PixelarticonsMinus />}
-					/>
-				) : state === 'ready' ? (
-					<Pill
-						backgroundColor="var(--positive)"
-						foregroundColor="var(--background)"
-						text="Ready"
-						icon={<PixelarticonsCheck />}
-					/>
-				) : state === 'in-progress' ? (
-					<p
-						aria-label={`${score?.netWPM ?? 0} words per minute`}
-						className={styles['words-per-minute']}
-					>
-						{Math.round(score?.netWPM ?? 0)}wpm
-					</p>
-				) : state === 'complete' ? (
-					<Pill
-						backgroundColor="var(--positive)"
-						foregroundColor="var(--background)"
-						text="Done"
-						icon={<PixelarticonsCheck />}
-					/>
-				) : (
-					<Pill
-						backgroundColor="var(--negative)"
-						foregroundColor="var(--background)"
-						text="Failed"
-						icon={<PixelarticonsClose />}
-					/>
-				)}
+				<UserState score={score} state={state} />
 			</div>
 		</li>
 	)
