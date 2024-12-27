@@ -1,0 +1,54 @@
+.collapsible {
+	visibility: hidden;
+	overflow: hidden;
+	display: grid;
+
+	&--left,
+	&--right {
+		height: fit-content;
+		transition:
+			width var(--collapsible-duration) var(--collapsible-ease),
+			visibility var(--collapsible-duration) var(--collapsible-ease);
+
+		&.collapsible--open {
+			width: fit-content;
+		}
+
+		// Try to account for squishing text
+		.collapsible__content {
+			width: max-content;
+		}
+	}
+
+	&--up,
+	&--down {
+		width: fit-content;
+		transition:
+			height var(--collapsible-duration) var(--collapsible-ease),
+			visibility var(--collapsible-duration) var(--collapsible-ease);
+
+		&.collapsible--open {
+			height: fit-content;
+		}
+	}
+
+	&--up {
+		align-items: flex-end;
+	}
+
+	&--down {
+		align-items: flex-start;
+	}
+
+	&--left {
+		justify-content: flex-end;
+	}
+
+	&--right {
+		justify-content: flex-start;
+	}
+
+	&--open {
+		visibility: visible;
+	}
+}
