@@ -6,10 +6,10 @@ $line-height-heading: 1.1;
 $letter-spacing-heading: -0.02em;
 
 @mixin font-body($size: 16) {
-	font: 400 ($size / 16 * 1rem) /#{$line-height-body} $font;
+	font: 400 calc(#{$size}rem / 16) /#{$line-height-body} $font;
 }
 
 @mixin font-heading($size: 16) {
-	font: 500 ($size / 16 * 1rem) /#{$line-height-heading $font};
+	font: 500 calc(#{$size}rem / 16) /#{$line-height-heading} $font;
 	letter-spacing: $letter-spacing-heading;
 }

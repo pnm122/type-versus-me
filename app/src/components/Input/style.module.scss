@@ -1,4 +1,4 @@
-@import '@/scss/fonts';
+@use '@/scss/fonts' as *;
 
 .input {
 	display: flex;

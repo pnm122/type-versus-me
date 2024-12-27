@@ -29,8 +29,8 @@
 [x] Notify user if their color was taken when they joined a room
 [x] lastScore needs to be reset after leaving a room
 [x] Error page
-[ ] Animate state/page changes as often as possible for better UX/clarity
-[ ] Fix SCSS warnings
+[x] Animate state/page changes as often as possible for better UX/clarity
+[x] Fix SCSS warnings
 [ ] Figure out how to host locally
 [ ] Show current user's WPM in game UI as well
 [x] Small layout shift when user is done/has failed
@@ -41,10 +41,12 @@
 [ ] Have a room admin (the person who created the room) who can change room settings
 [ ] Add a basic header
 [ ] Add active user count
+[ ] Create a favicon
+[ ] Domain name?
+[ ] Figure out hosting
 [ ] Some very fast layout shift on loading the homepage?
 [ ] Some kind of congratulations on winning the room
 [ ] Something negative for failing
-[ ] Create a favicon
 [ ] Information/walkthrough for new users
 [ ] Getting kicked out of a room from a socket change should send the user back to the homepage
 [ ] calculate statistics in realtime as the user types
