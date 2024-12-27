@@ -14,24 +14,24 @@ export default function LeaderboardUser({ user }: { user: User }) {
 	const winnerWPM = sortUsersByScore(room.users).at(0)!.lastScore!.netWPM
 	const ratioToHighestWPM = user.lastScore.netWPM / winnerWPM
 	const nameInsideBar = !user.lastScore.failed && ratioToHighestWPM > 0.5
+	const statInsideBar = !user.lastScore.failed && ratioToHighestWPM > 0.5
 
-	const nameAndStat = (
-		<>
-			<h2 className={styles['username']}>
-				{user.username}
-				{currentUser.id === user.id && <span className={styles['username__you']}> (you)</span>}
-			</h2>
-			{user.lastScore.failed ? (
-				<Pill
-					backgroundColor="var(--negative)"
-					foregroundColor="var(--background)"
-					text="Failed"
-					icon={<PixelarticonsClose />}
-				/>
-			) : (
-				<div className={styles['wpm']}>{Math.round(user.lastScore.netWPM)}wpm</div>
-			)}
-		</>
+	const username = (
+		<h2 className={styles['username']}>
+			<span className={styles['username__text']}>{user.username}</span>
+			{currentUser.id === user.id && <span className={styles['username__you']}> (you)</span>}
+		</h2>
+	)
+
+	const stat = user.lastScore.failed ? (
+		<Pill
+			backgroundColor="var(--negative)"
+			foregroundColor="var(--background)"
+			text="Failed"
+			icon={<PixelarticonsClose />}
+		/>
+	) : (
+		<div className={styles['wpm']}>{Math.round(user.lastScore.netWPM)}wpm</div>
 	)
 
 	return (
@@ -46,9 +46,20 @@ export default function LeaderboardUser({ user }: { user: User }) {
 					[styles['user__bar--failed']]: user.lastScore.failed
 				})}
 			>
-				{nameInsideBar && nameAndStat}
+				{nameInsideBar && username}
+				{statInsideBar && stat}
 			</div>
-			{!nameInsideBar && nameAndStat}
+			{!(nameInsideBar && statInsideBar) && (
+				<div
+					style={{
+						flex: 1
+					}}
+					className={styles['user__outside']}
+				>
+					{!nameInsideBar && username}
+					{!statInsideBar && stat}
+				</div>
+			)}
 		</li>
 	)
 }
