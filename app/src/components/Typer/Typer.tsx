@@ -118,7 +118,7 @@ export default function Typer({
 
 	useImperativeHandle(ref, () => ({
 		focus() {
-			typer.current?.focus()
+			input.current?.focus({})
 		}
 	}))
 
@@ -127,6 +127,7 @@ export default function Typer({
 	const cursorColor: CursorColor = user?.color ?? 'blue'
 
 	const typer = useRef<HTMLDivElement>(null)
+	const input = useRef<HTMLInputElement>(null)
 	const stats = useRef<TyperStats>(getInitialStats())
 
 	const [typed, setTyped] = useState('')
@@ -325,14 +326,21 @@ export default function Typer({
 	return (
 		<>
 			<div
-				onKeyDown={onKeyDown}
-				tabIndex={disabled ? -1 : 0}
 				className={createClasses({
 					[styles['typer']]: true,
 					[styles['typer--disabled']]: disabled
 				})}
 				ref={typer}
 			>
+				<input
+					className={styles['typer__input']}
+					defaultValue={words(typed).at(-1)}
+					onKeyDown={onKeyDown}
+					tabIndex={disabled ? -1 : 0}
+					ref={input}
+					autoCapitalize="none"
+					autoCorrect="none"
+				/>
 				{/* Only the current user's cursor should disappear on disable, so that they can still see where other users are */}
 				{!disabled && <TyperCursor color={cursorColor} position={cursorPosition} typer={typer} />}
 				{cursors?.map((c) => <TyperCursor key={c.id} typer={typer} opponent={true} {...c} />)}

@@ -17,10 +17,15 @@
 	padding: 0.1em;
 	max-width: 100%;
 
-	&:focus {
+	&__input {
+		position: absolute;
+		inset: 0;
+		z-index: 1;
+		opacity: 0;
+		border: none;
 		outline: none;
 
-		.cursor:not(.cursor--opponent) {
+		&:focus ~ .cursor:not(.cursor--opponent) {
 			visibility: visible;
 		}
 	}
