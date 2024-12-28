@@ -8,6 +8,10 @@ import PixelarticonsEdit from '~icons/pixelarticons/edit'
 import { useState } from 'react'
 import UserSettings from './UserSettings'
 import { CursorColor } from '$shared/types/Cursor'
+import { updateUser } from '@/utils/user'
+import { useSocket } from '@/context/Socket'
+import { useNotification } from '@/context/Notification'
+import { Return } from '$shared/types/Return'
 
 interface Props {
 	user: UserType
@@ -17,7 +21,10 @@ export default function User({ user: { id, username, color, score, state } }: Pr
 	const [settingsOpen, setSettingsOpen] = useState(false)
 	const [settingsUsername, setSettingsUsername] = useState('')
 	const [settingsColor, setSettingsColor] = useState<CursorColor>('red')
-	const { user } = useGlobalState()
+	const globalState = useGlobalState()
+	const socket = useSocket()
+	const notifs = useNotification()
+	const { user } = globalState
 
 	function openSettings() {
 		setSettingsOpen(true)
@@ -25,7 +32,20 @@ export default function User({ user: { id, username, color, score, state } }: Pr
 		setSettingsColor(user?.color ?? 'red')
 	}
 
-	function saveSettings() {}
+	async function saveSettings() {
+		const promises: Promise<Return>[] = []
+
+		if (settingsUsername !== user?.username) {
+			promises.push(updateUser('username', settingsUsername, { socket, notifs, globalState }))
+		}
+
+		if (settingsColor !== user?.color) {
+			promises.push(updateUser('color', settingsColor, { socket, notifs, globalState }))
+		}
+
+		const success = (await Promise.all(promises)).every((res) => !res.error)
+		if (success) setSettingsOpen(false)
+	}
 
 	return (
 		<li className={styles['user']}>

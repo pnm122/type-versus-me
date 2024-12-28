@@ -172,6 +172,15 @@ export async function onChangeUserData(
 					}
 				: null
 		)
+
+		// Update localStorage with new preferences if provided
+		if (data.color) {
+			storage.set('preferred-color', data.color)
+		}
+
+		if (data.username) {
+			storage.set('username', data.username)
+		}
 	}
 	await globalState.waitForStateChange()
 	return
