@@ -1,0 +1,17 @@
+@use '@/scss/fonts' as *;
+@use '@/scss/mixins' as *;
+
+.header {
+	@include container;
+	height: var(--header-size);
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+
+	&__home {
+		@include font-heading(16);
+		height: 100%;
+		display: flex;
+		align-items: center;
+	}
+}

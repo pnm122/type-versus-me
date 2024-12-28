@@ -5,6 +5,7 @@ import { NotificationProvider } from '@/context/Notification'
 import { GlobalStateProvider } from '@/context/GlobalState'
 import LeaveRoomHandler from '@/components/LeaveRoomHandler/LeaveRoomHandler'
 import { ThemeProvider } from 'next-themes'
+import Header from '@/components/Header/Header'
 
 export const metadata: Metadata = {
 	title: 'Typing Race',
@@ -29,6 +30,7 @@ export default function RootLayout({
 						<SocketProvider>
 							<GlobalStateProvider>
 								<LeaveRoomHandler />
+								<Header />
 								{children}
 							</GlobalStateProvider>
 						</SocketProvider>

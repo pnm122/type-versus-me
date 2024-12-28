@@ -4,6 +4,7 @@
 	--timing: cubic-bezier(0.165, 0.84, 0.44, 1);
 	--page-bottom-padding: 32px;
 	--shadow: 2px 3px 16px var(--shadow-color);
+	--header-size: 64px;
 
 	@include font-body;
 	background-color: var(--background);

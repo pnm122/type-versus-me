@@ -2,9 +2,9 @@
 @use '@/scss/fonts' as *;
 
 .page {
-	min-height: 100vh;
+	height: calc(100vh - var(--header-size));
+	max-height: calc(-webkit-fill-available - var(--header-size));
 	display: grid;
-	grid-template-rows: 1fr 40px;
 	place-items: center;
 
 	.main {

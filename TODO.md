@@ -39,7 +39,7 @@
 [x] Fix layout issues in game
 [x] Small layout shift when user is done/has failed
 [x] Some way of editing your color and username within the room
-[ ] Add a basic header
+[x] Add a basic header
 [ ] Room settings when created (i.e. test length, time limit, etc.)
 [ ] Have a room admin (the person who created the room) who can change room settings
 [ ] Show a crown next to the room admin's name

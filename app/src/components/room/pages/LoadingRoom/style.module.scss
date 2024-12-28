@@ -5,7 +5,7 @@
 	@include container;
 	display: grid;
 	gap: 32px;
-	padding-top: 32px;
+	padding-top: 16px;
 	padding-bottom: var(--page-bottom-padding);
 
 	@media screen and (width > $screen-md) {
