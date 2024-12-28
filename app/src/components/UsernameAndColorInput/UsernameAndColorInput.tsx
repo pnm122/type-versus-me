@@ -32,6 +32,7 @@ interface Props {
 	isOnSurface?: boolean
 	/** List of colors to disable in the color input. */
 	disabledColors?: CursorColor[]
+	inputRef?: React.RefObject<HTMLInputElement>
 }
 
 export default function UsernameAndColorInput({
@@ -40,7 +41,8 @@ export default function UsernameAndColorInput({
 	onUsernameChange,
 	onColorChange,
 	isOnSurface,
-	disabledColors
+	disabledColors,
+	inputRef
 }: Props) {
 	const globalState = useGlobalState()
 
@@ -73,13 +75,14 @@ export default function UsernameAndColorInput({
 					wrapperClassName={styles['username__input']}
 					minLength={3}
 					maxLength={16}
+					ref={inputRef}
 					required
 				/>
 				<IconButton
 					icon={<PixelarticonsDice />}
 					className={styles['username__generate']}
 					style="secondary"
-					ariaLabel="Generate random username"
+					aria-label="Generate random username"
 					disabled={!username && !user}
 					onClick={() => onUsernameChangeDefault(generateUsername())}
 				/>

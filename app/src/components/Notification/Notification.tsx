@@ -55,7 +55,7 @@ export default function Notification({
 			style={{
 				viewTransitionName: id
 			}}
-			aria-live="polite"
+			role="alert"
 			className={createClasses({
 				[styles['notification']]: true,
 				[styles[`notification--${style}`]]: true
@@ -68,7 +68,7 @@ export default function Notification({
 				style="tertiary"
 				onClick={() => onClose(id)}
 				className={styles['notification__close']}
-				ariaLabel="Close notification"
+				aria-label="Close notification"
 			/>
 		</div>
 	)

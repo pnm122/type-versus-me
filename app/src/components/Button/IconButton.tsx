@@ -4,7 +4,9 @@ import ButtonIcon from './ButtonIcon'
 import styles from './style.module.scss'
 
 type Props = Omit<ButtonProps, 'children'> &
-	Required<Pick<ButtonProps, 'ariaLabel'>> & { icon: React.ReactNode }
+	Required<Pick<React.ButtonHTMLAttributes<HTMLButtonElement>, 'aria-label'>> & {
+		icon: React.ReactNode
+	} & React.ButtonHTMLAttributes<HTMLButtonElement>
 
 export default function IconButton(props: Props) {
 	const { className, icon, ...buttonProps } = props

@@ -5,7 +5,7 @@ import createClasses from '@/utils/createClasses'
 import ButtonIcon from '@/components/Button/ButtonIcon'
 import PixelarticonsSave from '~icons/pixelarticons/save'
 import PixelarticonsClose from '~icons/pixelarticons/close'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { CursorColor } from '$shared/types/Cursor'
 import { useGlobalState } from '@/context/GlobalState'
 import TyperPreview from '@/components/TyperPreview/TyperPreview'
@@ -18,6 +18,7 @@ interface Props {
 	color: CursorColor
 	onUsernameChange: (u: string) => void
 	onColorChange: (c: CursorColor) => void
+	id: string
 }
 
 export default function UserSettings({
@@ -27,9 +28,12 @@ export default function UserSettings({
 	username,
 	color,
 	onUsernameChange,
-	onColorChange
+	onColorChange,
+	id
 }: Props) {
 	const { room, user } = useGlobalState()
+	const inputRef = useRef<HTMLInputElement>(null)
+	const settings = useRef<HTMLFormElement>(null)
 
 	function onSubmit(e: React.FormEvent) {
 		e.preventDefault()
@@ -38,36 +42,44 @@ export default function UserSettings({
 
 	useEffect(() => {
 		if (open) {
+			// Need a small delay presumably because the input is technically not visible yet
+			setTimeout(() => inputRef.current?.focus(), 25)
 			// Add the event listener after the settings popup has opened, so that the click to open it doesn't close it immediately
 			requestAnimationFrame(() => {
-				window.addEventListener('click', handleClick)
+				settings.current?.addEventListener('focusout', handleFocusOut)
 			})
 		}
 
 		return () => {
-			window.removeEventListener('click', handleClick)
+			settings.current?.removeEventListener('focusout', handleFocusOut)
 		}
 	}, [open])
 
-	function handleClick(e: MouseEvent) {
-		// if mouse click is outside of the settings popup, close it
-		if (!(e.target as HTMLElement).closest(`.${styles['settings']}`)) {
+	function handleFocusOut(e: FocusEvent) {
+		// if focus is outside of the settings popup, close it
+		if (!(e.relatedTarget && settings.current?.contains(e.relatedTarget as HTMLElement))) {
 			onClose()
 		}
 	}
 
 	return (
 		<form
+			tabIndex={0}
+			role="dialog"
+			aria-label="User settings"
+			id={id}
 			className={createClasses({
 				[styles['settings']]: true,
 				[styles['settings--open']]: open
 			})}
 			onSubmit={onSubmit}
+			ref={settings}
 		>
 			<UsernameAndColorInput
 				{...{ username, color, onUsernameChange, onColorChange }}
 				disabledColors={room?.users.filter((u) => u.id !== user?.id).map((u) => u.color)}
 				isOnSurface
+				inputRef={inputRef}
 			/>
 			<div className={styles['cursor-preview']}>
 				<TyperPreview text="Your cursor will look like this." cursorColor={color} />

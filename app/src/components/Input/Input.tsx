@@ -15,6 +15,7 @@ interface Props {
 	inputClassName?: string
 	minLength?: number
 	maxLength?: number
+	ref?: React.RefObject<HTMLInputElement>
 }
 
 export default function Input({
@@ -29,7 +30,8 @@ export default function Input({
 	wrapperClassName,
 	inputClassName,
 	minLength,
-	maxLength
+	maxLength,
+	ref
 }: Props) {
 	return (
 		<div
@@ -61,6 +63,7 @@ export default function Input({
 				size={1}
 				maxLength={maxLength}
 				minLength={minLength}
+				ref={ref}
 			/>
 			{error && (
 				<span id={`${id}--error`} className={styles['input__error']}>

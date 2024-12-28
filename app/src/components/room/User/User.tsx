@@ -57,10 +57,11 @@ export default function User({ user: { id, username, color, score, state } }: Pr
 				</p>
 				{id === user?.id && (
 					<IconButton
-						ariaLabel="User settings"
+						aria-label="User settings"
 						icon={<PixelarticonsEdit />}
 						style="tertiary"
 						onClick={openSettings}
+						aria-controls="settings"
 					/>
 				)}
 				<UserSettings
@@ -71,6 +72,7 @@ export default function User({ user: { id, username, color, score, state } }: Pr
 					color={settingsColor}
 					onUsernameChange={setSettingsUsername}
 					onColorChange={setSettingsColor}
+					id="settings"
 				/>
 			</div>
 			<div className={styles['user__info']}>

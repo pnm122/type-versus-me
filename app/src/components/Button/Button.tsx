@@ -3,18 +3,14 @@ import styles from './style.module.scss'
 import createClasses from '@/utils/createClasses'
 import Loader from '../Loader/Loader'
 
-export type ButtonProps = React.PropsWithChildren<{
-	style?: 'primary' | 'secondary' | 'tertiary'
-	disabled?: boolean
-	type?: React.ButtonHTMLAttributes<HTMLButtonElement>['type']
-	/** Link to use if the button is intended for use as a link */
-	href?: string
-	/** Callback for when the button is clicked */
-	onClick?: React.MouseEventHandler<HTMLButtonElement | HTMLAnchorElement>
-	className?: string
-	ariaLabel?: string
-	loading?: boolean
-}>
+export type ButtonProps = React.PropsWithChildren<
+	{
+		style?: 'primary' | 'secondary' | 'tertiary'
+		/** Link to use if the button is intended for use as a link */
+		href?: string
+		loading?: boolean
+	} & React.ButtonHTMLAttributes<HTMLButtonElement | HTMLAnchorElement>
+>
 
 export default function Button({
 	style = 'primary',
@@ -23,9 +19,9 @@ export default function Button({
 	href,
 	onClick = () => {},
 	className,
-	ariaLabel,
 	loading,
-	children
+	children,
+	...props
 }: ButtonProps) {
 	// Link is not easily disabled, just use an HTML button if disabled
 	return href && !disabled ? (
@@ -36,8 +32,8 @@ export default function Button({
 				...(className ? { [className]: true } : {})
 			})}
 			href={href}
-			aria-label={ariaLabel}
 			onClick={(e) => !disabled && onClick(e)}
+			{...props}
 		>
 			<div className={styles['button__content']}>{children}</div>
 			<Loader className={styles['button__loader']} size={16} />
@@ -52,8 +48,9 @@ export default function Button({
 			})}
 			disabled={disabled || loading}
 			type={type}
-			aria-label={`${ariaLabel ?? ''}${loading ? ' loading' : ''}`}
+			aria-description={loading ? 'loading' : ''}
 			onClick={onClick}
+			{...props}
 		>
 			<div className={styles['button__content']}>{children}</div>
 			<Loader className={styles['button__loader']} size={16} />
