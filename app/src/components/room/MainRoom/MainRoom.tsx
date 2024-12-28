@@ -3,6 +3,7 @@ import styles from './style.module.scss'
 import Game from '../Game/Game'
 import Leaderboard from '../Leaderboard/Leaderboard'
 import { useEffect, useLayoutEffect, useRef } from 'react'
+import debounce from 'debounce'
 
 export default function MainRoom() {
 	const globalState = useGlobalState()
@@ -13,14 +14,13 @@ export default function MainRoom() {
 	const { room } = globalState
 
 	useLayoutEffect(() => {
-		if (!room || !topRef.current) return
+		updateHeight()
+		const onResize = debounce(updateHeight, 100)
+		window.addEventListener('resize', onResize)
 
-		if (room.state === 'in-progress') {
-			topRef.current.style.height = `${gameRef.current!.getBoundingClientRect().height}px`
-		} else {
-			topRef.current.style.height = `${waitingTextRef.current!.getBoundingClientRect().height}px`
+		return () => {
+			window.removeEventListener('resize', onResize)
 		}
-		resetTopHeight()
 	}, [room?.state])
 
 	useEffect(() => {
@@ -29,11 +29,19 @@ export default function MainRoom() {
 		}
 	}, [])
 
-	function resetTopHeight() {
-		resetHeightTimeout.current = setTimeout(() => {
-			topRef.current!.style.height = ''
+	function updateHeight() {
+		if (!room || !topRef.current) return
+
+		if (resetHeightTimeout.current) {
+			clearTimeout(resetHeightTimeout.current)
 			resetHeightTimeout.current = null
-		}, 250)
+		}
+
+		if (room.state === 'in-progress') {
+			topRef.current.style.height = `${gameRef.current!.getBoundingClientRect().height}px`
+		} else {
+			topRef.current.style.height = `${waitingTextRef.current!.getBoundingClientRect().height}px`
+		}
 	}
 
 	if (!room) return <></>
