@@ -8,10 +8,16 @@
 	align-items: center;
 	justify-content: space-between;
 
-	&__home {
-		@include font-heading(16);
-		height: 100%;
+	&__left {
 		display: flex;
 		align-items: center;
+		gap: 12px;
+
+		.home {
+			@include font-heading(16);
+			height: 100%;
+			display: flex;
+			align-items: center;
+		}
 	}
 }

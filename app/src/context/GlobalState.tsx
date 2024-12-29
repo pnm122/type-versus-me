@@ -16,6 +16,7 @@ import { ChangeUserDataPayload } from '$shared/types/events/server/ChangeUserDat
 export type GlobalState = {
 	user: User | null
 	room: Room | null
+	activeUserCount: number
 	setUser: React.Dispatch<React.SetStateAction<User | null>>
 	setRoom: React.Dispatch<React.SetStateAction<Room | null>>
 	waitForStateChange: () => Promise<void>
@@ -24,6 +25,7 @@ export type GlobalState = {
 const GlobalStateContext = createContext<GlobalState>({
 	user: null,
 	room: null,
+	activeUserCount: 0,
 	setUser() {},
 	setRoom() {},
 	async waitForStateChange() {}
@@ -32,12 +34,13 @@ const GlobalStateContext = createContext<GlobalState>({
 export function GlobalStateProvider({ children }: React.PropsWithChildren) {
 	const [user, setUser] = useState<User | null>(null)
 	const [room, setRoom] = useState<Room | null>(null)
+	const [activeUserCount, setActiveUserCount] = useState(0)
 	const socket = useSocket()
 	const notifs = useNotification()
 	const stateHasChanged = useRef<(() => void) | null>(null)
 	const waitForStateChangePromise = useRef<Promise<void> | null>(null)
 
-	const globalState = { user, setUser, room, setRoom, waitForStateChange }
+	const globalState = { user, setUser, room, setRoom, activeUserCount, waitForStateChange }
 
 	useEffect(() => {
 		if (stateHasChanged.current) {
@@ -79,6 +82,7 @@ export function GlobalStateProvider({ children }: React.PropsWithChildren) {
 		socket.value.on('change-all-user-data', handleChangeAllUserData)
 		socket.value.on('change-user-data', handleChangeUserData)
 		socket.value.on('disconnect', handleDisconnect)
+		socket.value.on('change-user-count', setActiveUserCount)
 
 		return () => {
 			socket.value.off('join-room', handleJoinRoom)
@@ -87,6 +91,7 @@ export function GlobalStateProvider({ children }: React.PropsWithChildren) {
 			socket.value.off('change-all-user-data', handleChangeAllUserData)
 			socket.value.off('change-user-data', handleChangeUserData)
 			socket.value.off('disconnect', handleDisconnect)
+			socket.value.off('change-user-count', setActiveUserCount)
 		}
 	}, [socket, room])
 

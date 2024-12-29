@@ -17,6 +17,11 @@ config()
 io.on('connect', (socket) => {
 	debug(`${DEBUG_COLORS.BLUE}connect:${DEBUG_COLORS.WHITE}`, socket.id)
 
+	// Need to give time for listeners to be set up client-side, 250ms should be way more than enough
+	setTimeout(() => {
+		io.emit('change-user-count', io.engine.clientsCount)
+	}, 250)
+
 	socket.on('register', (...args) => Register(socket, ...args))
 	socket.on('create-room', (...args) => CreateRoom(socket, ...args))
 	socket.on('join-room', (...args) => JoinRoom(socket, ...args))

@@ -42,7 +42,7 @@ export function onLeaveRoom(
 
 	const leavingUser = globalState.room.users.find((u) => u.id === res.userId)
 	if (!leavingUser) {
-		return console.warn(`Received ${res.userId} left room, but this user does not exist!`)
+		return
 	}
 
 	globalState.setRoom((r) =>
