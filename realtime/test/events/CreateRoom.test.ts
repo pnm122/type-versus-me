@@ -125,7 +125,7 @@ describe('CreateRoom', () => {
 			CreateRoom(socket, validUser, () => {})
 
 			expect(state.getRooms()).toHaveLength(1)
-			expect(state.getRooms()[0].users[0]).toEqual(validUserAfterCall)
+			expect(state.getRooms()[0]!.users[0]).toEqual(validUserAfterCall)
 		})
 
 		it('calls callback with the correct user and room', () => {
@@ -145,7 +145,7 @@ describe('CreateRoom', () => {
 			const socket = mockSocket()
 			CreateRoom(socket, validUser, () => {})
 
-			expect(socket.join).toHaveBeenCalledWith(state.getRooms()[0].id)
+			expect(socket.join).toHaveBeenCalledWith(state.getRooms()[0]!.id)
 		})
 	})
 })

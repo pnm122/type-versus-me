@@ -89,7 +89,7 @@ describe('ChangeUsername', () => {
 		createRoomForTesting(user)
 		ChangeUsername(socket, { ...user, username: 'Pierce' }, () => {})
 
-		expect(state.getRooms()[0].users[0].username).toBe('Pierce')
+		expect(state.getRooms()[0]!.users[0]!.username).toBe('Pierce')
 	})
 
 	it('emits a change username event to all sockets except the sender', () => {

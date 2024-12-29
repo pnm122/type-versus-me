@@ -93,7 +93,7 @@ describe('ChangeUserState', () => {
 
 		ChangeUserState(mockSocket(user.id), { id: user.id, state: 'ready' }, () => {})
 
-		expect(state.getRoom(room.id)!.users[0].state).toBe('ready')
+		expect(state.getRoom(room.id)!.users[0]!.state).toBe('ready')
 	})
 
 	it('emits an event to all other users in the room to change the user state', () => {
