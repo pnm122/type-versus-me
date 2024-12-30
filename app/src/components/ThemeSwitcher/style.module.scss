@@ -15,7 +15,7 @@
 		top: var(--outside-padding);
 		bottom: var(--outside-padding);
 		left: 0;
-		z-index: 0;
+		z-index: var(--z-base);
 		background-color: var(--primary);
 
 		&--transition {
@@ -35,7 +35,7 @@
 		height: 100%;
 		padding-inline: 8px;
 		line-height: 1;
-		z-index: 1;
+		z-index: var(--z-surface);
 		color: var(--placeholder);
 
 		&--selected {

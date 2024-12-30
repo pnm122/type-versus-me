@@ -1,6 +1,6 @@
 .stack {
 	position: fixed;
-	z-index: 999;
+	z-index: var(--z-notification);
 	left: 50%;
 	transform: translateX(-50%);
 	padding-top: 12px;

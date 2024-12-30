@@ -1,11 +1,13 @@
 'use client'
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useRef, useState } from 'react'
 import { io, Socket } from 'socket.io-client'
 import ServerEvents from '$shared/types/events/server/_Events'
 import ClientEvents from '$shared/types/events/client/_Events'
 import Data from '@/types/Data'
 import { LOADING } from '@/utils/constants'
 import { useNotification } from './Notification'
+import Loader from '@/components/Loader/Loader'
+import createClasses from '@/utils/createClasses'
 
 export type CustomSocket = Socket<ServerEvents, ClientEvents>
 
@@ -17,8 +19,19 @@ export function SocketProvider({ children }: React.PropsWithChildren) {
 	const [data, setData] = useState<SocketContextType>(LOADING)
 	const notifs = useNotification()
 	const [socket, setSocket] = useState<CustomSocket | null>(null)
+	const [showLoader, setShowLoader] = useState(false)
+	const loadingTimeout = useRef<NodeJS.Timeout | null>(null)
 
 	function onConnect() {
+		if (loadingTimeout.current) {
+			clearTimeout(loadingTimeout.current)
+			loadingTimeout.current = null
+		}
+
+		if (showLoader) {
+			setShowLoader(false)
+		}
+
 		if (data.state === 'error') {
 			notifs.push({
 				style: 'success',
@@ -35,6 +48,11 @@ export function SocketProvider({ children }: React.PropsWithChildren) {
 
 	function onConnectError() {
 		if (data.state === 'error') return
+
+		if (loadingTimeout.current) {
+			clearTimeout(loadingTimeout.current)
+			loadingTimeout.current = null
+		}
 
 		notifs.push({
 			style: 'error',
@@ -56,7 +74,7 @@ export function SocketProvider({ children }: React.PropsWithChildren) {
 			socket?.off('connect', onConnect)
 			socket?.off('connect_error', onConnectError)
 		}
-	}, [data, socket])
+	}, [data, socket, showLoader])
 
 	useEffect(() => {
 		setSocket(
@@ -66,9 +84,29 @@ export function SocketProvider({ children }: React.PropsWithChildren) {
 					: process.env.NEXT_PUBLIC_PROD_SOCKET_URL
 			)
 		)
+
+		loadingTimeout.current = setTimeout(() => {
+			setShowLoader(true)
+			notifs.push({
+				text: 'Connecting to the server is taking longer than expected. Please wait.'
+			})
+			loadingTimeout.current = null
+		}, 2000)
 	}, [])
 
-	return <SocketContext.Provider value={data}>{children}</SocketContext.Provider>
+	return (
+		<SocketContext.Provider value={data}>
+			<div
+				className={createClasses({
+					'page-loading-indicator': true,
+					'page-loading-indicator--active': showLoader
+				})}
+			>
+				<Loader size={48} />
+			</div>
+			{children}
+		</SocketContext.Provider>
+	)
 }
 
 export const useSocket = () => useContext(SocketContext)

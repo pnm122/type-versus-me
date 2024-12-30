@@ -6,19 +6,19 @@
 	--shadow: 2px 3px 16px var(--shadow-color);
 	--header-size: 64px;
 
+	--z-below: -1;
+	--z-base: 0;
+	--z-surface: 1;
+	--z-above: 2;
+	--z-overlay: 5;
+	--z-notification: 7;
+	--z-max: 999;
+
 	@include font-body;
 	background-color: var(--background);
 	color: var(--text);
 	// Experimental but YESSSSSSSSSSS
 	interpolate-size: allow-keywords;
-}
-
-[data-theme='light'] {
-	--shadow-color: rgb(0, 0, 0, 0.15);
-}
-
-[data-theme='dark'] {
-	--shadow-color: rgb(0, 0, 0, 0.35);
 }
 
 h1,

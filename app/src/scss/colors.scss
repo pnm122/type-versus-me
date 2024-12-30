@@ -48,6 +48,8 @@
 	--correct: var(--black);
 	--extra: var(--negative-contrast);
 
+	--shadow-color: rgb(0, 0, 0, 0.15);
+
 	color-scheme: light;
 }
 
@@ -100,6 +102,8 @@
 	--heading: var(--white);
 	--correct: var(--white);
 	--extra: var(--negative-contrast);
+
+	--shadow-color: rgb(0, 0, 0, 0.35);
 
 	color-scheme: dark;
 }

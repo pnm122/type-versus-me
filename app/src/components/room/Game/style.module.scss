@@ -38,7 +38,7 @@
 	.start-overlay {
 		@include font-body(32);
 		position: absolute;
-		z-index: 5;
+		z-index: var(--z-overlay);
 		inset: 0;
 		color: var(--heading);
 		background-color: var(--surface);
