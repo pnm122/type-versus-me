@@ -41,17 +41,19 @@
 [x] Some way of editing your color and username within the room
 [x] Add a basic header
 [x] Add active user count
-[ ] Room settings when created (i.e. test length, time limit, etc.)
-[ ] Have a room admin (the person who created the room) who can change room settings
-[ ] Show a crown next to the room admin's name
+[x] Return to homepage button on join room page
 [ ] Create a favicon
 [ ] Domain name?
 [ ] Figure out hosting
+[ ] Remove test folder from built files in realtime server
+[ ] Room settings when created (i.e. test length, time limit, etc.)
+[ ] Have a room admin (the person who created the room) who can change room settings
+[ ] Show a crown next to the room admin's name
 [ ] Time doesn't update correctly when the tab is hidden?
-[ ] Remove unnecessary 'complete' state from room
 [ ] Some very fast layout shift on loading the homepage?
 [ ] Some kind of congratulations on winning the room
 [ ] Something negative for failing
 [ ] Information/walkthrough for new users
 [ ] Getting kicked out of a room from a socket change should send the user back to the homepage
 [ ] calculate statistics in realtime as the user types
+[ ] Remove unnecessary 'complete' state from room

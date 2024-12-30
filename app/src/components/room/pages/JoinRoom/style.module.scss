@@ -18,6 +18,12 @@
 			gap: 12px;
 		}
 
+		&__actions {
+			display: flex;
+			flex-direction: column;
+			gap: 8px;
+		}
+
 		.cursor-preview {
 			background-color: var(--surface);
 			padding: 12px;

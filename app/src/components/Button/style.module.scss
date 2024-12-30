@@ -3,6 +3,7 @@
 	height: 40px;
 	display: grid;
 	place-items: center;
+	width: auto;
 
 	&:not(.button--loading):disabled {
 		background-color: var(--disabled);

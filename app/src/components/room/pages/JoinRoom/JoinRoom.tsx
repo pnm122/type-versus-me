@@ -5,6 +5,7 @@ import styles from './style.module.scss'
 import Button from '@/components/Button/Button'
 import ButtonIcon from '@/components/Button/ButtonIcon'
 import PixelarticonsArrowRight from '~icons/pixelarticons/arrow-right'
+import PixelarticonsArrowLeft from '~icons/pixelarticons/arrow-left'
 import { usePathname } from 'next/navigation'
 import { joinRoom } from '@/utils/room'
 import React from 'react'
@@ -36,10 +37,16 @@ export default function JoinRoom() {
 						/>
 					</div>
 				</div>
-				<Button onClick={handleJoinRoom}>
-					Join room
-					<ButtonIcon icon={<PixelarticonsArrowRight />} />
-				</Button>
+				<div className={styles['main__actions']}>
+					<Button onClick={handleJoinRoom}>
+						Join room
+						<ButtonIcon icon={<PixelarticonsArrowRight />} />
+					</Button>
+					<Button href="/" style="tertiary">
+						<ButtonIcon icon={<PixelarticonsArrowLeft />} />
+						Go to homepage
+					</Button>
+				</div>
 			</div>
 		</main>
 	)
