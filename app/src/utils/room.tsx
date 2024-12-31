@@ -71,7 +71,10 @@ export async function createRoom(context: Context): Promise<Parameters<CreateRoo
 			}
 		}
 	}
-	const res = await socket.value.emitWithAck('create-room', globalState.user!)
+	const res = await socket.value.emitWithAck('create-room', {
+		user: globalState.user!,
+		settings: { category: 'top-1000', numWords: 40, timeLimit: 120 }
+	})
 
 	if (res.error) {
 		notifs.push(errorNotification(res.error.reason))

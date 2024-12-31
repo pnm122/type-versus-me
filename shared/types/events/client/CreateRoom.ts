@@ -1,8 +1,11 @@
 import { User } from '../../User'
-import { Room } from '../../Room'
+import { Room, RoomSettings } from '../../Room'
 import { Return } from '../../Return'
 
-type Payload = User
+type Payload = {
+	user: User
+	settings: RoomSettings
+}
 
 type Callback = (
 	value: Return<
@@ -16,6 +19,7 @@ type Callback = (
 		| 'invalid-color'
 		| 'user-in-room-already'
 		| 'max-rooms-created'
+		| 'invalid-settings'
 	>
 ) => void
 

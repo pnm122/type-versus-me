@@ -24,4 +24,5 @@ export type ErrorReason =
 	| 'user-not-in-room'
 	| 'max-rooms-created'
 	| 'username-taken'
+	| 'invalid-settings'
 	| (string & {})

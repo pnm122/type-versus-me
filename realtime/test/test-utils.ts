@@ -44,10 +44,14 @@ export function mockUser<T extends Partial<User> = Partial<User>>(u?: T): User &
 	} as User & T
 }
 
-export function createRoomForTesting(user = mockUser(), socket = mockSocket()) {
+export function createRoomForTesting(
+	user = mockUser(),
+	socket = mockSocket(),
+	settings = { category: 'top-100', numWords: 40, timeLimit: 120 } as const
+) {
 	let res: Parameters<CreateRoomCallback>[0]
 
-	CreateRoom(socket, user, (arg: typeof res) => {
+	CreateRoom(socket, { user, settings }, (arg: typeof res) => {
 		res = arg
 	})
 

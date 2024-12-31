@@ -11,19 +11,21 @@ export default function CreateRoom(
 	value: CreateRoomPayload,
 	callback: CreateRoomCallback
 ) {
-	if (!isValidEventAndPayload(socket, callback, value?.id, value)) {
+	if (!isValidEventAndPayload(socket, callback, value?.user?.id, value?.user, value?.settings)) {
 		return
 	}
 
-	if (check(!isValidUsername(value.username), 'invalid-username', callback)) {
+	const { user, settings } = value
+
+	if (check(!isValidUsername(user.username), 'invalid-username', callback)) {
 		return
 	}
 
-	if (check(!isValidColor(value.color), 'invalid-color', callback)) {
+	if (check(!isValidColor(user.color), 'invalid-color', callback)) {
 		return
 	}
 
-	if (check(state.getRoomFromUser(value.id), 'user-in-room-already', callback)) {
+	if (check(state.getRoomFromUser(user.id), 'user-in-room-already', callback)) {
 		return
 	}
 
@@ -31,15 +33,13 @@ export default function CreateRoom(
 		return
 	}
 
-	const initialRoom = state.createRoom()
-
 	const initialUser: User = {
-		...value,
+		...user,
 		state: INITIAL_USER_STATE,
 		score: INITIAL_USER_SCORE
 	}
-	const room = state.addUserToRoom(initialRoom.id, initialUser)!
-	socket.join(initialRoom.id)
+	const room = state.createRoom(initialUser, settings)
+	socket.join(room.id)
 
 	callback({
 		value: {
