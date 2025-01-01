@@ -6,7 +6,7 @@ import { NotificationContextType } from '@/context/Notification'
 import { SocketContextType } from '@/context/Socket'
 import checkSocket from './checkSocket'
 import { errorNotification } from './errorNotifications'
-import { Room } from '$shared/types/Room'
+import { Room, RoomSettings } from '$shared/types/Room'
 import { ClientJoinRoomCallback } from '$shared/types/events/client/JoinRoom'
 import { Return } from '$shared/types/Return'
 import ErrorsOf from '$shared/types/ErrorsOf'
@@ -60,7 +60,10 @@ export function onChangeRoomData(
 	globalState.setRoom((r) => (r ? { ...r, ...res } : null))
 }
 
-export async function createRoom(context: Context): Promise<Parameters<CreateRoomCallback>[0]> {
+export async function createRoom(
+	settings: RoomSettings,
+	context: Context
+): Promise<Parameters<CreateRoomCallback>[0]> {
 	const { socket, notifs, globalState } = context
 
 	if (!checkSocket(socket.value, notifs)) {
@@ -73,7 +76,7 @@ export async function createRoom(context: Context): Promise<Parameters<CreateRoo
 	}
 	const res = await socket.value.emitWithAck('create-room', {
 		user: globalState.user!,
-		settings: { category: 'top-1000', numWords: 40, timeLimit: 120 }
+		settings
 	})
 
 	if (res.error) {
