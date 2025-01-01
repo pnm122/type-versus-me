@@ -19,7 +19,8 @@ export default async function generateTest({
 
 async function generateQuoteTest(numWords: number) {
 	const textsDirectory = [__dirname, '..', '..', 'static', 'texts']
-	const texts = await getAllFilesIn(...textsDirectory)
+	const texts = (await getAllFilesIn(...textsDirectory)).filter((t) => t.endsWith('.txt'))
+	console.log(texts)
 	if (texts.length === 0) {
 		return 'ERROR'
 	}
