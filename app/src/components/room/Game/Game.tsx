@@ -14,8 +14,6 @@ import { getInitialStats } from '@/utils/typer'
 import { TyperStats } from '@/types/Typer'
 
 export default function Game({ ref }: { ref?: RefObject<HTMLDivElement> }) {
-	const GAME_TIME = 120
-
 	const [startTime, setStartTime] = useState(-1)
 	const [finished, setFinished] = useState(false)
 	const [stats, setStats] = useState<TyperStats>(getInitialStats())
@@ -53,7 +51,7 @@ export default function Game({ ref }: { ref?: RefObject<HTMLDivElement> }) {
 			setFinished(false)
 			setStats(getInitialStats())
 			setTimeToStart(5)
-			setTimeLeft(GAME_TIME)
+			setTimeLeft(room.settings.timeLimit)
 		}
 	}, [room?.state])
 
