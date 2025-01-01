@@ -4,7 +4,7 @@ import state from '@/global/state'
 import CustomSocket from '@/types/CustomSocket'
 import { check, setRoomToInProgress } from '@/utils/eventUtils'
 
-export default function LeaveRoom(socket: CustomSocket, callback: LeaveRoomCallback) {
+export default async function LeaveRoom(socket: CustomSocket, callback: LeaveRoomCallback) {
 	if (typeof callback !== 'function') return
 
 	const room = state.getRoomFromUser(socket.id)
@@ -26,7 +26,7 @@ export default function LeaveRoom(socket: CustomSocket, callback: LeaveRoomCallb
 
 	const allUsersReady = state.getRoom(room!.id)!.users.every((u) => u.state === 'ready')
 	if (allUsersReady) {
-		setRoomToInProgress(room!.id)
+		await setRoomToInProgress(room!)
 	}
 
 	const allUsersDone = state

@@ -10,7 +10,7 @@ import { check, isValidEventAndPayload, setRoomToInProgress } from '@/utils/even
 import io from '@/global/server'
 import { INITIAL_USER_SCORE } from '$shared/constants'
 
-export default function ChangeUserState(
+export default async function ChangeUserState(
 	socket: CustomSocket,
 	value: ChangeUserStatePayload,
 	callback: ChangeUserStateCallback
@@ -55,7 +55,7 @@ export default function ChangeUserState(
 	const allUsersReady =
 		room!.users.every((u) => u.id === value.id || u.state === 'ready') && value.state === 'ready'
 	if (allUsersReady) {
-		setRoomToInProgress(room!.id)
+		await setRoomToInProgress(room!)
 	}
 
 	const allUsersDone =

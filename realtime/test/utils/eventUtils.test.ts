@@ -65,19 +65,19 @@ describe('setRoomToInProgress', () => {
 		return { room }
 	}
 
-	it('sets the room state to in-progress in the state', () => {
+	it('sets the room state to in-progress in the state', async () => {
 		const { room } = init()
 
-		setRoomToInProgress(room.id)
+		await setRoomToInProgress(room)
 
 		expect(state.getRoom(room.id)!.state).toBe('in-progress')
 	})
 
-	it('emits a change room event with the in-progress state and new test to all users in the room', () => {
+	it('emits a change room event with the in-progress state and new test to all users in the room', async () => {
 		const { room } = init()
 		const { inSpy, emitSpy } = ioSpies()
 
-		setRoomToInProgress(room.id)
+		await setRoomToInProgress(room)
 
 		expect(inSpy).toHaveBeenCalledWith(room.id)
 		expect(emitSpy).toHaveBeenCalledWith('change-room-data', {
@@ -86,10 +86,10 @@ describe('setRoomToInProgress', () => {
 		})
 	})
 
-	it('sets all user scores to 0 and states to in-progress in the state', () => {
+	it('sets all user scores to 0 and states to in-progress in the state', async () => {
 		const { room } = init()
 
-		setRoomToInProgress(room.id)
+		await setRoomToInProgress(room)
 
 		const allUsersSetCorrectly = state
 			.getRoom(room.id)!
@@ -103,12 +103,12 @@ describe('setRoomToInProgress', () => {
 		expect(allUsersSetCorrectly).toBeTruthy()
 	})
 
-	it('emits a change all users event with the new state and score to all users in the room', () => {
+	it('emits a change all users event with the new state and score to all users in the room', async () => {
 		const { room } = init()
 		const emitSpy = jest.fn()
 		const inSpy = jest.spyOn(io, 'in').mockReturnValue({ emit: emitSpy } as any)
 
-		setRoomToInProgress(room.id)
+		await setRoomToInProgress(room)
 
 		expect(inSpy).toHaveBeenCalledWith(room.id)
 		expect(emitSpy).toHaveBeenCalledWith('change-all-user-data', {
