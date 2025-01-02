@@ -57,3 +57,4 @@
 [ ] Getting kicked out of a room from a socket change should send the user back to the homepage
 [ ] calculate statistics in realtime as the user types
 [ ] Remove unnecessary 'complete' state from room
+[ ] Initial active user count shown should be 1 since the current user is always an active user

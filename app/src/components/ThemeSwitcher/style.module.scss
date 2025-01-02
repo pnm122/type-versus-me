@@ -10,22 +10,6 @@
 	height: 40px;
 	position: relative;
 
-	&__selected-background {
-		position: absolute;
-		top: var(--outside-padding);
-		bottom: var(--outside-padding);
-		left: 0;
-		z-index: var(--z-base);
-		background-color: var(--primary);
-
-		&--transition {
-			// Only start showing transitions after the first position has been rendered
-			transition:
-				transform 0.25s var(--timing),
-				width 0.25s var(--timing);
-		}
-	}
-
 	.theme {
 		@include font-heading(14);
 		position: relative;
