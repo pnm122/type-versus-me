@@ -7,6 +7,7 @@ import ButtonIcon from '../Button/ButtonIcon'
 import PixelarticonsSave from '~icons/pixelarticons/save'
 import PixelarticonsClose from '~icons/pixelarticons/close'
 import PixelarticonsPlus from '~icons/pixelarticons/plus'
+import { useEffect, useRef } from 'react'
 
 interface Props {
 	onSubmit: () => void
@@ -25,15 +26,74 @@ export default function RoomSettingsPopover({
 	settings,
 	type
 }: Props) {
+	const firstButton = useRef<HTMLButtonElement>(null)
+
 	function onFormSubmit(e: React.FormEvent) {
 		e.preventDefault()
 		onSubmit()
 	}
 
+	useEffect(() => {
+		if (!open) return
+
+		setTimeout(() => {
+			firstButton.current?.focus()
+		}, 25)
+	}, [open])
+
 	return (
 		<Popover open={open} onBackdropClicked={() => onClose()}>
 			<form className={styles['form']} onSubmit={onFormSubmit}>
-				<h1 className={styles['form__heading']}>Edit room settings</h1>
+				<h1 className={styles['form__heading']}>Room settings</h1>
+				<div className={styles['category-selector']}>
+					<label id="category-selector__label" className={styles['category-selector__label']}>
+						Category
+					</label>
+					<ul
+						aria-labelledby="category-selector__label"
+						aria-activedescendant={settings.category}
+						role="radiogroup"
+						className={styles['categories']}
+					>
+						<li className={styles['categories__option']}>
+							<button
+								ref={firstButton}
+								type="button"
+								id="top-100"
+								role="radio"
+								aria-checked={settings.category === 'top-100'}
+								className={styles['button']}
+								onClick={() => onChange('category', 'top-100')}
+							>
+								Top 100 common words
+							</button>
+						</li>
+						<li className={styles['categories__option']}>
+							<button
+								type="button"
+								id="top-1000"
+								role="radio"
+								aria-checked={settings.category === 'top-1000'}
+								className={styles['button']}
+								onClick={() => onChange('category', 'top-1000')}
+							>
+								Top 1000 common words
+							</button>
+						</li>
+						<li className={styles['categories__option']}>
+							<button
+								type="button"
+								id="quote"
+								role="radio"
+								aria-checked={settings.category === 'quote'}
+								className={styles['button']}
+								onClick={() => onChange('category', 'quote')}
+							>
+								Quotes
+							</button>
+						</li>
+					</ul>
+				</div>
 				<Input
 					id="settings-num-words"
 					label="Number of words per race"

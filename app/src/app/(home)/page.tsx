@@ -87,18 +87,6 @@ export default function Home() {
 
 	return (
 		<>
-			<RoomSettingsPopover
-				open={settings.open}
-				settings={{
-					category: settings.category,
-					numWords: settings.numWords,
-					timeLimit: settings.timeLimit
-				}}
-				onClose={() => settingsDispatch({ key: 'open', value: false })}
-				onChange={(key, value) => settingsDispatch({ key, value })}
-				onSubmit={onSubmitCreateRoomSettings}
-				type="create-room"
-			/>
 			<main className={styles['page']}>
 				<form onSubmit={onJoinRoomSubmit} className={styles['main']}>
 					<h1 className={styles['main__title']}>
@@ -134,6 +122,18 @@ export default function Home() {
 					</div>
 				</form>
 			</main>
+			<RoomSettingsPopover
+				open={settings.open}
+				settings={{
+					category: settings.category,
+					numWords: settings.numWords,
+					timeLimit: settings.timeLimit
+				}}
+				onClose={() => settingsDispatch({ key: 'open', value: false })}
+				onChange={(key, value) => settingsDispatch({ key, value })}
+				onSubmit={onSubmitCreateRoomSettings}
+				type="create-room"
+			/>
 		</>
 	)
 }
