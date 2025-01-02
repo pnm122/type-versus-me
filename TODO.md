@@ -42,6 +42,8 @@
 [x] Add a basic header
 [x] Add active user count
 [x] Return to homepage button on join room page
+[x] Fix room setting popover overflowing screen
+[ ] Fix popover background not closing on key press
 [ ] Create a favicon
 [ ] Domain name?
 [ ] Figure out hosting

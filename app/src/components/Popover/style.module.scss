@@ -24,7 +24,7 @@
 		position: relative;
 		z-index: 1;
 		margin-inline: 24px;
-		max-width: 400px;
+		width: min(400px, calc(100% - 48px));
 		background-color: var(--surface);
 		padding: 12px;
 		visibility: hidden;
