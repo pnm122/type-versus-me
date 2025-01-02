@@ -37,10 +37,9 @@ export default function Popover({
 			})}
 		>
 			{hasBackdrop && (
-				<div
+				<button
 					className={styles['popover__backdrop']}
 					onClick={() => onBackdropClicked && onBackdropClicked()}
-					tabIndex={0}
 				/>
 			)}
 			<div

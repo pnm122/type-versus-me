@@ -9,6 +9,7 @@
 
 	&__backdrop {
 		grid-area: 1 / 1;
+		cursor: default;
 		width: 100%;
 		height: 100%;
 		background-color: var(--shadow-color);
