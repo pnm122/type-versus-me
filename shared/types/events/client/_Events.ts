@@ -7,6 +7,7 @@ import { ChangeUserStatePayload, ChangeUserStateCallback } from './ChangeUserSta
 import { ChangeUserScorePayload, ChangeUserScoreCallback } from './ChangeUserScore'
 import { LeaveRoomCallback } from './LeaveRoom'
 import { DoesRoomExistPayload, DoesRoomExistCallback } from './DoesRoomExist'
+import { ChangeRoomSettingsCallback, ChangeRoomSettingsPayload } from './ChangeRoomSettings'
 
 interface ClientEvents {
 	/** Register a user and get a User object */
@@ -44,6 +45,10 @@ interface ClientEvents {
 	'does-room-exist': (
 		value: DoesRoomExistPayload,
 		callback: DoesRoomExistCallback
+	) => Promise<void> | void
+	'change-room-settings': (
+		value: ChangeRoomSettingsPayload,
+		callback: ChangeRoomSettingsCallback
 	) => Promise<void> | void
 }
 

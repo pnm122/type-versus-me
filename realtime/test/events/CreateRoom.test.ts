@@ -172,5 +172,13 @@ describe('CreateRoom', () => {
 
 			expect(socket.join).toHaveBeenCalledWith(state.getRooms()[0]!.id)
 		})
+
+		it('makes the creator the admin', () => {
+			const payload = mockPayload()
+
+			CreateRoom(mockSocket(), payload, () => {})
+
+			expect(state.getRooms()[0]?.admin).toBe(payload.user.id)
+		})
 	})
 })

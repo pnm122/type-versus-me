@@ -25,4 +25,5 @@ export type ErrorReason =
 	| 'max-rooms-created'
 	| 'username-taken'
 	| 'invalid-settings'
+	| 'game-in-progress'
 	| (string & {})
