@@ -29,6 +29,11 @@
 		}
 	}
 
+	.room-settings {
+		@include font-body(12);
+		color: var(--placeholder);
+	}
+
 	&__room {
 		display: flex;
 		align-items: center;

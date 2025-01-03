@@ -52,6 +52,35 @@ export default function RoomData() {
 		leaveRoom({ globalState, socket, notifs })
 	}
 
+	function getCategoryText() {
+		switch (room?.settings.category) {
+			case 'quote':
+				return 'Quotes'
+			case 'top-100':
+				return 'Top 100 common words'
+			case 'top-1000':
+				return 'Top 1000 common words'
+		}
+	}
+
+	function getTimeLimitText() {
+		if (!room) return ''
+
+		const { timeLimit } = room.settings
+		if (timeLimit < 60) {
+			return `${timeLimit}s`
+		}
+
+		const minutes = Math.floor(timeLimit / 60)
+		const seconds = timeLimit % 60
+
+		if (seconds === 0) {
+			return `${minutes}min`
+		}
+
+		return `${minutes}min ${seconds}s`
+	}
+
 	return (
 		<div className={styles['data']}>
 			<div className={styles['user-info']}>
@@ -80,6 +109,10 @@ export default function RoomData() {
 					</div>
 				</Collapsible>
 			</div>
+			<hr></hr>
+			<p className={styles['room-settings']}>
+				{getCategoryText()} | {room.settings.numWords} words | {getTimeLimitText()} time limit
+			</p>
 			<hr></hr>
 			<div className={styles['data__room']}>
 				<button
