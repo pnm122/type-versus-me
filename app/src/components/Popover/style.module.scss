@@ -1,7 +1,7 @@
 .popover {
 	position: fixed;
 	inset: 0;
-	z-index: var(--z-max);
+	z-index: var(--z-overlay);
 	display: grid;
 	place-items: center;
 	visibility: hidden;

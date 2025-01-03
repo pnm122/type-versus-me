@@ -12,6 +12,7 @@ import { updateUser } from '@/utils/user'
 import { useSocket } from '@/context/Socket'
 import { useNotification } from '@/context/Notification'
 import { Return } from '$shared/types/Return'
+import RiVipCrownFill from '~icons/ri/vip-crown-fill'
 
 interface Props {
 	user: UserType
@@ -24,7 +25,7 @@ export default function User({ user: { id, username, color, score, state } }: Pr
 	const globalState = useGlobalState()
 	const socket = useSocket()
 	const notifs = useNotification()
-	const { user } = globalState
+	const { user, room } = globalState
 
 	function openSettings() {
 		setSettingsOpen(true)
@@ -52,7 +53,12 @@ export default function User({ user: { id, username, color, score, state } }: Pr
 			<div className={styles['user__name']}>
 				<CursorPreview size="small" color={color} />
 				<p className={styles['username']}>
-					{username}
+					<span className={styles['username__main']}>
+						{username}
+						{room?.admin === id && (
+							<RiVipCrownFill aria-label="Admin" className={styles['admin-icon']} />
+						)}
+					</span>
 					{id === user!.id && <span className={styles['username__you']}> (you)</span>}
 				</p>
 				{id === user?.id && (

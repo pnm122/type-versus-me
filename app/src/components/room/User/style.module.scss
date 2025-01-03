@@ -16,6 +16,19 @@
 		.username {
 			@include font-heading(16);
 
+			&__main {
+				position: relative;
+				display: inline;
+
+				.admin-icon {
+					position: absolute;
+					right: 0;
+					top: 0;
+					transform: translate(65%, -65%) rotate(30deg);
+					color: var(--primary);
+				}
+			}
+
 			&__you {
 				@include font-heading(12);
 				color: var(--placeholder);
