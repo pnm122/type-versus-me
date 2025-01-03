@@ -39,3 +39,8 @@ hr {
 	border: none;
 	border-top: 2px solid var(--border);
 }
+
+:focus-visible {
+	outline: 2px solid var(--heading);
+	outline-offset: 2px;
+}

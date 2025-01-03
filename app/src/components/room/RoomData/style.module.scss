@@ -25,6 +25,11 @@
 
 			&__button {
 				width: 100%;
+
+				&:focus-visible {
+					// because the container has hidden overflow, outline cannot be outside the border box
+					outline-offset: -2px;
+				}
 			}
 		}
 	}
