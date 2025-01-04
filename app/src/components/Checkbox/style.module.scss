@@ -1,22 +1,31 @@
 .checkbox {
-	border: 2px solid var(--border);
 	color: var(--heading);
 	height: 40px;
-	padding-inline: 8px;
 	display: flex;
 	align-items: center;
 	justify-content: flex-start;
 	gap: 8px;
 	line-height: 1;
 
-	&[aria-checked='true'] {
-		border-color: var(--positive);
-		background-color: var(--positive);
-		color: var(--background);
+	&:focus-visible .checkbox__box {
+		border-color: var(--heading);
+	}
 
+	&[aria-checked='false']:hover {
+		.checkbox__box {
+			background-color: var(--border);
+
+			.check {
+				display: block;
+				color: var(--on-disabled);
+			}
+		}
+	}
+
+	&[aria-checked='true'] {
 		.checkbox__box {
 			border: none;
-			background-color: var(--background);
+			background-color: var(--positive);
 
 			.check {
 				display: block;
@@ -32,7 +41,7 @@
 		place-items: center;
 
 		.check {
-			color: var(--positive);
+			color: var(--background);
 			width: 100%;
 			height: 100%;
 			display: none;

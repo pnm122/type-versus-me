@@ -1,24 +1,35 @@
 import state from '@/global/state'
 import { mockUser } from '../test-utils'
+import { User } from '$shared/types/User'
+import { RoomSettings } from '$shared/types/Room'
+
+function createRoom(admin?: Partial<User>, settings?: Partial<RoomSettings>) {
+	return state.createRoom(mockUser(admin), {
+		category: 'top-100',
+		numWords: 40,
+		timeLimit: 120,
+		...settings
+	})
+}
 
 describe('state', () => {
 	describe('createRoom', () => {
 		it('adds a room to the room list', () => {
-			state.createRoom()
+			createRoom()
 			expect(state.getRooms().length).toEqual(1)
 		})
 
 		it('returns the room that it creates', () => {
-			const room = state.createRoom()
+			const room = createRoom()
 			expect(state.getRooms()[0]).toEqual(room)
 		})
 	})
 
 	describe('removeRoom', () => {
 		it('removes the correct room from the room list', () => {
-			state.createRoom()
-			const room = state.createRoom()
-			state.createRoom()
+			createRoom({ id: 'a' })
+			const room = createRoom({ id: 'b' })
+			createRoom({ id: 'c' })
 
 			state.removeRoom(room.id)
 
@@ -27,17 +38,17 @@ describe('state', () => {
 		})
 
 		it('returns the room that was removed', () => {
-			state.createRoom()
-			const room = state.createRoom()
-			state.createRoom()
+			createRoom({ id: 'a' })
+			const room = createRoom({ id: 'b' })
+			createRoom({ id: 'c' })
 			const removedRoom = state.removeRoom(room.id)
 			expect(room).toEqual(removedRoom)
 		})
 
 		it('changes nothing if an invalid ID is passed', () => {
-			state.createRoom()
-			state.createRoom()
-			state.createRoom()
+			createRoom({ id: 'a' })
+			createRoom({ id: 'b' })
+			createRoom({ id: 'c' })
 
 			const before = state.getRooms()
 			state.removeRoom('INVALID_ID')
@@ -49,17 +60,17 @@ describe('state', () => {
 
 	describe('getRoom', () => {
 		it('returns the correct room', () => {
-			state.createRoom()
-			const room = state.createRoom()
-			state.createRoom()
+			createRoom({ id: 'a' })
+			const room = createRoom({ id: 'b' })
+			createRoom({ id: 'c' })
 			const roomFromGetRoom = state.getRoom(room.id)
 			expect(room).toEqual(roomFromGetRoom)
 		})
 
 		it('returns nothing if an invalid ID is passed', () => {
-			state.createRoom()
-			state.createRoom()
-			state.createRoom()
+			createRoom({ id: 'a' })
+			createRoom({ id: 'b' })
+			createRoom({ id: 'c' })
 
 			const res = state.getRoom('INVALID_ID')
 			expect(res).toBeUndefined()
@@ -69,7 +80,7 @@ describe('state', () => {
 	describe('updateRoom', () => {
 		const update = { state: 'in-progress', test: 'test' } as const
 		it('updates only the fields specified', () => {
-			const room = state.createRoom()
+			const room = createRoom()
 			const expected = {
 				...room,
 				...update
@@ -79,7 +90,7 @@ describe('state', () => {
 		})
 
 		it('returns the updated room', () => {
-			const room = state.createRoom()
+			const room = createRoom()
 			const expected = {
 				...room,
 				...update
@@ -89,9 +100,9 @@ describe('state', () => {
 		})
 
 		it('changes nothing if an invalid ID is passed', () => {
-			state.createRoom()
-			state.createRoom()
-			state.createRoom()
+			createRoom({ id: 'a' })
+			createRoom({ id: 'b' })
+			createRoom({ id: 'c' })
 
 			const before = state.getRooms()
 			state.updateRoom('INVALID_ID', update)
@@ -103,35 +114,35 @@ describe('state', () => {
 
 	describe('addUserToRoom', () => {
 		const newUser = {
-			id: '',
-			username: '',
+			id: 'test',
+			username: 'Test',
 			color: 'blue'
 		} as const
 
 		it('adds the user to the correct room', () => {
-			const roomA = state.createRoom()
-			const roomB = state.createRoom()
-			const roomC = state.createRoom()
+			const roomA = createRoom({ id: 'a' })
+			const roomB = createRoom({ id: 'b' })
+			const roomC = createRoom({ id: 'c' })
 
 			state.addUserToRoom(roomB.id, newUser)
 
-			expect(state.getRoom(roomA.id)!.users).toHaveLength(0)
-			expect(state.getRoom(roomB.id)!.users).toHaveLength(1)
-			expect(state.getRoom(roomC.id)!.users).toHaveLength(0)
-			expect(state.getRoom(roomB.id)!.users[0]).toEqual(newUser)
+			expect(state.getRoom(roomA.id)!.users).toHaveLength(1)
+			expect(state.getRoom(roomB.id)!.users).toHaveLength(2)
+			expect(state.getRoom(roomC.id)!.users).toHaveLength(1)
+			expect(state.getRoom(roomB.id)!.users[1]).toEqual(newUser)
 		})
 
 		it('returns the updated room', () => {
-			const room = state.createRoom()
+			const room = createRoom()
 			const updatedRoom = state.addUserToRoom(room.id, newUser)
 
-			expect(updatedRoom!.users[0]).toEqual(newUser)
+			expect(updatedRoom!.users[1]).toEqual(newUser)
 		})
 
 		it('changes nothing if an invalid ID is passed', () => {
-			state.createRoom()
-			state.createRoom()
-			state.createRoom()
+			createRoom({ id: 'a' })
+			createRoom({ id: 'b' })
+			createRoom({ id: 'c' })
 
 			const before = state.getRooms()
 			state.addUserToRoom('INVALID_ID', newUser)
@@ -151,17 +162,11 @@ describe('state', () => {
 		}
 
 		it('removes the user from the correct room', () => {
-			const roomA = state.createRoom()
-			const roomB = state.createRoom()
-			const roomC = state.createRoom()
+			const roomA = createRoom({ id: 'a' })
+			const roomB = createRoom({ id: 'b' })
+			const roomC = createRoom({ id: 'c' })
 
-			state.addUserToRoom(roomA.id, newUser('test'))
-
-			state.addUserToRoom(roomB.id, newUser('test'))
-
-			state.addUserToRoom(roomC.id, newUser('test'))
-
-			state.removeUserFromRoom(roomB.id, 'test')
+			state.removeUserFromRoom(roomB.id, 'b')
 
 			expect(state.getRoom(roomA.id)!.users).toHaveLength(1)
 			expect(state.getRoom(roomB.id)!.users).toHaveLength(0)
@@ -169,7 +174,7 @@ describe('state', () => {
 		})
 
 		it('returns the updated room', () => {
-			const room = state.createRoom()
+			const room = createRoom()
 			state.addUserToRoom(room.id, newUser('test'))
 			const updatedRoom = state.removeUserFromRoom(room.id, 'test')
 
@@ -177,9 +182,9 @@ describe('state', () => {
 		})
 
 		it('changes nothing if an invalid room ID is passed', () => {
-			const roomA = state.createRoom()
-			const roomB = state.createRoom()
-			const roomC = state.createRoom()
+			const roomA = createRoom({ id: 'a' })
+			const roomB = createRoom({ id: 'b' })
+			const roomC = createRoom({ id: 'c' })
 
 			state.addUserToRoom(roomA.id, newUser('test'))
 
@@ -195,9 +200,9 @@ describe('state', () => {
 		})
 
 		it('changes nothing if an invalid user ID is passed', () => {
-			const roomA = state.createRoom()
-			const roomB = state.createRoom()
-			const roomC = state.createRoom()
+			const roomA = createRoom({ id: 'a' })
+			const roomB = createRoom({ id: 'b' })
+			const roomC = createRoom({ id: 'c' })
 
 			state.addUserToRoom(roomA.id, newUser('test'))
 
@@ -215,9 +220,9 @@ describe('state', () => {
 
 	describe('getUserInRoom', () => {
 		function createRooms() {
-			const roomA = state.createRoom()
-			const roomB = state.createRoom()
-			const roomC = state.createRoom()
+			const roomA = createRoom({ id: 'a' })
+			const roomB = createRoom({ id: 'b' })
+			const roomC = createRoom({ id: 'c' })
 
 			state.addUserToRoom(roomA.id, {
 				id: 'test',
@@ -255,9 +260,9 @@ describe('state', () => {
 
 	describe('getRoomFromUser', () => {
 		function createRooms() {
-			const roomA = state.createRoom()
-			const roomB = state.createRoom()
-			const roomC = state.createRoom()
+			const roomA = createRoom({ id: 'a' })
+			const roomB = createRoom({ id: 'b' })
+			const roomC = createRoom({ id: 'c' })
 
 			state.addUserToRoom(roomA.id, {
 				id: 'userA',
@@ -298,7 +303,7 @@ describe('state', () => {
 	describe('updateUser', () => {
 		it('updates the user correctly', () => {
 			const initialUser = mockUser()
-			const room = state.createRoom()
+			const room = createRoom()
 			state.addUserToRoom(room.id, initialUser)
 			state.updateUser(initialUser.id, { username: 'Pierce' })
 			expect(state.getUserInRoom(room.id, initialUser.id)).toEqual({
@@ -309,7 +314,7 @@ describe('state', () => {
 
 		it('returns the updated user', () => {
 			const initialUser = mockUser()
-			const room = state.createRoom()
+			const room = createRoom()
 			state.addUserToRoom(room.id, initialUser)
 			const newUser = state.updateUser(initialUser.id, { username: 'Pierce' })
 			expect(newUser).toEqual({ ...initialUser, username: 'Pierce' })
@@ -317,7 +322,7 @@ describe('state', () => {
 
 		it('returns nothing if the user is not in a room', () => {
 			const user = mockUser()
-			const room = state.createRoom()
+			const room = createRoom()
 			state.addUserToRoom(room.id, user)
 			const newUser = state.updateUser('INVALID_ID', { username: 'Pierce' })
 			expect(newUser).toBeUndefined()

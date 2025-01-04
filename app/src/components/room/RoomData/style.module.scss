@@ -25,7 +25,23 @@
 
 			&__button {
 				width: 100%;
+
+				&:focus-visible {
+					// because the container has hidden overflow, outline cannot be outside the border box
+					outline-offset: -2px;
+				}
 			}
+		}
+	}
+
+	.room-settings {
+		display: flex;
+		align-items: center;
+		gap: 4px;
+
+		&__text {
+			@include font-body(12);
+			color: var(--placeholder);
 		}
 	}
 

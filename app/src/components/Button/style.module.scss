@@ -5,6 +5,10 @@
 	place-items: center;
 	width: auto;
 
+	&:focus-visible {
+		outline-color: var(--focus-color);
+	}
+
 	&:not(.button--loading):disabled {
 		background-color: var(--disabled);
 		color: var(--on-disabled);
@@ -21,18 +25,21 @@
 
 	&--primary {
 		--loader-color: var(--black);
+		--focus-color: var(--primary);
 		background-color: var(--primary);
 		color: var(--black);
 	}
 
 	&--secondary {
 		--loader-color: var(--background);
+		--focus-color: var(--heading);
 		background-color: var(--heading);
 		color: var(--background);
 	}
 
 	&--tertiary {
 		--loader-color: var(--heading);
+		--focus-color: var(--heading);
 		color: var(--heading);
 	}
 

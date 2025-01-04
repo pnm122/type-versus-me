@@ -11,6 +11,7 @@ import debug, { DEBUG_COLORS } from './utils/debug'
 import { config } from 'dotenv'
 import DoesRoomExist from './events/DoesRoomExist'
 import RequestColor from './events/RequestColor'
+import ChangeRoomSettings from './events/ChangeRoomSettings'
 
 config()
 
@@ -31,6 +32,7 @@ io.on('connect', (socket) => {
 	socket.on('request-color', (...args) => RequestColor(socket, ...args))
 	socket.on('leave-room', (_, callback) => LeaveRoom(socket, callback))
 	socket.on('does-room-exist', (...args) => DoesRoomExist(...args))
+	socket.on('change-room-settings', (...args) => ChangeRoomSettings(socket, ...args))
 	socket.on('disconnect', () => Disconnect(socket))
 
 	socket.onAny((ev, ...args) => {

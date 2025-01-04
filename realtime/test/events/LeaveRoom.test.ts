@@ -2,6 +2,11 @@ import LeaveRoom from '@/events/LeaveRoom'
 import { createRoomForTesting, ioSpies, mockSocket, mockUser } from '../test-utils'
 import * as eventUtils from '@/utils/eventUtils'
 import state from '@/global/state'
+import { Room } from '$shared/types/Room'
+import { User } from '$shared/types/User'
+
+function init(twoUsers: false): { room: Room; user: User }
+function init(twoUsers?: true): { room: Room; user: User; secondUser: User }
 
 function init(twoUsers = true) {
 	const { room, user } = createRoomForTesting().value!
@@ -15,15 +20,15 @@ function init(twoUsers = true) {
 }
 
 describe('LeaveRoom', () => {
-	it('runs without failing if callback not provided', () => {
+	it('runs without failing if callback not provided', async () => {
 		// @ts-expect-error missing parameters on purpose
-		LeaveRoom(mockSocket(), null, null)
+		await LeaveRoom(mockSocket(), null, null)
 		expect(true).toBe(true)
 	})
 
-	it('gives the correct error if the user is not in a room', () => {
+	it('gives the correct error if the user is not in a room', async () => {
 		const callback = jest.fn()
-		LeaveRoom(mockSocket(), callback)
+		await LeaveRoom(mockSocket(), callback)
 
 		expect(callback).toHaveBeenCalledWith({
 			value: null,
@@ -33,88 +38,110 @@ describe('LeaveRoom', () => {
 		})
 	})
 
-	it('removes the user from the state', () => {
+	it('removes the user from the state', async () => {
 		const { room, user } = init()
-		LeaveRoom(mockSocket(user.id), () => {})
+		await LeaveRoom(mockSocket(user.id), () => {})
 
 		expect(state.getRoom(room!.id)?.users.length).toBe(1)
 	})
 
-	it('removes the socket from the room', () => {
+	it('removes the socket from the room', async () => {
 		const { room, user } = init()
 		const socket = mockSocket(user.id)
 
-		LeaveRoom(socket, () => {})
+		await LeaveRoom(socket, () => {})
 
 		expect(socket.leave).toHaveBeenCalledWith(room.id)
 	})
 
-	it('emits a leave room event to all users left in the room', () => {
+	it('emits a leave room event to all users left in the room', async () => {
 		const { room, user } = init()
 		const socket = mockSocket(user.id)
 		const { inSpy, emitSpy } = ioSpies()
 
-		LeaveRoom(socket, () => {})
+		await LeaveRoom(socket, () => {})
 
 		expect(inSpy).toHaveBeenCalledWith(room.id)
-		expect(emitSpy.mock.lastCall?.[0]).toBe('leave-room')
-		expect(emitSpy.mock.lastCall?.[1]).toMatchObject({
-			userId: socket.id,
-			room: {
-				id: room.id
-			}
-		})
+		expect(emitSpy).toHaveBeenCalledWith(
+			'leave-room',
+			expect.objectContaining({
+				userId: socket.id,
+				room: expect.objectContaining({
+					id: room.id
+				})
+			})
+		)
 	})
 
-	it('removes the room if there are no users left in the room', () => {
+	it('removes the room if there are no users left in the room', async () => {
 		const { room, user } = init(false)
 
-		LeaveRoom(mockSocket(user.id), () => {})
+		await LeaveRoom(mockSocket(user.id), () => {})
 
 		expect(state.getRoom(room.id)).toBeUndefined()
 	})
 
-	it('sets the room to in progress if all other users are ready', () => {
+	it('sets the room to in progress if all other users are ready', async () => {
 		const spy = jest.spyOn(eventUtils, 'setRoomToInProgress')
-		const { room, user, secondUser } = init()
+		const { user, secondUser } = init()
 		const socket = mockSocket(user.id)
 		state.updateUser(secondUser!.id, { state: 'ready' })
 
-		LeaveRoom(socket, () => {})
+		await LeaveRoom(socket, () => {})
 
-		expect(spy).toHaveBeenCalledWith(room.id)
+		expect(spy).toHaveBeenCalled()
 	})
 
-	it('sets the room to complete in the state if all users are completed or failed', () => {
+	it('sets the room to complete in the state if all users are completed or failed', async () => {
 		const { room, user, secondUser } = init()
 		const socket = mockSocket(user.id)
 		state.updateUser(secondUser!.id, { state: 'complete' })
 		state.addUserToRoom(room.id, mockUser({ id: 'userC', username: 'AnotherOne', state: 'failed' }))
 
-		LeaveRoom(socket, () => {})
+		await LeaveRoom(socket, () => {})
 
 		expect(state.getRoom(room.id)!.state).toBe('complete')
 	})
 
-	it('emits a room data change event with the complete state if all users are completed or failed', () => {
+	it('emits a room data change event with the complete state if all users are completed or failed', async () => {
 		const { room, user, secondUser } = init()
 		const socket = mockSocket(user.id)
 		const { inSpy, emitSpy } = ioSpies()
 		state.updateUser(secondUser!.id, { state: 'complete' })
 		state.addUserToRoom(room.id, mockUser({ id: 'userC', username: 'AnotherOne', state: 'failed' }))
 
-		LeaveRoom(socket, () => {})
+		await LeaveRoom(socket, () => {})
 
 		expect(inSpy).toHaveBeenCalledWith(room.id)
 		expect(emitSpy).toHaveBeenCalledWith('change-room-data', { state: 'complete' })
 	})
 
-	it('calls the callback with the correct values', () => {
+	it('changes the room admin in the state if the admin leaves', async () => {
+		const { user, room, secondUser } = init()
+
+		expect(state.getRoom(room.id)!.admin).toBe(user.id)
+
+		await LeaveRoom(mockSocket(user.id), () => {})
+
+		expect(state.getRoom(room.id)!.admin).toBe(secondUser.id)
+	})
+
+	it('emits a room change event with the new admin if the admin leaves', async () => {
+		const { user, room, secondUser } = init()
+		const { inSpy, emitSpy } = ioSpies()
+
+		await LeaveRoom(mockSocket(user.id), () => {})
+
+		expect(inSpy).toHaveBeenCalledWith(room.id)
+		expect(emitSpy).toHaveBeenCalledWith('change-room-data', { admin: secondUser.id })
+	})
+
+	it('calls the callback with the correct values', async () => {
 		const { user } = init()
 		const socket = mockSocket(user.id)
 		const callback = jest.fn()
 
-		LeaveRoom(socket, callback)
+		await LeaveRoom(socket, callback)
 
 		expect(callback).toHaveBeenCalledWith({
 			value: null,

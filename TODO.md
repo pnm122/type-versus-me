@@ -42,13 +42,17 @@
 [x] Add a basic header
 [x] Add active user count
 [x] Return to homepage button on join room page
+[x] Fix room setting popover overflowing screen
+[x] Fix popover background not closing on key press
 [ ] Create a favicon
 [ ] Domain name?
 [ ] Figure out hosting
 [ ] Remove test folder from built files in realtime server
-[ ] Room settings when created (i.e. test length, time limit, etc.)
+[x] Room settings when created (i.e. test length, time limit, etc.)
+[x] Show room settings in game
 [ ] Have a room admin (the person who created the room) who can change room settings
-[ ] Show a crown next to the room admin's name
+[x] Show a crown next to the room admin's name
+[ ] Suggest maximum time given number of words/show approx. min wpm given the combo
 [ ] Time doesn't update correctly when the tab is hidden?
 [ ] Some very fast layout shift on loading the homepage?
 [ ] Some kind of congratulations on winning the room
@@ -57,3 +61,5 @@
 [ ] Getting kicked out of a room from a socket change should send the user back to the homepage
 [ ] calculate statistics in realtime as the user types
 [ ] Remove unnecessary 'complete' state from room
+[ ] Initial active user count shown should be 1 since the current user is always an active user
+[ ] Tell users which book a quote is from

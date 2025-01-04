@@ -12,6 +12,8 @@ const readableErrorReasons: Record<ErrorReason, string | null> = {
 	'room-does-not-exist': 'Invalid room code.',
 	'username-taken': 'This username is taken. Please choose another username and try again.',
 	'color-taken': 'This color is taken. Please choose another color and try again.',
+	'invalid-settings':
+		'The settings you provided are invalid. Please change the settings and try again.',
 	'invalid-user-id': null,
 	'missing-argument': null,
 	'user-not-in-room': null

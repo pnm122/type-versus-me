@@ -15,6 +15,9 @@ interface Props {
 	inputClassName?: string
 	minLength?: number
 	maxLength?: number
+	type?: React.InputHTMLAttributes<HTMLInputElement>['type']
+	min?: number
+	max?: number
 	ref?: React.RefObject<HTMLInputElement>
 }
 
@@ -31,6 +34,9 @@ export default function Input({
 	inputClassName,
 	minLength,
 	maxLength,
+	type,
+	min,
+	max,
 	ref
 }: Props) {
 	return (
@@ -63,6 +69,9 @@ export default function Input({
 				size={1}
 				maxLength={maxLength}
 				minLength={minLength}
+				min={min}
+				max={max}
+				type={type}
 				ref={ref}
 			/>
 			{error && (

@@ -6,13 +6,14 @@ import { NotificationContextType } from '@/context/Notification'
 import { SocketContextType } from '@/context/Socket'
 import checkSocket from './checkSocket'
 import { errorNotification } from './errorNotifications'
-import { Room } from '$shared/types/Room'
+import { Room, RoomSettings } from '$shared/types/Room'
 import { ClientJoinRoomCallback } from '$shared/types/events/client/JoinRoom'
 import { Return } from '$shared/types/Return'
 import ErrorsOf from '$shared/types/ErrorsOf'
 import { LeaveRoomCallback } from '$shared/types/events/client/LeaveRoom'
 import { ChangeRoomDataPayload } from '$shared/types/events/server/ChangeRoomData'
 import { DoesRoomExistCallback } from '$shared/types/events/client/DoesRoomExist'
+import { ChangeRoomSettingsPayload } from '$shared/types/events/client/ChangeRoomSettings'
 
 interface Context {
 	globalState: GlobalState
@@ -60,7 +61,10 @@ export function onChangeRoomData(
 	globalState.setRoom((r) => (r ? { ...r, ...res } : null))
 }
 
-export async function createRoom(context: Context): Promise<Parameters<CreateRoomCallback>[0]> {
+export async function createRoom(
+	settings: RoomSettings,
+	context: Context
+): Promise<Parameters<CreateRoomCallback>[0]> {
 	const { socket, notifs, globalState } = context
 
 	if (!checkSocket(socket.value, notifs)) {
@@ -71,7 +75,10 @@ export async function createRoom(context: Context): Promise<Parameters<CreateRoo
 			}
 		}
 	}
-	const res = await socket.value.emitWithAck('create-room', globalState.user!)
+	const res = await socket.value.emitWithAck('create-room', {
+		user: globalState.user!,
+		settings
+	})
 
 	if (res.error) {
 		notifs.push(errorNotification(res.error.reason))
@@ -174,4 +181,32 @@ export async function doesRoomExist(
 		}
 	}
 	return await socket.value.emitWithAck('does-room-exist', roomId)
+}
+
+export async function changeRoomSettings(
+	settings: ChangeRoomSettingsPayload['settings'],
+	context: Context
+) {
+	const { socket, notifs, globalState } = context
+
+	if (!checkSocket(socket.value, notifs) || !globalState.user || !globalState.room) {
+		return {
+			value: null,
+			error: {
+				reason: 'missing-argument'
+			}
+		}
+	}
+
+	const res = await socket.value.emitWithAck('change-room-settings', {
+		userId: globalState.user.id,
+		roomId: globalState.room.id,
+		settings
+	})
+
+	if (res.error) {
+		notifs.push(errorNotification(res.error.reason))
+	}
+
+	return res
 }

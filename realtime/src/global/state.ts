@@ -1,4 +1,4 @@
-import { Room, RoomMetadata } from '$shared/types/Room'
+import { Room, RoomMetadata, RoomSettings } from '$shared/types/Room'
 import { User } from '$shared/types/User'
 
 class State {
@@ -36,11 +36,13 @@ class State {
 		return this.rooms.find((r) => r.id === id)
 	}
 
-	createRoom(): Readonly<Room> {
+	createRoom(admin: User, settings: RoomSettings): Readonly<Room> {
 		const newRoom: Room = {
 			id: this.generateRoomId(),
 			state: 'waiting',
-			users: []
+			users: [admin],
+			admin: admin.id,
+			settings
 		}
 
 		this.rooms.push(newRoom)

@@ -6,7 +6,8 @@ const nextConfig: NextConfig = {
 		config.plugins.push(
 			UnpluginIcons({
 				compiler: 'jsx',
-				jsx: 'react'
+				jsx: 'react',
+				autoInstall: true
 			})
 		)
 

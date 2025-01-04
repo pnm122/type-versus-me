@@ -8,5 +8,6 @@ module.exports = {
 		'^@/(.*)': '<rootDir>/src/$1',
 		'^\\$shared/(.*)': '<rootDir>/../shared/$1'
 	},
-	setupFilesAfterEnv: ['<rootDir>/test/setup.ts']
+	setupFilesAfterEnv: ['<rootDir>/test/setup.ts'],
+	testPathIgnorePatterns: ['dist']
 }

@@ -6,6 +6,7 @@ import CustomSocket from '@/types/CustomSocket'
 import debug, { DEBUG_COLORS } from './debug'
 import generateTest from './generateTest'
 import io from '@/global/server'
+import { Room } from '$shared/types/Room'
 
 /**
  * Check if an event with a payload is valid, returning appropriate errors through the callback if found.
@@ -66,12 +67,13 @@ export function check<
  *  3. Sets every user in the room's score to 0's and their state to in-progress
  *  4. Emits an event to the clients to update every user accordingly
  */
-export function setRoomToInProgress(roomId: string) {
-	state.updateRoom(roomId, { state: 'in-progress', test: generateTest() })
-	io.in(roomId).emit('change-room-data', { state: 'in-progress', test: generateTest() })
+export async function setRoomToInProgress(room: Room) {
+	const test = await generateTest(room.settings)
+	state.updateRoom(room.id, { state: 'in-progress', test })
+	io.in(room.id).emit('change-room-data', { state: 'in-progress', test })
 
-	state.getRoom(roomId)!.users.forEach((u) => {
+	state.getRoom(room.id)!.users.forEach((u) => {
 		state.updateUser(u.id, { score: INITIAL_USER_SCORE, state: 'in-progress' })
 	})
-	io.in(roomId).emit('change-all-user-data', { score: INITIAL_USER_SCORE, state: 'in-progress' })
+	io.in(room.id).emit('change-all-user-data', { score: INITIAL_USER_SCORE, state: 'in-progress' })
 }
