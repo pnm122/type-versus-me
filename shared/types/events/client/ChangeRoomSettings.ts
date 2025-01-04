@@ -16,6 +16,7 @@ type Callback = (
 		| 'invalid-settings'
 		| 'user-not-admin'
 		| 'game-in-progress'
+		| 'room-does-not-exist'
 	>
 ) => void
 

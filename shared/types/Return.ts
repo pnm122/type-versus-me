@@ -26,4 +26,5 @@ export type ErrorReason =
 	| 'username-taken'
 	| 'invalid-settings'
 	| 'game-in-progress'
+	| 'room-does-not-exist'
 	| (string & {})

@@ -22,9 +22,11 @@ export type RoomState = 'waiting' | 'in-progress' | 'complete'
 
 export interface RoomSettings {
 	/** Category for tests given. **'top-100'**: Choose randomly from the 100 most common English words. **'top-1000'**: Choose randomly from the top 1000 most common English words. **'quote'**: Pick quotes at random from books. */
-	category: 'top-100' | 'top-1000' | 'quote'
+	category: (typeof roomCategories)[number]
 	/** Number of words to generate for each test. */
 	numWords: number
 	/** Maximum time allowed for each test. */
 	timeLimit: number
 }
+
+export const roomCategories = ['top-100', 'top-1000', 'quote'] as const

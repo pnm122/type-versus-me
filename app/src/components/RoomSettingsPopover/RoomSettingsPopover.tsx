@@ -8,6 +8,7 @@ import PixelarticonsSave from '~icons/pixelarticons/save'
 import PixelarticonsClose from '~icons/pixelarticons/close'
 import PixelarticonsPlus from '~icons/pixelarticons/plus'
 import { useEffect, useRef } from 'react'
+import { MAX_TEST_TIME, MAX_TEST_WORDS, MIN_TEST_TIME, MIN_TEST_WORDS } from '$shared/constants'
 
 interface Props {
 	onSubmit: () => void
@@ -98,8 +99,8 @@ export default function RoomSettingsPopover({
 					id="settings-num-words"
 					label="Number of words per race"
 					type="number"
-					min={10}
-					max={150}
+					min={MIN_TEST_WORDS}
+					max={MAX_TEST_WORDS}
 					text={settings.numWords.toString()}
 					onChange={(e) => onChange('numWords', parseInt(e.target.value))}
 					required
@@ -108,8 +109,8 @@ export default function RoomSettingsPopover({
 					id="settings-time-limit"
 					label="Time limit (seconds)"
 					type="number"
-					min={5}
-					max={600}
+					min={MIN_TEST_TIME}
+					max={MAX_TEST_TIME}
 					text={settings.timeLimit.toString()}
 					onChange={(e) => onChange('timeLimit', parseInt(e.target.value))}
 					required
