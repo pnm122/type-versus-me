@@ -2,6 +2,11 @@ import LeaveRoom from '@/events/LeaveRoom'
 import { createRoomForTesting, ioSpies, mockSocket, mockUser } from '../test-utils'
 import * as eventUtils from '@/utils/eventUtils'
 import state from '@/global/state'
+import { Room } from '$shared/types/Room'
+import { User } from '$shared/types/User'
+
+function init(twoUsers: false): { room: Room; user: User }
+function init(twoUsers?: true): { room: Room; user: User; secondUser: User }
 
 function init(twoUsers = true) {
 	const { room, user } = createRoomForTesting().value!
@@ -57,13 +62,15 @@ describe('LeaveRoom', () => {
 		await LeaveRoom(socket, () => {})
 
 		expect(inSpy).toHaveBeenCalledWith(room.id)
-		expect(emitSpy.mock.lastCall?.[0]).toBe('leave-room')
-		expect(emitSpy.mock.lastCall?.[1]).toMatchObject({
-			userId: socket.id,
-			room: {
-				id: room.id
-			}
-		})
+		expect(emitSpy).toHaveBeenCalledWith(
+			'leave-room',
+			expect.objectContaining({
+				userId: socket.id,
+				room: expect.objectContaining({
+					id: room.id
+				})
+			})
+		)
 	})
 
 	it('removes the room if there are no users left in the room', async () => {
@@ -107,6 +114,26 @@ describe('LeaveRoom', () => {
 
 		expect(inSpy).toHaveBeenCalledWith(room.id)
 		expect(emitSpy).toHaveBeenCalledWith('change-room-data', { state: 'complete' })
+	})
+
+	it('changes the room admin in the state if the admin leaves', async () => {
+		const { user, room, secondUser } = init()
+
+		expect(state.getRoom(room.id)!.admin).toBe(user.id)
+
+		await LeaveRoom(mockSocket(user.id), () => {})
+
+		expect(state.getRoom(room.id)!.admin).toBe(secondUser.id)
+	})
+
+	it('emits a room change event with the new admin if the admin leaves', async () => {
+		const { user, room, secondUser } = init()
+		const { inSpy, emitSpy } = ioSpies()
+
+		await LeaveRoom(mockSocket(user.id), () => {})
+
+		expect(inSpy).toHaveBeenCalledWith(room.id)
+		expect(emitSpy).toHaveBeenCalledWith('change-room-data', { admin: secondUser.id })
 	})
 
 	it('calls the callback with the correct values', async () => {

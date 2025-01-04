@@ -37,6 +37,13 @@ export default async function LeaveRoom(socket: CustomSocket, callback: LeaveRoo
 		io.in(room!.id).emit('change-room-data', { state: 'complete' })
 	}
 
+	if (state.getRoom(room!.id)!.admin === socket.id) {
+		// relies on (A) the user making this request was already removed and (B) we already checked if the room was empty
+		const newAdmin = state.getRoom(room!.id)!.users[0]!.id
+		state.updateRoom(room!.id, { admin: newAdmin })
+		io.in(room!.id).emit('change-room-data', { admin: newAdmin })
+	}
+
 	callback({
 		value: null,
 		error: null
