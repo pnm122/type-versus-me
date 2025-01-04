@@ -13,6 +13,7 @@ import ErrorsOf from '$shared/types/ErrorsOf'
 import { LeaveRoomCallback } from '$shared/types/events/client/LeaveRoom'
 import { ChangeRoomDataPayload } from '$shared/types/events/server/ChangeRoomData'
 import { DoesRoomExistCallback } from '$shared/types/events/client/DoesRoomExist'
+import { ChangeRoomSettingsPayload } from '$shared/types/events/client/ChangeRoomSettings'
 
 interface Context {
 	globalState: GlobalState
@@ -180,4 +181,32 @@ export async function doesRoomExist(
 		}
 	}
 	return await socket.value.emitWithAck('does-room-exist', roomId)
+}
+
+export async function changeRoomSettings(
+	settings: ChangeRoomSettingsPayload['settings'],
+	context: Context
+) {
+	const { socket, notifs, globalState } = context
+
+	if (!checkSocket(socket.value, notifs) || !globalState.user || !globalState.room) {
+		return {
+			value: null,
+			error: {
+				reason: 'missing-argument'
+			}
+		}
+	}
+
+	const res = await socket.value.emitWithAck('change-room-settings', {
+		userId: globalState.user.id,
+		roomId: globalState.room.id,
+		settings
+	})
+
+	if (res.error) {
+		notifs.push(errorNotification(res.error.reason))
+	}
+
+	return res
 }

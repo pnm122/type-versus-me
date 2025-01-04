@@ -35,8 +35,14 @@
 	}
 
 	.room-settings {
-		@include font-body(12);
-		color: var(--placeholder);
+		display: flex;
+		align-items: center;
+		gap: 4px;
+
+		&__text {
+			@include font-body(12);
+			color: var(--placeholder);
+		}
 	}
 
 	&__room {
