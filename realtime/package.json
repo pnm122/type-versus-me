@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "scripts": {
     "dev": "npx tsx watch src/index.ts",
-    "build": "npx tsc && npx tsc-alias && copyfiles -u 1 ./static/**/*.txt ./dist/static",
+    "build": "npx tsc && npx tsc-alias && copyfiles -u 1 \"./static/**/*.txt\" ./dist/realtime/static",
     "start": "node dist/realtime/src/index.js",
     "test": "jest",
     "test:related": "jest --findRelatedTests --passWithNoTests",
