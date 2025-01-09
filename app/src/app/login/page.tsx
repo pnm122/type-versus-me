@@ -4,8 +4,9 @@
 
 import { signIn } from 'next-auth/react'
 import { useSearchParams } from 'next/navigation'
+import { Suspense } from 'react'
 
-export default function Login() {
+function Page() {
 	const searchParams = useSearchParams()
 	const callbackUrl = searchParams.get('callbackUrl') ?? '/'
 
@@ -18,5 +19,13 @@ export default function Login() {
 		<form onSubmit={onSubmit}>
 			<button type="submit">Sign in with Google</button>
 		</form>
+	)
+}
+
+export default function Login() {
+	return (
+		<Suspense>
+			<Page />
+		</Suspense>
 	)
 }
