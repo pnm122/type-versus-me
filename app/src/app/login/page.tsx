@@ -2,9 +2,11 @@
 
 'use client'
 
+import GoogleSignIn from '@/components/GoogleSignIn/GoogleSignIn'
 import { signIn } from 'next-auth/react'
 import { useSearchParams } from 'next/navigation'
 import { Suspense } from 'react'
+import styles from './style.module.scss'
 
 function Page() {
 	const searchParams = useSearchParams()
@@ -16,9 +18,14 @@ function Page() {
 	}
 
 	return (
-		<form onSubmit={onSubmit}>
-			<button type="submit">Sign in with Google</button>
-		</form>
+		<main className={styles['page']}>
+			<form onSubmit={onSubmit} className={styles['form']}>
+				<div className={styles['form__text']}>
+					<h1 className={styles['heading']}>Login or Sign Up</h1>
+				</div>
+				<GoogleSignIn type="submit" />
+			</form>
+		</main>
 	)
 }
 
