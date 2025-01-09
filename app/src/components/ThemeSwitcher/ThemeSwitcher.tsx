@@ -1,3 +1,5 @@
+'use client'
+
 import styles from './style.module.scss'
 import PixelarticonsSunAlt from '~icons/pixelarticons/sun-alt'
 import PixelarticonsMoon from '~icons/pixelarticons/moon'
@@ -6,7 +8,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useTheme } from 'next-themes'
 import SelectedBox from '../SelectedBox/SelectedBox'
 
-export default function ThemeSwitcher() {
+export default function ThemeSwitcher({ ref }: { ref?: React.RefObject<HTMLButtonElement> }) {
 	const { theme, setTheme } = useTheme()
 	const lightTheme = useRef<HTMLDivElement>(null)
 	const darkTheme = useRef<HTMLDivElement>(null)
@@ -22,6 +24,7 @@ export default function ThemeSwitcher() {
 
 	return (
 		<button
+			ref={ref}
 			role="checkbox"
 			// Only set properties relying on the theme state after mounting to avoid hydration errors
 			aria-checked={mounted && isLightTheme}

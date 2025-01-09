@@ -1,11 +1,12 @@
-'use client'
-
 import Link from 'next/link'
 import styles from './style.module.scss'
-import ThemeSwitcher from '../ThemeSwitcher/ThemeSwitcher'
 import ActiveUserCount from '../ActiveUserCount/ActiveUserCount'
+import Account from '../Account/Account'
+import { auth } from '@/auth'
 
-export default function Header() {
+export default async function Header() {
+	const session = await auth()
+
 	return (
 		<header className={styles['header']}>
 			<div className={styles['header__left']}>
@@ -14,7 +15,7 @@ export default function Header() {
 				</Link>
 				<ActiveUserCount />
 			</div>
-			<ThemeSwitcher />
+			<Account session={session} />
 		</header>
 	)
 }

@@ -1,3 +1,5 @@
+'use client'
+
 import { useGlobalState } from '@/context/GlobalState'
 import Pill from '../Pill/Pill'
 import styles from './style.module.scss'
