@@ -1,14 +1,14 @@
 import UsernameAndColorInput from '@/components/UsernameAndColorInput/UsernameAndColorInput'
 import styles from './style.module.scss'
 import Button from '@/components/Button/Button'
-import createClasses from '@/utils/createClasses'
 import ButtonIcon from '@/components/Button/ButtonIcon'
 import PixelarticonsSave from '~icons/pixelarticons/save'
 import PixelarticonsClose from '~icons/pixelarticons/close'
-import { useEffect, useRef } from 'react'
+import { useRef } from 'react'
 import { CursorColor } from '$shared/types/Cursor'
 import { useGlobalState } from '@/context/GlobalState'
 import TyperPreview from '@/components/TyperPreview/TyperPreview'
+import Dropdown from '@/components/Dropdown/Dropdown'
 
 interface Props {
 	open: boolean
@@ -19,6 +19,7 @@ interface Props {
 	onUsernameChange: (u: string) => void
 	onColorChange: (c: CursorColor) => void
 	id: string
+	toggleButton: React.RefObject<HTMLElement>
 }
 
 export default function UserSettings({
@@ -29,51 +30,28 @@ export default function UserSettings({
 	color,
 	onUsernameChange,
 	onColorChange,
-	id
+	id,
+	toggleButton
 }: Props) {
 	const { room, user } = useGlobalState()
 	const inputRef = useRef<HTMLInputElement>(null)
-	const settings = useRef<HTMLFormElement>(null)
 
-	function onSubmit(e: React.FormEvent) {
+	function onSubmit(e: React.FormEvent<any>) {
 		e.preventDefault()
 		onSave()
 	}
 
-	useEffect(() => {
-		if (open) {
-			// Need a small delay presumably because the input is technically not visible yet
-			setTimeout(() => inputRef.current?.focus(), 25)
-			// Add the event listener after the settings popup has opened, so that the click to open it doesn't close it immediately
-			requestAnimationFrame(() => {
-				settings.current?.addEventListener('focusout', handleFocusOut)
-			})
-		}
-
-		return () => {
-			settings.current?.removeEventListener('focusout', handleFocusOut)
-		}
-	}, [open])
-
-	function handleFocusOut(e: FocusEvent) {
-		// if focus is outside of the settings popup, close it
-		if (!(e.relatedTarget && settings.current?.contains(e.relatedTarget as HTMLElement))) {
-			onClose()
-		}
-	}
-
 	return (
-		<form
-			tabIndex={0}
-			role="dialog"
-			aria-label="User settings"
+		<Dropdown
+			open={open}
 			id={id}
-			className={createClasses({
-				[styles['settings']]: true,
-				[styles['settings--open']]: open
-			})}
+			onClose={onClose}
+			toggleButton={toggleButton}
+			focusOnOpenRef={inputRef}
+			as="form"
 			onSubmit={onSubmit}
-			ref={settings}
+			aria-label="User settings"
+			className={styles['settings']}
 		>
 			<UsernameAndColorInput
 				{...{ username, color, onUsernameChange, onColorChange }}
@@ -94,6 +72,6 @@ export default function UserSettings({
 					Cancel
 				</Button>
 			</div>
-		</form>
+		</Dropdown>
 	)
 }

@@ -1,3 +1,5 @@
+@use '@/scss/mixins' as *;
+
 .popover {
 	position: fixed;
 	inset: 0;
@@ -28,13 +30,7 @@
 		width: min(400px, calc(100% - 48px));
 		background-color: var(--surface);
 		padding: 12px;
-		visibility: hidden;
-		opacity: 0;
-		transform: translateY(-12px);
-		transition:
-			visibility 0.25s var(--timing),
-			opacity 0.25s var(--timing),
-			transform 0.25s var(--timing);
+		@include hidden;
 	}
 
 	&--open {
@@ -46,9 +42,7 @@
 		}
 
 		.popover__content {
-			visibility: visible;
-			opacity: 1;
-			transform: none;
+			@include visible;
 		}
 	}
 }

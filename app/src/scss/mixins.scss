@@ -6,3 +6,19 @@
 	width: min($max-width, calc(100% - (2 * $side-padding)));
 	margin-inline: auto;
 }
+
+@mixin hidden($translateY: -8px) {
+	visibility: hidden;
+	opacity: 0;
+	transform: translateY($translateY);
+	transition:
+		visibility 0.25s var(--timing),
+		opacity 0.25s var(--timing),
+		transform 0.25s var(--timing);
+}
+
+@mixin visible($translateY: 0) {
+	visibility: visible;
+	opacity: 1;
+	transform: translateY($translateY);
+}

@@ -5,7 +5,7 @@ import { useGlobalState } from '@/context/GlobalState'
 import UserState from './UserState'
 import IconButton from '@/components/Button/IconButton'
 import PixelarticonsEdit from '~icons/pixelarticons/edit'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import UserSettings from './UserSettings'
 import { CursorColor } from '$shared/types/Cursor'
 import { updateUser } from '@/utils/user'
@@ -22,12 +22,14 @@ export default function User({ user: { id, username, color, score, state } }: Pr
 	const [settingsOpen, setSettingsOpen] = useState(false)
 	const [settingsUsername, setSettingsUsername] = useState('')
 	const [settingsColor, setSettingsColor] = useState<CursorColor>('red')
+	const settingsToggleButton = useRef<HTMLElement>(null)
 	const globalState = useGlobalState()
 	const socket = useSocket()
 	const notifs = useNotification()
 	const { user, room } = globalState
 
-	function openSettings() {
+	function toggleSettings() {
+		if (settingsOpen) return setSettingsOpen(false)
 		setSettingsOpen(true)
 		setSettingsUsername(user?.username ?? '')
 		setSettingsColor(user?.color ?? 'red')
@@ -63,22 +65,24 @@ export default function User({ user: { id, username, color, score, state } }: Pr
 				</p>
 				{id === user?.id && (
 					<IconButton
+						ref={settingsToggleButton}
 						aria-label="User settings"
 						icon={<PixelarticonsEdit />}
 						style="tertiary"
-						onClick={openSettings}
+						onClick={toggleSettings}
 						aria-controls="settings"
 					/>
 				)}
 				<UserSettings
-					open={settingsOpen}
-					onClose={() => setSettingsOpen(false)}
 					onSave={saveSettings}
 					username={settingsUsername}
 					color={settingsColor}
 					onUsernameChange={setSettingsUsername}
 					onColorChange={setSettingsColor}
 					id="settings"
+					open={settingsOpen}
+					onClose={() => setSettingsOpen(false)}
+					toggleButton={settingsToggleButton}
 				/>
 			</div>
 			<div className={styles['user__info']}>

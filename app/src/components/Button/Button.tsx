@@ -9,6 +9,7 @@ export type ButtonProps = React.PropsWithChildren<
 		/** Link to use if the button is intended for use as a link */
 		href?: string
 		loading?: boolean
+		ref?: React.RefObject<HTMLElement>
 	} & React.ButtonHTMLAttributes<HTMLButtonElement | HTMLAnchorElement>
 >
 
@@ -21,11 +22,13 @@ export default function Button({
 	className,
 	loading,
 	children,
+	ref,
 	...props
 }: ButtonProps) {
 	// Link is not easily disabled, just use an HTML button if disabled
 	return href && !disabled ? (
 		<Link
+			ref={ref as React.RefObject<HTMLAnchorElement>}
 			className={createClasses({
 				[styles['button']]: true,
 				[styles[`button--${style}`]]: true,
@@ -40,6 +43,7 @@ export default function Button({
 		</Link>
 	) : (
 		<button
+			ref={ref as React.RefObject<HTMLButtonElement>}
 			className={createClasses({
 				[styles['button']]: true,
 				[styles[`button--${style}`]]: true,

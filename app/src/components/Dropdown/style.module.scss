@@ -1,0 +1,14 @@
+@use '@/scss/mixins' as *;
+
+.dropdown {
+	@include hidden;
+	padding: 12px;
+	background-color: var(--surface);
+	box-shadow: var(--shadow);
+	position: absolute;
+	z-index: var(--z-overlay);
+
+	&--open {
+		@include visible;
+	}
+}
