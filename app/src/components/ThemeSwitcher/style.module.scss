@@ -1,13 +1,8 @@
 @use '@/scss/fonts' as *;
 
 .switcher {
-	--outside-padding: 4px;
-	--gap: 6px;
-
 	display: flex;
-	background-color: var(--background);
-	padding: var(--outside-padding);
-	height: 40px;
+	height: 32px;
 	position: relative;
 
 	.theme {
@@ -15,7 +10,7 @@
 		position: relative;
 		display: flex;
 		align-items: center;
-		gap: var(--gap);
+		gap: 6px;
 		height: 100%;
 		padding-inline: 8px;
 		line-height: 1;

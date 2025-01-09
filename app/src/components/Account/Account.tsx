@@ -58,23 +58,35 @@ export default function Account({ session }: { session: Session | null }) {
 				onClose={() => setExpanded(false)}
 				className={styles['account__dropdown']}
 			>
-				{session?.user ? (
-					<>
-						<Button ref={firstButton} style="tertiary" href="/profile" className={styles['button']}>
-							<ButtonIcon icon={<PixelarticonsUser />} />
-							Profile
+				<div className={styles['links']}>
+					{session?.user ? (
+						<>
+							<Button
+								ref={firstButton}
+								style="tertiary"
+								href="/profile"
+								className={styles['links__link']}
+							>
+								<ButtonIcon icon={<PixelarticonsUser />} />
+								Profile
+							</Button>
+							<Button
+								style="tertiary"
+								onClick={() => signOutAction()}
+								className={styles['links__link']}
+							>
+								<ButtonIcon icon={<PixelarticonsLogout />} />
+								Logout
+							</Button>
+						</>
+					) : (
+						<Button ref={firstButton} href="/login">
+							<ButtonIcon icon={<PixelarticonsLogin />} />
+							Login
 						</Button>
-						<Button style="tertiary" onClick={() => signOutAction()} className={styles['button']}>
-							<ButtonIcon icon={<PixelarticonsLogout />} />
-							Logout
-						</Button>
-					</>
-				) : (
-					<Button ref={firstButton} href="/login">
-						<ButtonIcon icon={<PixelarticonsLogin />} />
-						Login
-					</Button>
-				)}
+					)}
+				</div>
+				<hr></hr>
 				<ThemeSwitcher />
 			</Dropdown>
 		</div>

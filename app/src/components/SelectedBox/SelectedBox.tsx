@@ -34,9 +34,10 @@ export default function SelectedBox({ selected, className, zIndex = 0 }: Props) 
 	function updateBoxPosition() {
 		if (!box.current || !selected?.current) return
 
-		const { offsetLeft, offsetWidth } = selected.current
+		const { offsetLeft, offsetWidth, offsetTop, offsetHeight } = selected.current
 		box.current.style.width = `${offsetWidth}px`
-		box.current.style.transform = `translate(${offsetLeft}px)`
+		box.current.style.height = `${offsetHeight}px`
+		box.current.style.transform = `translate(${offsetLeft}px, ${offsetTop}px)`
 		// Add transition class AFTER render so the transition doesn't happen on the first render
 		requestAnimationFrame(() => {
 			if (!showTransition) setShowTransition(true)
