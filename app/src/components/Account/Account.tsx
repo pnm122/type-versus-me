@@ -13,8 +13,14 @@ import PixelarticonsLogout from '~icons/pixelarticons/logout'
 import PixelarticonsLogin from '~icons/pixelarticons/login'
 import { usePathname } from 'next/navigation'
 import ButtonIcon from '../Button/ButtonIcon'
+import { User } from '@prisma/client'
 
-export default function Account({ session }: { session: Session | null }) {
+interface Props {
+	session: Session | null
+	user: User | null
+}
+
+export default function Account({ session, user }: Props) {
 	const path = usePathname()
 	const [expanded, setExpanded] = useState(false)
 	const firstButton = useRef<HTMLButtonElement>(null)
@@ -30,14 +36,14 @@ export default function Account({ session }: { session: Session | null }) {
 
 	return (
 		<div className={styles['account']}>
-			{session?.user ? (
+			{session?.user && user ? (
 				<Button
 					className={styles['account__user']}
 					style="tertiary"
 					onClick={toggleExpanded}
 					ref={toggleButton}
 				>
-					{session.user.name}
+					{user.username}
 				</Button>
 			) : (
 				<IconButton

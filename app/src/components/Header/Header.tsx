@@ -3,9 +3,11 @@ import styles from './style.module.scss'
 import ActiveUserCount from '../ActiveUserCount/ActiveUserCount'
 import Account from '../Account/Account'
 import { auth } from '@/auth'
+import { getUser } from '@/utils/database/user'
 
 export default async function Header() {
 	const session = await auth()
+	const user = session?.user?.id ? await getUser(session?.user?.id) : null
 
 	return (
 		<header className={styles['header']}>
@@ -15,7 +17,7 @@ export default async function Header() {
 				</Link>
 				<ActiveUserCount />
 			</div>
-			<Account session={session} />
+			<Account session={session} user={user} />
 		</header>
 	)
 }

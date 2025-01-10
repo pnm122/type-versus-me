@@ -25,7 +25,9 @@ model User {
   updatedAt DateTime @updatedAt
 
   // App-specific data
+  username      String
   points        Int             @default(0)
+  scores        Score[]
 }
  
 model Account {
@@ -65,4 +67,31 @@ model VerificationToken {
   expires    DateTime
  
   @@id([identifier, token])
+}
+
+model Race {
+  id            Int             @id @default(autoincrement())
+  startTime     DateTime
+  category      RaceCategory
+  numWords      Int
+  timeLimit     Int
+  scores        Score[]
+}
+
+enum RaceCategory {
+  QUOTE
+  TOP_100
+  TOP_1000
+}
+
+model Score {
+  id            Int             @id @default(autoincrement())
+  points        Int
+  netWPM        Float
+  raceId        Int
+  userId        String
+  race          Race            @relation(fields: [raceId], references: [id])
+  user          User            @relation(fields: [userId], references: [id])
+
+  @@unique([userId, raceId]) // Ensures a user can only have one score per race
 }
