@@ -1,0 +1,31 @@
+@use '@/scss/fonts' as *;
+
+.filter {
+	position: relative;
+}
+
+.button {
+	@include font-heading(14);
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	padding-inline: 4px;
+	height: 24px;
+	background-color: var(--unselected);
+	color: var(--text);
+
+	&__icon {
+		transition: rotate 0.25s var(--timing);
+	}
+
+	&--has-selections {
+		background-color: var(--primary);
+		color: var(--black);
+	}
+
+	&[aria-expanded='true'] {
+		.button__icon {
+			rotate: 180deg;
+		}
+	}
+}
