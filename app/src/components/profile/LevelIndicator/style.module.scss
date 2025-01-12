@@ -1,0 +1,81 @@
+@use 'sass:math';
+@use '@/scss/fonts' as *;
+
+.indicator {
+	@include font-heading(14);
+	position: relative;
+	z-index: var(--z-above);
+	width: 36px;
+	height: 36px;
+	display: grid;
+	place-items: center;
+	cursor: default;
+	user-select: none;
+
+	&::before {
+		content: '';
+		position: absolute;
+		z-index: var(--z-below);
+		inset: 0;
+		border: 2px solid var(--surface);
+		// scale keeps the square actually the size of the container after rotation
+		transform: scale(1 / math.sqrt(2)) rotate(45deg);
+	}
+
+	&--has-item::after {
+		content: '';
+		position: absolute;
+		z-index: var(--z-base);
+		width: 12px;
+		height: 12px;
+		border-radius: 999px;
+		border: 2px solid var(--surface);
+		left: 50%;
+		// Aligns center of bubble with inner diamond
+		top: 2px;
+		transform: translate(-50%, -50%);
+	}
+
+	&--small-text {
+		@include font-heading(12);
+	}
+
+	&--extra-small-text {
+		@include font-heading(8);
+	}
+
+	&:not(.indicator--unlocked) {
+		color: var(--on-disabled);
+
+		&::before {
+			background-color: var(--disabled);
+		}
+
+		&::after {
+			background-color: var(--primary-light);
+			animation: pulse 2s ease-in-out infinite;
+
+			@keyframes pulse {
+				0%,
+				100% {
+					background-color: var(--primary-light);
+				}
+				50% {
+					background-color: var(--primary);
+				}
+			}
+		}
+	}
+
+	&.indicator--unlocked {
+		color: var(--black);
+
+		&::before {
+			background-color: var(--primary);
+		}
+
+		&::after {
+			background-color: var(--primary);
+		}
+	}
+}

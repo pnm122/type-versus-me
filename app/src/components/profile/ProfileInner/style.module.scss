@@ -1,0 +1,28 @@
+@use '@/scss/mixins' as *;
+@use '@/scss/fonts' as *;
+
+.page {
+	@include container;
+
+	.user {
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+
+		&__preview-and-edit {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+
+			.preview {
+				display: flex;
+				align-items: center;
+				gap: 5px;
+
+				&__username {
+					@include font-heading(24);
+				}
+			}
+		}
+	}
+}

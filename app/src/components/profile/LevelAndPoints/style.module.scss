@@ -1,0 +1,45 @@
+@use '@/scss/fonts' as *;
+
+.container {
+	background-color: var(--surface);
+	padding: 12px;
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+
+	&__points {
+		@include font-heading(14);
+	}
+
+	&__points-to-next-level {
+		@include font-heading(12);
+		color: var(--placeholder);
+	}
+}
+
+.levels {
+	padding-block: 12px;
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
+	position: relative;
+
+	.progress {
+		position: absolute;
+		z-index: var(--z-base);
+		top: 50%;
+		left: 0;
+		right: 0;
+		transform: translateY(-50%);
+		height: 2px;
+		background-color: var(--border);
+
+		&__current {
+			position: absolute;
+			inset: 0;
+			right: unset;
+			z-index: var(--z-above);
+			background-color: var(--primary);
+		}
+	}
+}
