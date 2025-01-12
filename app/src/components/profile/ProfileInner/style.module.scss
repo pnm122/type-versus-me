@@ -1,8 +1,21 @@
 @use '@/scss/mixins' as *;
 @use '@/scss/fonts' as *;
+@use '@/scss/breakpoints' as *;
 
 .page {
 	@include container;
+	padding-top: 32px;
+
+	&__top {
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+
+		@media screen and (width > $screen-lg) {
+			flex-direction: row;
+			align-items: flex-end;
+		}
+	}
 
 	.user {
 		display: flex;

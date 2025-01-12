@@ -4,6 +4,7 @@ import { getLevel, getMinPointsForCurrentLevel, getMinPointsForNextLevel } from 
 import LevelIndicator from '../LevelIndicator/LevelIndicator'
 import formatNumber from '@/utils/formatNumber'
 
+// TODO: Improve a11y of progress
 export default function LevelAndPoints() {
 	const { user } = useProfile()
 
