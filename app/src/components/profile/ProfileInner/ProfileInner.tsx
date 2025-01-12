@@ -9,18 +9,23 @@ import SettingsPopover from '../SettingsPopover/SettingsPopover'
 import { useState } from 'react'
 import { ProfileContext, useProfile } from '@/context/Profile'
 import LevelAndPoints from '../LevelAndPoints/LevelAndPoints'
-import Stats from '../Stats/Stats'
 
-export default function ProfileInner({ user }: { user: User }) {
+interface Props {
+	user: User
+	stats: React.ReactNode
+	races: React.ReactNode
+}
+
+export default function ProfileInner({ user, ...serverComponents }: Props) {
 	// Can't put context in a server component so it has to go here :(
 	return (
 		<ProfileContext.Provider value={{ user }}>
-			<Profile />
+			<Profile {...serverComponents} />
 		</ProfileContext.Provider>
 	)
 }
 
-function Profile() {
+function Profile({ stats, races }: Omit<Props, 'user'>) {
 	const [settingsOpen, setSettingsOpen] = useState(false)
 	const { user } = useProfile()
 
@@ -45,9 +50,9 @@ function Profile() {
 						</div>
 						<LevelAndPoints />
 					</div>
-					<Stats />
+					{stats}
 				</section>
-				<section className={styles['races']}></section>
+				{races}
 			</main>
 			<SettingsPopover open={settingsOpen} onClose={() => setSettingsOpen(false)} />
 		</>

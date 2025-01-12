@@ -25,6 +25,7 @@
 			flex-direction: column;
 			gap: 4px;
 			flex-grow: 1;
+			transition: opacity 0.25s var(--timing);
 
 			&__stat {
 				@include font-heading(24);
@@ -33,6 +34,12 @@
 			&__name {
 				@include font-heading(14);
 				color: var(--placeholder);
+			}
+
+			&--pending {
+				opacity: 0.5;
+				pointer-events: none;
+				user-select: none;
 			}
 		}
 	}
