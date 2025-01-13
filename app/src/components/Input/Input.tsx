@@ -2,42 +2,34 @@ import createClasses from '@/utils/createClasses'
 import styles from './style.module.scss'
 import PixelarticonsClose from '~icons/pixelarticons/close'
 
-interface Props {
+type Props = {
 	id: string
 	text: string
-	placeholder?: string
-	onChange: React.InputHTMLAttributes<HTMLInputElement>['onChange']
 	label?: string
 	error?: string
 	required?: boolean
 	disabled?: boolean
 	wrapperClassName?: string
 	inputClassName?: string
-	minLength?: number
-	maxLength?: number
-	type?: React.InputHTMLAttributes<HTMLInputElement>['type']
-	min?: number
-	max?: number
+	units?: string
 	ref?: React.RefObject<HTMLInputElement>
-}
+} & Omit<
+	React.InputHTMLAttributes<HTMLInputElement>,
+	'value' | 'size' | 'required' | 'disabled' | 'id' | 'className'
+>
 
 export default function Input({
 	id,
 	text,
-	placeholder,
-	onChange,
 	label,
 	error,
 	required,
 	disabled,
 	wrapperClassName,
 	inputClassName,
-	minLength,
-	maxLength,
-	type,
-	min,
-	max,
-	ref
+	units,
+	ref,
+	...inputAttributes
 }: Props) {
 	return (
 		<div
@@ -53,27 +45,24 @@ export default function Input({
 					{required && <span className={styles['input__required-star']}>*</span>}
 				</label>
 			)}
-			<input
-				id={id}
-				required={required}
-				disabled={disabled}
-				aria-invalid={!!error}
-				aria-describedby={error ? `${id}--error` : undefined}
-				className={createClasses({
-					[styles['input__input']]: true,
-					...(inputClassName ? { [inputClassName]: true } : {})
-				})}
-				value={text}
-				placeholder={placeholder}
-				onChange={onChange}
-				size={1}
-				maxLength={maxLength}
-				minLength={minLength}
-				min={min}
-				max={max}
-				type={type}
-				ref={ref}
-			/>
+			<div className={styles['main-control']}>
+				<input
+					id={id}
+					required={required}
+					disabled={disabled}
+					aria-invalid={!!error}
+					aria-describedby={error ? `${id}--error` : undefined}
+					className={createClasses({
+						[styles['main-control__input']]: true,
+						...(inputClassName ? { [inputClassName]: true } : {})
+					})}
+					value={text}
+					size={1}
+					ref={ref}
+					{...inputAttributes}
+				/>
+				{units && <span className={styles['main-control__units']}>{units}</span>}
+			</div>
 			{error && (
 				<span id={`${id}--error`} className={styles['input__error']}>
 					<PixelarticonsClose />

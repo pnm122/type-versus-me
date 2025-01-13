@@ -3,6 +3,7 @@
 import React, { useEffect, useId, useLayoutEffect, useRef, useState } from 'react'
 import styles from './style.module.scss'
 import createClasses from '@/utils/createClasses'
+import Input from '../Input/Input'
 
 interface Props {
 	min: number
@@ -22,6 +23,8 @@ interface Props {
 	 * @default false
 	 */
 	hideInputs?: boolean
+	/** Optional units to show on inputs */
+	units?: string
 }
 
 export default function RangeSlider({
@@ -60,6 +63,9 @@ export default function RangeSlider({
 		}
 	})
 
+	const [lowInput, setLowInput] = useState(lowSelected.toString())
+	const [highInput, setHighInput] = useState(highSelected.toString())
+
 	const id = useId()
 
 	function toClosestStep(n: number) {
@@ -87,9 +93,14 @@ export default function RangeSlider({
 	}
 
 	function isValidValue(value: number, handle: 'high' | 'low') {
-		return handle === 'high'
-			? value >= lowSelected && value !== highSelected
-			: value <= highSelected && value !== lowSelected
+		const isStep = value === toClosestStep(value)
+		const isWithinRange = value >= min && value <= max
+		const isValidRelativeToSelections =
+			handle === 'high'
+				? value >= lowSelected && value !== highSelected
+				: value <= highSelected && value !== lowSelected
+
+		return isStep && isWithinRange && isValidRelativeToSelections
 	}
 
 	function onMouseDown(e: React.MouseEvent, handle: 'high' | 'low') {
@@ -152,6 +163,16 @@ export default function RangeSlider({
 		}
 	}
 
+	function updateInput(e: React.ChangeEvent<HTMLInputElement>, handle: 'low' | 'high') {
+		const setState = handle === 'low' ? setLowInput : setHighInput
+		const onChange = handle === 'low' ? onLowChange : onHighChange
+
+		setState(e.target.value)
+		if (isValidValue(parseInt(e.target.value), handle)) {
+			onChange(parseInt(e.target.value))
+		}
+	}
+
 	useEffect(() => {
 		function _onMouseMove(e: MouseEvent) {
 			onDrag(e, 'high')
@@ -191,6 +212,20 @@ export default function RangeSlider({
 			window.removeEventListener('mouseup', _onMouseUp)
 		}
 	}, [lowDrag])
+
+	useEffect(() => {
+		// only update if not already matching, to stop unnecessary rerenders
+		if (lowInput !== lowSelected.toString()) {
+			setLowInput(lowSelected.toString())
+		}
+	}, [lowSelected])
+
+	useEffect(() => {
+		// only update if not already matching, to stop unnecessary rerenders
+		if (highInput !== highSelected.toString()) {
+			setHighInput(highSelected.toString())
+		}
+	}, [highSelected])
 
 	useLayoutEffect(() => {
 		if (!slider.current) return
@@ -245,7 +280,37 @@ export default function RangeSlider({
 				<div className={styles['line']} />
 				<div className={styles['selected-line']} />
 			</div>
-			{!hideInputs && <div className={styles['inputs']}></div>}
+			{!hideInputs && (
+				<div className={styles['inputs']}>
+					<Input
+						id={`${id}-low-input`}
+						wrapperClassName={styles['input-wrapper']}
+						inputClassName={styles['input-wrapper__input']}
+						type="number"
+						text={lowInput}
+						onChange={(e) => updateInput(e, 'low')}
+						onBlur={() => setLowInput(lowSelected.toString())}
+						units="words"
+						min={min}
+						max={max}
+						step={step}
+					/>
+					<div className={styles['inputs__separator']} />
+					<Input
+						id={`${id}-high-input`}
+						wrapperClassName={styles['input-wrapper']}
+						inputClassName={styles['input-wrapper__input']}
+						type="number"
+						text={highInput}
+						onChange={(e) => updateInput(e, 'high')}
+						onBlur={() => setHighInput(highSelected.toString())}
+						units="words"
+						min={min}
+						max={max}
+						step={step}
+					/>
+				</div>
+			)}
 		</div>
 	)
 }

@@ -10,13 +10,13 @@
 			color: var(--negative);
 		}
 
-		.input__input {
+		.main-control {
 			border-color: var(--negative);
 		}
 	}
 
 	&:not(.input--error) {
-		.input__input:focus-visible {
+		.main-control:has(.main-control__input:focus-visible) {
 			border-color: var(--gray-70);
 		}
 	}
@@ -30,19 +30,40 @@
 		}
 	}
 
-	&__input {
-		padding-inline: 12px;
+	.main-control {
 		height: 40px;
 		border: 2px solid var(--border);
 		outline: none;
+		display: flex;
+		align-items: center;
 
-		&:disabled {
+		&:has(.main-control__input:disabled) {
 			background-color: var(--disabled);
 			color: var(--on-disabled);
 			border-color: var(--disabled);
+
+			.main-control__units {
+				color: var(--on-disabled);
+			}
 		}
 
-		&::placeholder {
+		&__input {
+			border: none;
+			outline: none;
+			padding-inline: 12px;
+			height: 100%;
+			flex: 1;
+			min-width: 0;
+
+			&::placeholder {
+				color: var(--placeholder);
+			}
+		}
+
+		&__units {
+			padding-inline: 12px;
+			border-left: 2px solid var(--border);
+			height: 24px;
 			color: var(--placeholder);
 		}
 	}
