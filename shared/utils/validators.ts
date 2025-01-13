@@ -1,3 +1,5 @@
+import { CursorColor } from '$shared/types/Cursor'
+import { roomCategories } from '$shared/types/Room'
 import CursorColors from './CursorColors'
 
 /**
@@ -23,6 +25,10 @@ export function isValidUsername(username: any) {
 /**
  * Check if a color is valid.
  */
-export function isValidColor(color: any) {
+export function isValidColor(color: any): color is CursorColor {
 	return CursorColors.includes(color)
+}
+
+export function isValidRoomCategory(category: any): category is (typeof roomCategories)[number] {
+	return roomCategories.includes(category)
 }

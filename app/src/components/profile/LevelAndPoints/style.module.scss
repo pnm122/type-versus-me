@@ -8,7 +8,7 @@
 	flex-direction: column;
 	gap: 2px;
 
-	@media screen and (width > $screen-lg) {
+	@media screen and (width > $screen-md) {
 		min-width: 350px;
 	}
 

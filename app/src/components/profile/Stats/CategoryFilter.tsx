@@ -1,11 +1,14 @@
 'use client'
 
-import { RoomSettings } from '$shared/types/Room'
+import { roomCategories, RoomSettings } from '$shared/types/Room'
 import Button from '@/components/Button/Button'
 import FilterWithDropdown from '@/components/FilterWithDropdown/FilterWithDropdown'
 import newParamsURL from '@/utils/newParamsURL'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { TransitionStartFunction, useRef, useState } from 'react'
+import styles from './style.module.scss'
+import FilterChip from '@/components/FilterChip/FilterChip'
+import { isValidRoomCategory } from '$shared/utils/validators'
 
 interface Props {
 	transition: [boolean, TransitionStartFunction]
@@ -13,32 +16,65 @@ interface Props {
 
 export default function CategoryFilter({ transition }: Props) {
 	const searchParams = useSearchParams()
-	const [open, setOpen] = useState(false)
 	const router = useRouter()
+	const [open, setOpen] = useState(false)
+	const [selectedFilters, setSelectedFilters] = useState<RoomSettings['category'][]>([])
 	const focusOnOpenRef = useRef<HTMLElement>(null)
+	const filterWithDropdownRef = useRef<HTMLDivElement>(null)
 	const startTransition = transition[1]
+	const validParamFilters = searchParams
+		.getAll('statsCategory')
+		.filter((p) => isValidRoomCategory(p))
+
+	function toggleFilter(filter: RoomSettings['category']) {
+		setSelectedFilters((s) => (s.includes(filter) ? s.filter((f) => f !== filter) : [...s, filter]))
+	}
 
 	function onSave() {
 		startTransition(() => {
 			router.push(
-				newParamsURL<RoomSettings['category']>(searchParams, 'statsCategory', [
-					'top-100',
-					'top-1000'
-				])
+				newParamsURL<RoomSettings['category']>(searchParams, 'statsCategory', selectedFilters)
 			)
 		})
 		setOpen(false)
 	}
 
+	function onOpen() {
+		setSelectedFilters(validParamFilters)
+		setOpen(true)
+	}
+
+	const filterDisplayNames: { [key in RoomSettings['category']]: string } = {
+		quote: 'Quotes',
+		'top-100': 'Top 100 words',
+		'top-1000': 'Top 1000 words'
+	}
+
 	return (
 		<FilterWithDropdown
+			ref={filterWithDropdownRef}
 			open={open}
-			onOpen={() => setOpen(true)}
+			onOpen={onOpen}
 			onClose={() => setOpen(false)}
 			name="Category"
-			selected={searchParams.getAll('statsCategory')}
-			focusOnOpenRef={focusOnOpenRef}
+			selected={validParamFilters.map((key) => filterDisplayNames[key])}
+			dropdownProps={{
+				focusOnOpenRef,
+				className: styles['dropdown']
+			}}
+			className={styles['filter']}
 		>
+			<h1 className={styles['dropdown__heading']}>Category</h1>
+			<div className={styles['dropdown__filter-chips']}>
+				{roomCategories.map((category) => (
+					<FilterChip
+						key={category}
+						label={filterDisplayNames[category as RoomSettings['category']]}
+						selected={selectedFilters.includes(category as RoomSettings['category'])}
+						onClick={() => toggleFilter(category as RoomSettings['category'])}
+					/>
+				))}
+			</div>
 			<Button ref={focusOnOpenRef} onClick={onSave}>
 				Save
 			</Button>
