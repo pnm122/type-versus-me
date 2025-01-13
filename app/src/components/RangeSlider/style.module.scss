@@ -34,8 +34,13 @@
 			background-color: var(--primary);
 		}
 
+		&:focus-visible {
+			outline: none;
+		}
+
 		// Sometimes the mouse will not be on the handle while dragging, but it should be shown always while dragging
 		&:hover::before,
+		&:focus-visible::before,
 		&--dragging::before {
 			opacity: 0.2;
 		}

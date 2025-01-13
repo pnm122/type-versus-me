@@ -86,6 +86,12 @@ export default function RangeSlider({
 		return toClosestStep(min + p * (max - min))
 	}
 
+	function isValidValue(value: number, handle: 'high' | 'low') {
+		return handle === 'high'
+			? value >= lowSelected && value !== highSelected
+			: value <= highSelected && value !== lowSelected
+	}
+
 	function onMouseDown(e: React.MouseEvent, handle: 'high' | 'low') {
 		const buttonRect = (handle === 'high' ? highRef : lowRef).current!.getBoundingClientRect()
 
@@ -105,11 +111,7 @@ export default function RangeSlider({
 		const posPct = pos / sliderRect.width
 		const newValue = percentToNumber(posPct)
 
-		const validNewValue =
-			handle === 'high'
-				? newValue >= lowSelected && newValue !== highSelected
-				: newValue <= highSelected && newValue !== lowSelected
-		if (validNewValue) {
+		if (isValidValue(newValue, handle)) {
 			const onChange = handle === 'high' ? onHighChange : onLowChange
 			onChange(newValue)
 		}
@@ -118,6 +120,36 @@ export default function RangeSlider({
 	function onMouseUp(handle: 'high' | 'low') {
 		const setState = handle === 'high' ? setHighDrag : setLowDrag
 		setState({ active: false, start: { mouse: -1, button: -1 } })
+	}
+
+	function onKeyDown(e: React.KeyboardEvent, handle: 'low' | 'high') {
+		const onChange = handle === 'high' ? onHighChange : onLowChange
+		const value = handle === 'high' ? highSelected : lowSelected
+
+		if (['ArrowRight', 'ArrowUp', 'ArrowLeft', 'ArrowDown', 'Home', 'End'].includes(e.key)) {
+			e.preventDefault()
+		}
+
+		const newValue = (() => {
+			switch (e.key) {
+				case 'ArrowRight':
+				case 'ArrowUp':
+					return toClosestStep(value + step)
+				case 'ArrowLeft':
+				case 'ArrowDown':
+					return toClosestStep(value - step)
+				case 'Home':
+					return handle === 'low' ? min : lowSelected
+				case 'End':
+					return handle === 'low' ? highSelected : max
+				default:
+					return value
+			}
+		})()
+
+		if (newValue !== value && isValidValue(newValue, handle)) {
+			onChange(newValue)
+		}
 	}
 
 	useEffect(() => {
@@ -167,8 +199,6 @@ export default function RangeSlider({
 		slider.current.style.setProperty('--range-high-position', `${numberToPercent(highSelected)}%`)
 	}, [min, max, lowSelected, highSelected, step])
 
-	// TODO: keyboard support
-
 	return (
 		<div className={styles['container']}>
 			<div
@@ -190,6 +220,7 @@ export default function RangeSlider({
 						[styles['handle--dragging']]: lowDrag.active
 					})}
 					onMouseDown={(e) => onMouseDown(e, 'low')}
+					onKeyDown={(e) => onKeyDown(e, 'low')}
 					ref={lowRef}
 				>
 					<span id={`${id}-low`} className={styles['handle__label']}>
@@ -204,6 +235,7 @@ export default function RangeSlider({
 						[styles['handle--dragging']]: highDrag.active
 					})}
 					onMouseDown={(e) => onMouseDown(e, 'high')}
+					onKeyDown={(e) => onKeyDown(e, 'high')}
 					ref={highRef}
 				>
 					<span id={`${id}-high`} className={styles['handle__label']}>
