@@ -15,16 +15,16 @@ interface Props {
 }
 
 export default function CategoryFilter({ transition }: Props) {
+	const PARAM_KEY = 'stats-category'
+
 	const searchParams = useSearchParams()
 	const router = useRouter()
 	const [open, setOpen] = useState(false)
 	const [selectedFilters, setSelectedFilters] = useState<RoomSettings['category'][]>([])
-	const focusOnOpenRef = useRef<HTMLElement>(null)
+	const focusOnOpenRef = useRef<HTMLButtonElement>(null)
 	const filterWithDropdownRef = useRef<HTMLDivElement>(null)
 	const startTransition = transition[1]
-	const validParamFilters = searchParams
-		.getAll('statsCategory')
-		.filter((p) => isValidRoomCategory(p))
+	const validParamFilters = searchParams.getAll(PARAM_KEY).filter((p) => isValidRoomCategory(p))
 
 	function toggleFilter(filter: RoomSettings['category']) {
 		setSelectedFilters((s) => (s.includes(filter) ? s.filter((f) => f !== filter) : [...s, filter]))
@@ -33,7 +33,9 @@ export default function CategoryFilter({ transition }: Props) {
 	function onSave() {
 		startTransition(() => {
 			router.push(
-				newParamsURL<RoomSettings['category']>(searchParams, 'statsCategory', selectedFilters)
+				newParamsURL<{ [PARAM_KEY]: RoomSettings['category'][] }>(searchParams, {
+					[PARAM_KEY]: selectedFilters
+				})
 			)
 		})
 		setOpen(false)
@@ -66,18 +68,17 @@ export default function CategoryFilter({ transition }: Props) {
 		>
 			<h1 className={styles['dropdown__heading']}>Category</h1>
 			<div className={styles['dropdown__filter-chips']}>
-				{roomCategories.map((category) => (
+				{roomCategories.map((category, index) => (
 					<FilterChip
 						key={category}
+						ref={index === 0 ? focusOnOpenRef : undefined}
 						label={filterDisplayNames[category as RoomSettings['category']]}
 						selected={selectedFilters.includes(category as RoomSettings['category'])}
 						onClick={() => toggleFilter(category as RoomSettings['category'])}
 					/>
 				))}
 			</div>
-			<Button ref={focusOnOpenRef} onClick={onSave}>
-				Save
-			</Button>
+			<Button onClick={onSave}>Save</Button>
 		</FilterWithDropdown>
 	)
 }

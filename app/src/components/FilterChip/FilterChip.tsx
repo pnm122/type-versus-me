@@ -5,11 +5,18 @@ interface Props {
 	label: string
 	selected: boolean
 	onClick: () => void
+	ref?: React.RefObject<HTMLButtonElement>
 }
 
-export default function FilterChip({ label, selected, onClick }: Props) {
+export default function FilterChip({ label, selected, onClick, ref }: Props) {
 	return (
-		<button role="checkbox" aria-checked={selected} onClick={onClick} className={styles['chip']}>
+		<button
+			ref={ref}
+			role="checkbox"
+			aria-checked={selected}
+			onClick={onClick}
+			className={styles['chip']}
+		>
 			<PixelarticonsCheck className={styles['chip__check']} />
 			<span className={styles['chip__label']}>{label}</span>
 		</button>

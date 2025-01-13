@@ -1,17 +1,21 @@
 import { ReadonlyURLSearchParams } from 'next/navigation'
 
-export default function newParamsURL<T extends string>(
+export default function newParamsURL<T extends { [key: string]: string | string[] }>(
 	current: ReadonlyURLSearchParams,
-	key: string,
-	value: T | T[]
+	params: T
 ) {
-	const params = new URLSearchParams(current.toString())
-	params.delete(key)
-	if (typeof value === 'string') {
-		params.append(key, value)
-	} else {
-		value.forEach((v) => params.append(key, v))
-	}
+	const newParams = new URLSearchParams(current.toString())
 
-	return `?${params.toString()}`
+	Object.keys(params).forEach((key) => {
+		newParams.delete(key)
+		const value = params[key]
+
+		if (typeof value === 'string') {
+			newParams.append(key, value)
+		} else {
+			value.forEach((v) => newParams.append(key, v))
+		}
+	})
+
+	return `?${newParams.toString()}`
 }
