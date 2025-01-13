@@ -19,7 +19,7 @@
 		inset: 0;
 		border: 2px solid var(--surface);
 		// scale keeps the square actually the size of the container after rotation
-		transform: scale(1 / math.sqrt(2)) rotate(45deg);
+		transform: scale(math.div(1, math.sqrt(2))) rotate(45deg);
 	}
 
 	&--has-item::after {

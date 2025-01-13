@@ -4,6 +4,7 @@ import { useTransition } from 'react'
 import CategoryFilter from './CategoryFilter'
 import styles from './style.module.scss'
 import createClasses from '@/utils/createClasses'
+import NumWordsFilter from './NumWordsFilter'
 
 export default function StatsContentClient() {
 	const [isPending, startTransition] = useTransition()
@@ -28,6 +29,7 @@ export default function StatsContentClient() {
 			<h2 className={styles['stats__heading']}>Your stats</h2>
 			<div className={styles['stats__filters']}>
 				<CategoryFilter transition={[isPending, startTransition]} />
+				<NumWordsFilter transition={[isPending, startTransition]} />
 			</div>
 			<div className={styles['stat-boxes']}>
 				{Object.keys(stats).map((key) => (
