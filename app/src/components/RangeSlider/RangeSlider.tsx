@@ -1,0 +1,219 @@
+'use client'
+
+import React, { useEffect, useId, useLayoutEffect, useRef, useState } from 'react'
+import styles from './style.module.scss'
+import createClasses from '@/utils/createClasses'
+
+interface Props {
+	min: number
+	max: number
+	lowSelected: number
+	highSelected: number
+	onLowChange(n: number): void
+	onHighChange(n: number): void
+	/**
+	 * Distance between valid values
+	 * @default 1
+	 **/
+	step?: number
+	ariaLabel: string
+	/**
+	 * Whether to hide inputs below the slider
+	 * @default false
+	 */
+	hideInputs?: boolean
+}
+
+export default function RangeSlider({
+	min,
+	max,
+	lowSelected,
+	highSelected,
+	onLowChange,
+	onHighChange,
+	step = 1,
+	ariaLabel,
+	hideInputs = false
+}: Props) {
+	const lowRef = useRef<HTMLButtonElement>(null)
+	const highRef = useRef<HTMLButtonElement>(null)
+	const slider = useRef<HTMLDivElement>(null)
+
+	interface DragState {
+		active: boolean
+		start: { mouse: number; button: number }
+	}
+
+	const [highDrag, setHighDrag] = useState<DragState>({
+		active: false,
+		start: {
+			mouse: -1,
+			button: -1
+		}
+	})
+
+	const [lowDrag, setLowDrag] = useState<DragState>({
+		active: false,
+		start: {
+			mouse: -1,
+			button: -1
+		}
+	})
+
+	const id = useId()
+
+	function toClosestStep(n: number) {
+		if (n < min) return min
+		if (n > max) return max
+
+		const val = n + step / 2 - ((n + step / 2 - min) % step)
+		// clamp value within allowed range in the case that the closest step goes outside this range
+		return Math.min(Math.max(val, min), max)
+	}
+
+	function numberToPercent(n: number) {
+		if (n < min) return 0
+		if (n > max) return 100
+
+		return (100 * (toClosestStep(n) - min)) / (max - min)
+	}
+
+	/** Convert a percent (0 - 1) within the slider to a value within the range */
+	function percentToNumber(p: number) {
+		if (p <= 0) return min
+		if (p >= 1) return max
+
+		return toClosestStep(min + p * (max - min))
+	}
+
+	function onMouseDown(e: React.MouseEvent, handle: 'high' | 'low') {
+		const buttonRect = (handle === 'high' ? highRef : lowRef).current!.getBoundingClientRect()
+
+		const setState = handle === 'high' ? setHighDrag : setLowDrag
+
+		setState({
+			active: true,
+			start: { mouse: e.pageX, button: buttonRect.left + buttonRect.width / 2 }
+		})
+	}
+
+	function onDrag(e: MouseEvent, handle: 'high' | 'low') {
+		const dragState = handle === 'high' ? highDrag : lowDrag
+		const sliderRect = slider.current!.getBoundingClientRect()
+		// Position within the slider
+		const pos = e.pageX - (dragState.start.mouse - dragState.start.button) - sliderRect.left
+		const posPct = pos / sliderRect.width
+		const newValue = percentToNumber(posPct)
+
+		const validNewValue =
+			handle === 'high'
+				? newValue >= lowSelected && newValue !== highSelected
+				: newValue <= highSelected && newValue !== lowSelected
+		if (validNewValue) {
+			const onChange = handle === 'high' ? onHighChange : onLowChange
+			onChange(newValue)
+		}
+	}
+
+	function onMouseUp(handle: 'high' | 'low') {
+		const setState = handle === 'high' ? setHighDrag : setLowDrag
+		setState({ active: false, start: { mouse: -1, button: -1 } })
+	}
+
+	useEffect(() => {
+		function _onMouseMove(e: MouseEvent) {
+			onDrag(e, 'high')
+		}
+
+		function _onMouseUp() {
+			onMouseUp('high')
+		}
+
+		if (highDrag.active) {
+			window.addEventListener('mousemove', _onMouseMove)
+			window.addEventListener('mouseup', _onMouseUp)
+		}
+
+		return () => {
+			window.removeEventListener('mousemove', _onMouseMove)
+			window.removeEventListener('mouseup', _onMouseUp)
+		}
+	}, [highDrag])
+
+	useEffect(() => {
+		function _onMouseMove(e: MouseEvent) {
+			onDrag(e, 'low')
+		}
+
+		function _onMouseUp() {
+			onMouseUp('low')
+		}
+
+		if (lowDrag.active) {
+			window.addEventListener('mousemove', _onMouseMove)
+			window.addEventListener('mouseup', _onMouseUp)
+		}
+
+		return () => {
+			window.removeEventListener('mousemove', _onMouseMove)
+			window.removeEventListener('mouseup', _onMouseUp)
+		}
+	}, [lowDrag])
+
+	useLayoutEffect(() => {
+		if (!slider.current) return
+
+		slider.current.style.setProperty('--range-low-position', `${numberToPercent(lowSelected)}%`)
+		slider.current.style.setProperty('--range-high-position', `${numberToPercent(highSelected)}%`)
+	}, [min, max, lowSelected, highSelected, step])
+
+	// TODO: keyboard support
+
+	return (
+		<div className={styles['container']}>
+			<div
+				role="slider"
+				aria-valuemin={min}
+				aria-valuemax={max}
+				// No aria-valuenow since it doesn't make sense with this setup
+				// Maybe a better way to do this?
+				aria-valuetext={`${lowSelected} to ${highSelected}`}
+				aria-label={ariaLabel}
+				className={styles['slider']}
+				ref={slider}
+			>
+				<button
+					aria-labelledby={`${id}-low`}
+					className={createClasses({
+						[styles['handle']]: true,
+						[styles['handle--low']]: true,
+						[styles['handle--dragging']]: lowDrag.active
+					})}
+					onMouseDown={(e) => onMouseDown(e, 'low')}
+					ref={lowRef}
+				>
+					<span id={`${id}-low`} className={styles['handle__label']}>
+						{lowSelected}
+					</span>
+				</button>
+				<button
+					aria-labelledby={`${id}-high`}
+					className={createClasses({
+						[styles['handle']]: true,
+						[styles['handle--high']]: true,
+						[styles['handle--dragging']]: highDrag.active
+					})}
+					onMouseDown={(e) => onMouseDown(e, 'high')}
+					ref={highRef}
+				>
+					<span id={`${id}-high`} className={styles['handle__label']}>
+						{highSelected}
+					</span>
+				</button>
+				<div className={styles['line']} />
+				<div className={styles['selected-line']} />
+			</div>
+			{!hideInputs && <div className={styles['inputs']}></div>}
+		</div>
+	)
+}

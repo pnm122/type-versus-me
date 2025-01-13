@@ -6,6 +6,7 @@ import { TransitionStartFunction, useRef, useState } from 'react'
 import { MAX_TEST_WORDS, MIN_TEST_WORDS } from '$shared/constants'
 import Button from '@/components/Button/Button'
 import useNumWordsParams from '@/hooks/useNumWordsParams'
+import RangeSlider from '@/components/RangeSlider/RangeSlider'
 
 interface Props {
 	transition: [boolean, TransitionStartFunction]
@@ -63,6 +64,16 @@ export default function NumWordsFilter({ transition }: Props) {
 			className={styles['filter']}
 		>
 			<h1 className={styles['dropdown__heading']}>Number of words</h1>
+			<RangeSlider
+				min={MIN_TEST_WORDS}
+				max={MAX_TEST_WORDS}
+				lowSelected={minWords}
+				highSelected={maxWords}
+				step={5}
+				onLowChange={(n) => setMinWords(n)}
+				onHighChange={(n) => setMaxWords(n)}
+				ariaLabel="Number of words"
+			/>
 			<Button ref={focusOnOpenRef} onClick={onSave}>
 				Save
 			</Button>

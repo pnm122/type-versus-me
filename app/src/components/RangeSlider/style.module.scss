@@ -1,0 +1,86 @@
+@use '@/scss/fonts' as *;
+
+.slider {
+	position: relative;
+
+	.handle {
+		position: absolute;
+		transform: translate(-50%, -50%);
+		cursor: ew-resize;
+
+		&::before {
+			content: '';
+			position: absolute;
+			z-index: var(--z-below);
+			width: 32px;
+			height: 32px;
+			border-radius: 999px;
+			left: 50%;
+			top: 50%;
+			transform: translate(-50%, -50%);
+			background-color: var(--primary);
+			opacity: 0;
+		}
+
+		&::after {
+			content: '';
+			position: absolute;
+			z-index: var(--z-base);
+			width: 6px;
+			height: 6px;
+			left: 50%;
+			top: 50%;
+			transform: translate(-50%, -50%) rotate(45deg);
+			background-color: var(--primary);
+		}
+
+		// Sometimes the mouse will not be on the handle while dragging, but it should be shown always while dragging
+		&:hover::before,
+		&--dragging::before {
+			opacity: 0.2;
+		}
+
+		&--low {
+			left: var(--range-low-position);
+		}
+
+		&--high {
+			left: var(--range-high-position);
+		}
+
+		&__label {
+			@include font-heading(12);
+			position: absolute;
+			background-color: var(--heading);
+			color: var(--background);
+			padding: 2px 4px;
+			left: 50%;
+			bottom: 100%;
+			transform: translate(-50%, -8px);
+			pointer-events: none;
+			user-select: none;
+		}
+	}
+
+	.line,
+	.selected-line {
+		height: 2px;
+		position: absolute;
+		top: 50%;
+		transform: translateY(-50%);
+	}
+
+	.line {
+		z-index: var(--z-min);
+		width: 100%;
+		background-color: var(--border);
+		left: 0;
+	}
+
+	.selected-line {
+		z-index: var(--z-below);
+		left: var(--range-low-position);
+		right: calc(100% - var(--range-high-position));
+		background-color: var(--primary);
+	}
+}
