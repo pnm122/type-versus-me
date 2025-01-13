@@ -4,10 +4,14 @@ import createClasses from '@/utils/createClasses'
 import styles from './style.module.scss'
 import { useEffect, useRef } from 'react'
 
-type Props<T extends React.ElementType> = React.PropsWithChildren<{
+export type DropdownProps<T extends React.ElementType> = React.PropsWithChildren<{
 	open: boolean
 	id: string
 	onClose: () => void
+	/**
+	 * Element to render the dropdown as
+	 * @default "div"
+	 */
 	as?: React.ElementType
 	className?: string
 	/** Button that toggles the dropdown. If provided, it must handle opening and closing the dropdown. */
@@ -26,7 +30,7 @@ export default function Dropdown<T extends React.ElementType>({
 	focusOnOpenRef,
 	children,
 	...attributes
-}: Props<T>) {
+}: DropdownProps<T>) {
 	const dropdown = useRef<HTMLDivElement>(null)
 
 	useEffect(() => {

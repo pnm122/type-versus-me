@@ -3,27 +3,31 @@
 import { useId, useRef } from 'react'
 import styles from './style.module.scss'
 import PixelarticonsChevronUp from '~icons/pixelarticons/chevron-up'
-import Dropdown from '../Dropdown/Dropdown'
+import Dropdown, { DropdownProps } from '../Dropdown/Dropdown'
 import createClasses from '@/utils/createClasses'
 
-type Props = React.PropsWithChildren<{
+type Props<T extends React.ElementType> = React.PropsWithChildren<{
 	open: boolean
 	onOpen: () => void
 	onClose: () => void
 	name: string
 	selected: string[]
-	focusOnOpenRef: React.RefObject<HTMLElement>
+	ref?: React.RefObject<HTMLDivElement>
+	className?: string
+	dropdownProps: Omit<DropdownProps<T>, 'id' | 'onClose' | 'open' | 'toggleButton'>
 }>
 
-export default function FilterWithDropdown({
+export default function FilterWithDropdown<T extends React.ElementType>({
 	open,
 	onOpen,
 	onClose,
 	name,
 	selected,
-	focusOnOpenRef,
+	ref,
+	className,
+	dropdownProps,
 	children
-}: Props) {
+}: Props<T>) {
 	const id = useId()
 	const button = useRef<HTMLButtonElement>(null)
 
@@ -35,7 +39,13 @@ export default function FilterWithDropdown({
 				: `${selected.length} selected`
 
 	return (
-		<div className={styles['filter']}>
+		<div
+			className={createClasses({
+				[styles['filter']]: true,
+				...(className ? { [className]: true } : {})
+			})}
+			ref={ref}
+		>
 			<button
 				ref={button}
 				className={createClasses({
@@ -50,13 +60,7 @@ export default function FilterWithDropdown({
 				<span className={styles['button__text']}>{text}</span>
 				<PixelarticonsChevronUp className={styles['button__icon']} />
 			</button>
-			<Dropdown
-				id={id}
-				open={open}
-				onClose={onClose}
-				toggleButton={button}
-				focusOnOpenRef={focusOnOpenRef}
-			>
+			<Dropdown id={id} open={open} onClose={onClose} toggleButton={button} {...dropdownProps}>
 				{children}
 			</Dropdown>
 		</div>
