@@ -10,18 +10,17 @@ import RangeSlider from '@/components/RangeSlider/RangeSlider'
 
 interface Props {
 	transition: [boolean, TransitionStartFunction]
+	minWordsParamKey: string
+	maxWordsParamKey: string
 }
 
-export default function NumWordsFilter({ transition }: Props) {
-	const MIN_PARAM_KEY = 'stats-min-words'
-	const MAX_PARAM_KEY = 'stats-max-words'
-
-	const [safeParams, searchParams] = useNumWordsParams(MIN_PARAM_KEY, MAX_PARAM_KEY)
+export default function NumWordsFilter({ transition, minWordsParamKey, maxWordsParamKey }: Props) {
+	const [safeParams, searchParams] = useNumWordsParams(minWordsParamKey, maxWordsParamKey)
 
 	const router = useRouter()
 	const [open, setOpen] = useState(false)
-	const [minWords, setMinWords] = useState(safeParams[MIN_PARAM_KEY])
-	const [maxWords, setMaxWords] = useState(safeParams[MAX_PARAM_KEY])
+	const [minWords, setMinWords] = useState(safeParams[minWordsParamKey])
+	const [maxWords, setMaxWords] = useState(safeParams[maxWordsParamKey])
 	const focusOnOpenRef = useRef<HTMLElement>(null)
 	const filterWithDropdownRef = useRef<HTMLDivElement>(null)
 	const startTransition = transition[1]
@@ -30,8 +29,8 @@ export default function NumWordsFilter({ transition }: Props) {
 		startTransition(() => {
 			router.push(
 				newParamsURL(searchParams, {
-					[MIN_PARAM_KEY]: minWords.toString(),
-					[MAX_PARAM_KEY]: maxWords.toString()
+					[minWordsParamKey]: minWords.toString(),
+					[maxWordsParamKey]: maxWords.toString()
 				})
 			)
 		})
@@ -39,14 +38,15 @@ export default function NumWordsFilter({ transition }: Props) {
 	}
 
 	function onOpen() {
-		setMinWords(safeParams[MIN_PARAM_KEY])
-		setMaxWords(safeParams[MAX_PARAM_KEY])
+		setMinWords(safeParams[minWordsParamKey])
+		setMaxWords(safeParams[maxWordsParamKey])
 		setOpen(true)
 	}
 
 	const selected =
-		safeParams[MIN_PARAM_KEY] !== MIN_TEST_WORDS || safeParams[MAX_PARAM_KEY] !== MAX_TEST_WORDS
-			? [`${safeParams[MIN_PARAM_KEY]} - ${safeParams[MAX_PARAM_KEY]} words`]
+		safeParams[minWordsParamKey] !== MIN_TEST_WORDS ||
+		safeParams[maxWordsParamKey] !== MAX_TEST_WORDS
+			? [`${safeParams[minWordsParamKey]} - ${safeParams[maxWordsParamKey]} words`]
 			: []
 
 	return (
@@ -69,7 +69,7 @@ export default function NumWordsFilter({ transition }: Props) {
 				max={MAX_TEST_WORDS}
 				lowSelected={minWords}
 				highSelected={maxWords}
-				step={5}
+				// step={5}
 				onLowChange={(n) => setMinWords(n)}
 				onHighChange={(n) => setMaxWords(n)}
 				ariaLabel="Number of words"

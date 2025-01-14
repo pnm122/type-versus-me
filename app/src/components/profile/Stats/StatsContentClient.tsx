@@ -1,10 +1,10 @@
 'use client'
 
 import { useTransition } from 'react'
-import CategoryFilter from './CategoryFilter'
+import CategoryFilter from '../Filter/CategoryFilter'
 import styles from './style.module.scss'
 import createClasses from '@/utils/createClasses'
-import NumWordsFilter from './NumWordsFilter'
+import NumWordsFilter from '../Filter/NumWordsFilter'
 import statDisplayNames from './statDisplayNames'
 import IndeterminateProgress from '@/components/IndeterminateProgress/IndeterminateProgress'
 
@@ -23,8 +23,12 @@ export default function StatsContentClient() {
 		<div className={styles['stats']}>
 			<h2 className={styles['stats__heading']}>Your stats</h2>
 			<div className={styles['stats__filters']}>
-				<CategoryFilter transition={[isPending, startTransition]} />
-				<NumWordsFilter transition={[isPending, startTransition]} />
+				<CategoryFilter paramKey="stats-category" transition={[isPending, startTransition]} />
+				<NumWordsFilter
+					minWordsParamKey="stats-min-words"
+					maxWordsParamKey="stats-max-words"
+					transition={[isPending, startTransition]}
+				/>
 			</div>
 			<div className={styles['stat-boxes']}>
 				{Object.keys(stats).map((key) => (

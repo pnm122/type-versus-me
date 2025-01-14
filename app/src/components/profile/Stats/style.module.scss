@@ -1,5 +1,4 @@
 @use '@/scss/fonts' as *;
-@use '@/scss/breakpoints' as *;
 
 .stats {
 	display: flex;
@@ -48,34 +47,5 @@
 				opacity: 0.5;
 			}
 		}
-	}
-}
-
-.filter {
-	// remove relative positioning on filters so that the dropdowns will be positioned to the parent of the filters instead by putting relative positioning on it
-	position: unset !important;
-}
-
-.dropdown {
-	--dropdown-open-y-offset: 8px;
-	display: flex;
-	flex-direction: column;
-	gap: 12px;
-	width: min(450px, 100vw - 48px);
-	left: 0;
-
-	@media screen and ($screen-lg > width > $screen-md) {
-		width: 350px;
-	}
-
-	&__heading {
-		@include font-heading(14);
-		color: var(--text);
-	}
-
-	&__filter-chips {
-		display: flex;
-		gap: 8px;
-		flex-wrap: wrap;
 	}
 }

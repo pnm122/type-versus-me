@@ -12,11 +12,11 @@ import { isValidRoomCategory } from '$shared/utils/validators'
 
 interface Props {
 	transition: [boolean, TransitionStartFunction]
+	/** Key to use for the browser query param */
+	paramKey: string
 }
 
-export default function CategoryFilter({ transition }: Props) {
-	const PARAM_KEY = 'stats-category'
-
+export default function CategoryFilter({ transition, paramKey }: Props) {
 	const searchParams = useSearchParams()
 	const router = useRouter()
 	const [open, setOpen] = useState(false)
@@ -24,7 +24,7 @@ export default function CategoryFilter({ transition }: Props) {
 	const focusOnOpenRef = useRef<HTMLButtonElement>(null)
 	const filterWithDropdownRef = useRef<HTMLDivElement>(null)
 	const startTransition = transition[1]
-	const validParamFilters = searchParams.getAll(PARAM_KEY).filter((p) => isValidRoomCategory(p))
+	const validParamFilters = searchParams.getAll(paramKey).filter((p) => isValidRoomCategory(p))
 
 	function toggleFilter(filter: RoomSettings['category']) {
 		setSelectedFilters((s) => (s.includes(filter) ? s.filter((f) => f !== filter) : [...s, filter]))
@@ -33,8 +33,8 @@ export default function CategoryFilter({ transition }: Props) {
 	function onSave() {
 		startTransition(() => {
 			router.push(
-				newParamsURL<{ [PARAM_KEY]: RoomSettings['category'][] }>(searchParams, {
-					[PARAM_KEY]: selectedFilters
+				newParamsURL<{ [key: string]: RoomSettings['category'][] }>(searchParams, {
+					[paramKey]: selectedFilters
 				})
 			)
 		})

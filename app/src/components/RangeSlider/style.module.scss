@@ -61,10 +61,24 @@ body:has(.handle--dragging) {
 
 		&--low {
 			left: var(--range-low-position);
+
+			.handle__label {
+				transform: translate(
+					calc(-50% + var(--range-low-label-x-offset)),
+					calc(-1 * var(--slider-label-offset))
+				);
+			}
 		}
 
 		&--high {
 			left: var(--range-high-position);
+
+			.handle__label {
+				transform: translate(
+					calc(-50% + var(--range-high-label-x-offset)),
+					calc(-1 * var(--slider-label-offset))
+				);
+			}
 		}
 
 		&__label {
@@ -77,7 +91,6 @@ body:has(.handle--dragging) {
 			line-height: var(--slider-label-height);
 			left: 50%;
 			bottom: 100%;
-			transform: translate(-50%, calc(-1 * var(--slider-label-offset)));
 			pointer-events: none;
 			user-select: none;
 		}

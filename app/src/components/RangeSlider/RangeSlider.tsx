@@ -39,7 +39,9 @@ export default function RangeSlider({
 	hideInputs = false
 }: Props) {
 	const lowRef = useRef<HTMLButtonElement>(null)
+	const lowLabelRef = useRef<HTMLSpanElement>(null)
 	const highRef = useRef<HTMLButtonElement>(null)
+	const highLabelRef = useRef<HTMLSpanElement>(null)
 	const slider = useRef<HTMLDivElement>(null)
 
 	interface DragState {
@@ -283,6 +285,23 @@ export default function RangeSlider({
 
 		slider.current.style.setProperty('--range-low-position', `${numberToPercent(lowSelected)}%`)
 		slider.current.style.setProperty('--range-high-position', `${numberToPercent(highSelected)}%`)
+
+		// keep labels within the bounding box of the slider
+		// set offset to 0 so the calculation can be done without the offset already set
+		slider.current.style.setProperty('--range-low-label-x-offset', '0px')
+		slider.current.style.setProperty('--range-high-label-x-offset', '0px')
+		const lowLabelLeft = lowLabelRef.current!.getBoundingClientRect().left
+		const highLabelRight = highLabelRef.current!.getBoundingClientRect().right
+		const { left: sliderLeft, right: sliderRight } = slider.current!.getBoundingClientRect()
+
+		slider.current.style.setProperty(
+			'--range-low-label-x-offset',
+			`${lowLabelLeft < sliderLeft ? sliderLeft - lowLabelLeft : 0}px`
+		)
+		slider.current.style.setProperty(
+			'--range-high-label-x-offset',
+			`${highLabelRight > sliderRight ? sliderRight - highLabelRight : 0}px`
+		)
 	}, [min, max, lowSelected, highSelected, step])
 
 	return (
@@ -313,7 +332,7 @@ export default function RangeSlider({
 					onKeyDown={(e) => onKeyDown(e, 'low')}
 					ref={lowRef}
 				>
-					<span id={`${id}-low`} className={styles['handle__label']}>
+					<span ref={lowLabelRef} id={`${id}-low`} className={styles['handle__label']}>
 						{lowSelected}
 					</span>
 				</button>
@@ -330,7 +349,7 @@ export default function RangeSlider({
 					onKeyDown={(e) => onKeyDown(e, 'high')}
 					ref={highRef}
 				>
-					<span id={`${id}-high`} className={styles['handle__label']}>
+					<span ref={highLabelRef} id={`${id}-high`} className={styles['handle__label']}>
 						{highSelected}
 					</span>
 				</button>
