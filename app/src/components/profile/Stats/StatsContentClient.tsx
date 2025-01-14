@@ -5,6 +5,7 @@ import CategoryFilter from './CategoryFilter'
 import styles from './style.module.scss'
 import createClasses from '@/utils/createClasses'
 import NumWordsFilter from './NumWordsFilter'
+import statDisplayNames from './statDisplayNames'
 
 export default function StatsContentClient() {
 	const [isPending, startTransition] = useTransition()
@@ -15,13 +16,6 @@ export default function StatsContentClient() {
 		wordsTyped: 1843,
 		racesPlayed: 55,
 		racesWon: 21
-	}
-
-	const statDisplayNames = {
-		maxWPM: 'best words per minute',
-		wordsTyped: 'words typed',
-		racesPlayed: 'races played',
-		racesWon: 'races won'
 	}
 
 	return (
