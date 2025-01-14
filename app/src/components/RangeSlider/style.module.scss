@@ -11,7 +11,11 @@ body:has(.handle--dragging) {
 }
 
 .slider {
+	--slider-label-offset: 8px;
+	--slider-label-height: 1.125rem;
 	position: relative;
+	// Add enough padding to the top of the slider so that the labels fit within its boundaries
+	padding-top: calc(var(--slider-label-offset) + var(--slider-label-height));
 
 	.handle {
 		position: absolute;
@@ -68,10 +72,12 @@ body:has(.handle--dragging) {
 			position: absolute;
 			background-color: var(--heading);
 			color: var(--background);
-			padding: 2px 4px;
+			padding-inline: 4px;
+			height: var(--slider-label-height);
+			line-height: var(--slider-label-height);
 			left: 50%;
 			bottom: 100%;
-			transform: translate(-50%, -8px);
+			transform: translate(-50%, calc(-1 * var(--slider-label-offset)));
 			pointer-events: none;
 			user-select: none;
 		}
@@ -81,7 +87,7 @@ body:has(.handle--dragging) {
 	.selected-line {
 		height: 2px;
 		position: absolute;
-		top: 50%;
+		top: 100%;
 		transform: translateY(-50%);
 	}
 
