@@ -96,9 +96,7 @@ export default function RangeSlider({
 		const isStep = value === toClosestStep(value)
 		const isWithinRange = value >= min && value <= max
 		const isValidRelativeToSelections =
-			handle === 'high'
-				? value >= lowSelected && value !== highSelected
-				: value <= highSelected && value !== lowSelected
+			handle === 'high' ? value >= lowSelected : value <= highSelected
 
 		return isStep && isWithinRange && isValidRelativeToSelections
 	}
