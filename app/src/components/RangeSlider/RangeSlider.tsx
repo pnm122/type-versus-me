@@ -44,11 +44,14 @@ export default function RangeSlider({
 
 	interface DragState {
 		active: boolean
+		/** Whether the drag was initiated by touch. If false, it was initiated by the mouse */
+		touch: boolean
 		start: { mouse: number; button: number }
 	}
 
 	const [highDrag, setHighDrag] = useState<DragState>({
 		active: false,
+		touch: false,
 		start: {
 			mouse: -1,
 			button: -1
@@ -57,6 +60,7 @@ export default function RangeSlider({
 
 	const [lowDrag, setLowDrag] = useState<DragState>({
 		active: false,
+		touch: false,
 		start: {
 			mouse: -1,
 			button: -1
@@ -108,15 +112,34 @@ export default function RangeSlider({
 
 		setState({
 			active: true,
+			touch: false,
 			start: { mouse: e.pageX, button: buttonRect.left + buttonRect.width / 2 }
 		})
 	}
 
-	function onDrag(e: MouseEvent, handle: 'high' | 'low') {
+	function onTouchDown(e: React.TouchEvent<HTMLElement>, handle: 'high' | 'low') {
+		const setState = handle === 'high' ? setHighDrag : setLowDrag
+
+		setState({
+			active: true,
+			touch: true,
+			start: { mouse: e.touches[0].pageX, button: e.touches[0].pageX }
+		})
+	}
+
+	function onMouseDrag(e: MouseEvent, handle: 'high' | 'low') {
+		onDrag(e.pageX, handle)
+	}
+
+	function onTouchDrag(e: TouchEvent, handle: 'high' | 'low') {
+		onDrag(e.touches[0].pageX, handle)
+	}
+
+	function onDrag(x: number, handle: 'high' | 'low') {
 		const dragState = handle === 'high' ? highDrag : lowDrag
 		const sliderRect = slider.current!.getBoundingClientRect()
 		// Position within the slider
-		const pos = e.pageX - (dragState.start.mouse - dragState.start.button) - sliderRect.left
+		const pos = x - (dragState.start.mouse - dragState.start.button) - sliderRect.left
 		const posPct = pos / sliderRect.width
 		const newValue = percentToNumber(posPct)
 
@@ -126,9 +149,9 @@ export default function RangeSlider({
 		}
 	}
 
-	function onMouseUp(handle: 'high' | 'low') {
+	function onDragEnd(handle: 'high' | 'low') {
 		const setState = handle === 'high' ? setHighDrag : setLowDrag
-		setState({ active: false, start: { mouse: -1, button: -1 } })
+		setState({ active: false, touch: false, start: { mouse: -1, button: -1 } })
 	}
 
 	function onKeyDown(e: React.KeyboardEvent, handle: 'low' | 'high') {
@@ -173,41 +196,71 @@ export default function RangeSlider({
 
 	useEffect(() => {
 		function _onMouseMove(e: MouseEvent) {
-			onDrag(e, 'high')
+			onMouseDrag(e, 'high')
 		}
 
 		function _onMouseUp() {
-			onMouseUp('high')
+			onDragEnd('high')
 		}
 
-		if (highDrag.active) {
+		function _onTouchMove(e: TouchEvent) {
+			onTouchDrag(e, 'high')
+		}
+
+		function _onTouchEnd() {
+			onDragEnd('high')
+		}
+
+		if (highDrag.active && !highDrag.touch) {
 			window.addEventListener('mousemove', _onMouseMove)
 			window.addEventListener('mouseup', _onMouseUp)
+		}
+
+		if (highDrag.active && highDrag.touch) {
+			window.addEventListener('touchmove', _onTouchMove)
+			window.addEventListener('touchend', _onTouchEnd)
 		}
 
 		return () => {
 			window.removeEventListener('mousemove', _onMouseMove)
 			window.removeEventListener('mouseup', _onMouseUp)
+			window.removeEventListener('touchmove', _onTouchMove)
+			window.removeEventListener('touchend', _onTouchEnd)
 		}
 	}, [highDrag])
 
 	useEffect(() => {
 		function _onMouseMove(e: MouseEvent) {
-			onDrag(e, 'low')
+			onMouseDrag(e, 'low')
 		}
 
 		function _onMouseUp() {
-			onMouseUp('low')
+			onDragEnd('low')
 		}
 
-		if (lowDrag.active) {
+		function _onTouchMove(e: TouchEvent) {
+			onTouchDrag(e, 'low')
+		}
+
+		function _onTouchEnd() {
+			onDragEnd('low')
+		}
+
+		if (lowDrag.active && !lowDrag.touch) {
 			window.addEventListener('mousemove', _onMouseMove)
 			window.addEventListener('mouseup', _onMouseUp)
+		}
+
+		if (lowDrag.active && lowDrag.touch) {
+			window.addEventListener('touchmove', _onTouchMove)
+			window.addEventListener('touchend', _onTouchEnd)
 		}
 
 		return () => {
 			window.removeEventListener('mousemove', _onMouseMove)
 			window.removeEventListener('mouseup', _onMouseUp)
+			window.removeEventListener('touchmove', _onTouchMove)
+			window.removeEventListener('touchend', _onTouchEnd)
 		}
 	}, [lowDrag])
 
@@ -246,13 +299,17 @@ export default function RangeSlider({
 				ref={slider}
 			>
 				<button
+					type="button"
 					aria-labelledby={`${id}-low`}
 					className={createClasses({
 						[styles['handle']]: true,
 						[styles['handle--low']]: true,
 						[styles['handle--dragging']]: lowDrag.active
 					})}
+					// Need both mouse and touch handlers to do essentially the same thing
+					// Mouse is for devices with mice, Touch is for devices with touchscreen
 					onMouseDown={(e) => onMouseDown(e, 'low')}
+					onTouchStart={(e) => onTouchDown(e, 'low')}
 					onKeyDown={(e) => onKeyDown(e, 'low')}
 					ref={lowRef}
 				>
@@ -261,6 +318,7 @@ export default function RangeSlider({
 					</span>
 				</button>
 				<button
+					type="button"
 					aria-labelledby={`${id}-high`}
 					className={createClasses({
 						[styles['handle']]: true,
@@ -268,6 +326,7 @@ export default function RangeSlider({
 						[styles['handle--dragging']]: highDrag.active
 					})}
 					onMouseDown={(e) => onMouseDown(e, 'high')}
+					onTouchStart={(e) => onTouchDown(e, 'high')}
 					onKeyDown={(e) => onKeyDown(e, 'high')}
 					ref={highRef}
 				>

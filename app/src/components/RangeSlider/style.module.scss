@@ -3,7 +3,7 @@
 .container {
 	display: flex;
 	flex-direction: column;
-	gap: 16px;
+	gap: 20px;
 }
 
 body:has(.handle--dragging) {
@@ -26,8 +26,8 @@ body:has(.handle--dragging) {
 			content: '';
 			position: absolute;
 			z-index: var(--z-below);
-			width: 32px;
-			height: 32px;
+			width: 44px;
+			height: 44px;
 			border-radius: 999px;
 			left: 50%;
 			top: 50%;
