@@ -32,10 +32,11 @@
 			flex-direction: column;
 			gap: 4px;
 			flex-grow: 1;
-			transition: opacity 0.25s var(--timing);
+			position: relative;
 
 			&__stat {
 				@include font-heading(24);
+				transition: opacity 0.175s var(--timing);
 			}
 
 			&__name {
@@ -43,10 +44,8 @@
 				color: var(--placeholder);
 			}
 
-			&--pending {
+			&--pending .stat-box__stat {
 				opacity: 0.5;
-				pointer-events: none;
-				user-select: none;
 			}
 		}
 	}

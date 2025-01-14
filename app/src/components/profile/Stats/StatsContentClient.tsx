@@ -6,6 +6,7 @@ import styles from './style.module.scss'
 import createClasses from '@/utils/createClasses'
 import NumWordsFilter from './NumWordsFilter'
 import statDisplayNames from './statDisplayNames'
+import IndeterminateProgress from '@/components/IndeterminateProgress/IndeterminateProgress'
 
 export default function StatsContentClient() {
 	const [isPending, startTransition] = useTransition()
@@ -34,6 +35,7 @@ export default function StatsContentClient() {
 							[styles['stat-box--pending']]: isPending
 						})}
 					>
+						{isPending && <IndeterminateProgress />}
 						<h3 className={styles['stat-box__stat']}>
 							{stats[key as keyof typeof stats]}
 							{key === 'maxWPM' ? 'wpm' : ''}

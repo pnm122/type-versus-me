@@ -1,0 +1,32 @@
+.progress {
+	position: absolute;
+	inset: 0;
+	bottom: unset;
+	height: 3px;
+	z-index: var(--z-above);
+	overflow: hidden;
+
+	&::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		left: unset;
+		background-color: var(--primary-light);
+		animation: load 2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+
+		@keyframes load {
+			0%,
+			10% {
+				width: 0;
+				right: 100%;
+			}
+			25% {
+				width: 100%;
+			}
+			100% {
+				width: 0;
+				right: -25%;
+			}
+		}
+	}
+}
