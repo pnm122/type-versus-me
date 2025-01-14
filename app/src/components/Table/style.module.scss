@@ -1,0 +1,13 @@
+.table {
+	display: grid;
+
+	thead,
+	tbody,
+	&__row {
+		display: grid;
+		// Span all columns
+		grid-column: 1 / -1;
+		// Inherit columns from parent
+		grid-template-columns: subgrid;
+	}
+}
