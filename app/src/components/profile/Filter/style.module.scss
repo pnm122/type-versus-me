@@ -11,7 +11,10 @@
 	display: flex;
 	flex-direction: column;
 	gap: 12px;
-	width: min(450px, 100vw - 48px);
+	// 100vw - 48px to fit to width of container
+	// Subtract another 24px to stop from overflowing in the x-axis when a scrollbar is present
+	// Ugly but works well enough
+	width: min(450px, 100vw - 48px - 24px);
 	left: 0;
 
 	@media screen and ($screen-lg > width > $screen-md) {
