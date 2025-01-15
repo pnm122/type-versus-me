@@ -15,10 +15,10 @@ export interface TableProps<T extends TableData> {
 		[key: string | number | symbol]: (row: TableRow<T>) => React.ReactNode
 	}
 	/**
-	 * Whether the table is loading. `show-data` - will show current table content while loading. A number will show skeleton content for that many rows. `false` - no loading state is shown.
+	 * Whether the table is loading. A number will show skeleton content for that many rows. `false` - no loading state is shown.
 	 * @default false
 	 **/
-	loading?: 'show-data' | number | false
+	loading?: number | false
 	/** Max width for the table. If the table overflows this width, a scrollbar will be shown */
 	maxWidth?: string
 }
@@ -75,13 +75,11 @@ export default function Table<T extends Record<string, any>>({
 	columns,
 	rows,
 	render,
-	// eslint-disable-next-line
 	expandRender,
-	// eslint-disable-next-line
 	loading,
 	maxWidth
 }: TableProps<T>) {
-	const anyRowIsExpandable = !!expandRender && Object.keys(expandRender).length !== 0
+	const anyRowIsExpandable = !loading && !!expandRender && Object.keys(expandRender).length !== 0
 
 	function getGridTemplateColumns() {
 		const expandColumn = anyRowIsExpandable ? ['var(--table-expand-cell-width)'] : []
@@ -97,38 +95,38 @@ export default function Table<T extends Record<string, any>>({
 	}
 
 	return (
-		<div
+		<table
 			style={{
 				maxWidth,
 				overflow: 'auto',
-				display: maxWidth ? 'block' : 'contents'
+				gridTemplateColumns: getGridTemplateColumns()
 			}}
+			className={styles['table']}
 		>
-			<table
-				style={{
-					gridTemplateColumns: getGridTemplateColumns()
-				}}
-				className={styles['table']}
-			>
-				<thead>
-					<tr className={styles['table__heading']}>
-						{anyRowIsExpandable && <th className={styles['cell']}></th>}
-						{Object.keys(columns).map((key) => (
-							<th className={styles['cell']} style={getCSSAlignStyle(columns[key].align)} key={key}>
-								{columns[key].displayName}
-							</th>
-						))}
-					</tr>
-				</thead>
-				<tbody>
-					{rows.map((row) => (
-						<TableRow
-							key={row.key.toString()}
-							{...{ row, render, expandRender, loading, columns }}
-						/>
+			<thead>
+				<tr className={styles['table__heading']}>
+					{anyRowIsExpandable && <th className={styles['cell']}></th>}
+					{Object.keys(columns).map((key) => (
+						<th className={styles['cell']} style={getCSSAlignStyle(columns[key].align)} key={key}>
+							{columns[key].displayName}
+						</th>
 					))}
-				</tbody>
-			</table>
-		</div>
+				</tr>
+			</thead>
+			<tbody>
+				{loading
+					? Array(loading)
+							.fill(null)
+							.map((_, index) => (
+								<TableRow key={index} {...{ render, expandRender, loading, columns }} />
+							))
+					: rows.map((row) => (
+							<TableRow
+								key={row.key.toString()}
+								{...{ row, render, expandRender, loading, columns }}
+							/>
+						))}
+			</tbody>
+		</table>
 	)
 }

@@ -4,16 +4,16 @@ import styles from './style.module.scss'
 import Collapsible from '../Collapsible/Collapsible'
 import createClasses from '@/utils/createClasses'
 import PixelarticonsChevronUp from '~icons/pixelarticons/chevron-up'
+import Skeleton from '../Skeleton/Skeleton'
 
 type Props<T extends TableData> = {
-	row: TableRowType<T>
+	row?: TableRowType<T>
 } & Pick<TableProps<T>, 'render' | 'expandRender' | 'loading' | 'columns'>
 
 export default function TableRow<T extends TableData>({
 	row,
 	render,
 	expandRender,
-	// eslint-disable-next-line
 	loading,
 	columns
 }: Props<T>) {
@@ -37,12 +37,11 @@ export default function TableRow<T extends TableData>({
 		}
 	}
 
-	const hasExpandContent = !!expandRender?.[row.key]
-	const anyRowIsExpandable = !!expandRender && Object.keys(expandRender).length !== 0
+	const hasExpandContent = !!expandRender?.[row?.key ?? '']
+	const anyRowIsExpandable = !loading && !!expandRender && Object.keys(expandRender).length !== 0
 
 	return (
 		<tr
-			key={row.key.toString()}
 			className={createClasses({
 				[styles['table__row']]: true,
 				[styles['table__row--has-expand-content']]: hasExpandContent
@@ -55,26 +54,39 @@ export default function TableRow<T extends TableData>({
 				'aria-controls': id
 			})}
 		>
-			{anyRowIsExpandable && (
-				<td className={styles['cell']} style={getCSSAlignStyle('center')}>
-					{hasExpandContent && <PixelarticonsChevronUp className={styles['expand-arrow']} />}
-				</td>
-			)}
-			{Object.keys(withoutKey(row)).map((columnKey) => (
-				<td
-					key={`${row.key.toString()}-${columnKey}`}
-					className={styles['cell']}
-					style={getCSSAlignStyle(columns[columnKey].align)}
-				>
-					{render?.[columnKey] ? render[columnKey](row[columnKey], row) : row[columnKey].toString()}
-				</td>
-			))}
-			{hasExpandContent && (
-				<td className={styles['expand']} id={id}>
-					<Collapsible open={expanded}>
-						<div className={styles['expand__content']}>{expandRender[row.key](row)}</div>
-					</Collapsible>
-				</td>
+			{loading ? (
+				Object.keys(columns).map((key) => (
+					<td key={key} className={styles['cell']}>
+						<Skeleton height="1.5rem" width={`${Math.random() * 50 + 50}%`} />
+					</td>
+				))
+			) : (
+				<>
+					{anyRowIsExpandable && (
+						<td className={styles['cell']} style={getCSSAlignStyle('center')}>
+							{hasExpandContent && <PixelarticonsChevronUp className={styles['expand-arrow']} />}
+						</td>
+					)}
+					{row &&
+						Object.keys(withoutKey(row)).map((columnKey) => (
+							<td
+								key={`${row.key.toString()}-${columnKey}`}
+								className={styles['cell']}
+								style={getCSSAlignStyle(columns[columnKey].align)}
+							>
+								{render?.[columnKey]
+									? render[columnKey](row[columnKey], row)
+									: row[columnKey].toString()}
+							</td>
+						))}
+					{row && hasExpandContent && (
+						<td className={styles['expand']} id={id}>
+							<Collapsible open={expanded}>
+								<div className={styles['expand__content']}>{expandRender[row.key](row)}</div>
+							</Collapsible>
+						</td>
+					)}
+				</>
 			)}
 		</tr>
 	)
