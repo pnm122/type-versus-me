@@ -1,4 +1,5 @@
 import styles from './style.module.scss'
+import TableRow from './TableRow'
 
 export interface TableProps<T extends TableData> {
 	/** Configuration for each column in the table */
@@ -29,9 +30,14 @@ export interface TableColumn {
 	displayName: React.ReactNode
 	/**
 	 * Width of the column. Can use any valid grid sizing, i.e. 120px, auto, minmax(0, 2fr), etc.
-	 * @default "minmax(0, 1fr)"
+	 * @default "minmax(min-content, 1fr)"
 	 * */
 	width?: string
+	/**
+	 * How to align a column.
+	 * @default "left"
+	 */
+	align?: 'left' | 'center' | 'right'
 }
 
 export type TableColumnsFrom<T extends TableData> = {
@@ -51,6 +57,20 @@ type RenderFunction<T extends TableData, K extends keyof T> = (
 	row: TableRow<T>
 ) => React.ReactNode
 
+const toCSSAlignMap: {
+	[key in Required<TableColumn>['align']]: React.CSSProperties['alignItems']
+} = {
+	left: 'flex-start',
+	center: 'center',
+	right: 'flex-end'
+}
+
+export function getCSSAlignStyle(align: TableColumn['align']) {
+	return {
+		'--table-cell-alignment': toCSSAlignMap[align ?? 'left']
+	} as React.CSSProperties
+}
+
 export default function Table<T extends Record<string, any>>({
 	columns,
 	rows,
@@ -61,19 +81,18 @@ export default function Table<T extends Record<string, any>>({
 	loading,
 	maxWidth
 }: TableProps<T>) {
-	function withoutKey(row: TableRow<T>) {
-		// eslint-disable-next-line
-		const { key, ...rest } = row
-		return rest
-	}
+	const anyRowIsExpandable = !!expandRender && Object.keys(expandRender).length !== 0
 
 	function getGridTemplateColumns() {
-		return Object.keys(columns)
-			.map((key) => {
-				const width = columns[key].width
-				if (width) return width
-				return `minmax(0, 1fr)`
-			})
+		const expandColumn = anyRowIsExpandable ? ['var(--table-expand-cell-width)'] : []
+		return expandColumn
+			.concat(
+				Object.keys(columns).map((key) => {
+					const width = columns[key].width
+					if (width) return width
+					return 'minmax(min-content, 1fr)'
+				})
+			)
 			.join(' ')
 	}
 
@@ -92,23 +111,21 @@ export default function Table<T extends Record<string, any>>({
 				className={styles['table']}
 			>
 				<thead>
-					<tr className={styles['table__row']}>
+					<tr className={styles['table__heading']}>
+						{anyRowIsExpandable && <th className={styles['cell']}></th>}
 						{Object.keys(columns).map((key) => (
-							<th key={key}>{columns[key].displayName}</th>
+							<th className={styles['cell']} style={getCSSAlignStyle(columns[key].align)} key={key}>
+								{columns[key].displayName}
+							</th>
 						))}
 					</tr>
 				</thead>
 				<tbody>
 					{rows.map((row) => (
-						<tr key={row.key.toString()} className={styles['table__row']}>
-							{Object.keys(withoutKey(row)).map((columnKey) => (
-								<td key={`${row.key.toString()}-${columnKey}`} className={styles['data']}>
-									{render?.[columnKey]
-										? render[columnKey](row[columnKey], row)
-										: row[columnKey].toString()}
-								</td>
-							))}
-						</tr>
+						<TableRow
+							key={row.key.toString()}
+							{...{ row, render, expandRender, loading, columns }}
+						/>
 					))}
 				</tbody>
 			</table>
