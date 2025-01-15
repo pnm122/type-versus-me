@@ -26,7 +26,7 @@ interface Props {
 	/** 0-based page the user is currently on. */
 	page: number
 	/** Callback for when the user requests to change the page by clicking one of the buttons, submitting from the page input, or changing the number of items per page. */
-	onPageChange(page: number): void
+	onPageChange?(page: number): void
 	/** Callback for when the user requests to change the number of items shown per page. The page will also often change at the same time this callback is called, trying to keep the user on the page that starts closest to where they were before this change. */
 	onItemsPerPageChange?(itemsPerPage: number): void
 	/** Whether to hide the input to change the number of items per page. */
@@ -61,9 +61,9 @@ export default function Pagination({
 }: Props) {
 	const id = useId()
 	const [shownItemsPerPage, setShownItemsPerPage] = useState(itemsPerPage.toString())
-	const [shownPage, setShownPage] = useState((page + 1).toString())
+	const [shownPage, setShownPage] = useState((numItems > 0 ? page + 1 : 0).toString())
 
-	const startItem = itemsPerPage * page + 1
+	const startItem = numItems > 0 ? itemsPerPage * page + 1 : 0
 	const lastShownPage = Math.ceil(numItems / itemsPerPage)
 
 	useEffect(() => {
@@ -71,7 +71,7 @@ export default function Pagination({
 	}, [itemsPerPage, numItems])
 
 	useEffect(() => {
-		setShownPage((page + 1).toString())
+		setShownPage((numItems > 0 ? page + 1 : 0).toString())
 	}, [page, numItems])
 
 	function onItemsPerPageSubmit(e: React.FocusEvent | React.FormEvent) {
@@ -98,7 +98,7 @@ export default function Pagination({
 							Math.ceil(numItems / newItemsPerPage) - 1
 						)
 			onItemsPerPageChange?.(newItemsPerPage)
-			onPageChange(newPage)
+			onPageChange?.(newPage)
 		}
 	}
 
@@ -107,7 +107,7 @@ export default function Pagination({
 
 		const newPage = parseInt(shownPage)
 		if (!Number.isNaN(newPage) && newPage >= 1 && newPage <= lastShownPage) {
-			onPageChange(newPage - 1)
+			onPageChange?.(newPage - 1)
 		}
 	}
 
@@ -160,7 +160,7 @@ export default function Pagination({
 					<IconButton
 						aria-label="Previous page"
 						disabled={page <= 0 || loading}
-						onClick={() => onPageChange(page - 1)}
+						onClick={() => onPageChange?.(page - 1)}
 						icon={<PixelarticonsChevronLeft />}
 						style="tertiary"
 						className={styles['page-change-buttons__button']}
@@ -168,7 +168,7 @@ export default function Pagination({
 					<IconButton
 						aria-label="Next page"
 						disabled={page >= lastShownPage - 1 || loading}
-						onClick={() => onPageChange(page + 1)}
+						onClick={() => onPageChange?.(page + 1)}
 						icon={<PixelarticonsChevronRight />}
 						style="tertiary"
 						className={styles['page-change-buttons__button']}
