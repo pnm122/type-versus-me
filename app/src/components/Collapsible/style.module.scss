@@ -3,12 +3,24 @@
 	overflow: hidden;
 	display: grid;
 
+	&--show-animations {
+		&.collapsible--left,
+		&.collapsible--right {
+			transition:
+				width var(--collapsible-duration) var(--collapsible-ease) var(--collapsible-delay),
+				visibility var(--collapsible-duration) var(--collapsible-ease) var(--collapsible-delay);
+		}
+
+		&.collapsible--up,
+		&.collapsible--down {
+			transition:
+				height var(--collapsible-duration) var(--collapsible-ease) var(--collapsible-delay),
+				visibility var(--collapsible-duration) var(--collapsible-ease) var(--collapsible-delay);
+		}
+	}
+
 	&--left,
 	&--right {
-		transition:
-			width var(--collapsible-duration) var(--collapsible-ease) var(--collapsible-delay),
-			visibility var(--collapsible-duration) var(--collapsible-ease) var(--collapsible-delay);
-
 		&.collapsible--open {
 			width: fit-content;
 		}
@@ -25,10 +37,6 @@
 
 	&--up,
 	&--down {
-		transition:
-			height var(--collapsible-duration) var(--collapsible-ease) var(--collapsible-delay),
-			visibility var(--collapsible-duration) var(--collapsible-ease) var(--collapsible-delay);
-
 		&.collapsible--open {
 			height: fit-content;
 		}

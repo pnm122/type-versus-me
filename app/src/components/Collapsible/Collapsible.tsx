@@ -110,7 +110,8 @@ export default function Collapsible({
 				[styles['collapsible']]: true,
 				[styles['collapsible--open']]: open,
 				[styles[`collapsible--${openDirection}`]]: true,
-				[styles['collapsible--fit-content']]: fitContent
+				[styles['collapsible--fit-content']]: fitContent,
+				[styles['collapsible--show-animations']]: rendered
 			})}
 			style={
 				{
