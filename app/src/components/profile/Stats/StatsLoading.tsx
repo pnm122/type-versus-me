@@ -1,6 +1,6 @@
 import Skeleton from '@/components/Skeleton/Skeleton'
 import styles from './style.module.scss'
-import statDisplayNames from './statDisplayNames'
+import { userStatsDisplayNames } from '@/utils/displayNameMappings'
 
 export default function StatsLoading() {
 	return (
@@ -11,11 +11,11 @@ export default function StatsLoading() {
 				<Skeleton width="150px" height="24px" />
 			</div>
 			<div className={styles['stat-boxes']}>
-				{Object.keys(statDisplayNames).map((key) => (
+				{Object.keys(userStatsDisplayNames).map((key) => (
 					<div key={key} className={styles['stat-box']}>
 						<Skeleton width={`${Math.random() * 25 + 50}px`} height="1.65rem" />
 						<h4 className={styles['stat-box__name']}>
-							{statDisplayNames[key as keyof typeof statDisplayNames]}
+							{userStatsDisplayNames[key as keyof typeof userStatsDisplayNames]}
 						</h4>
 					</div>
 				))}

@@ -9,6 +9,7 @@ import { TransitionStartFunction, useRef, useState } from 'react'
 import styles from './style.module.scss'
 import FilterChip from '@/components/FilterChip/FilterChip'
 import { isValidRoomCategory } from '$shared/utils/validators'
+import { roomCategoryDisplayNames } from '@/utils/displayNameMappings'
 
 interface Props {
 	transition: [boolean, TransitionStartFunction]
@@ -46,12 +47,6 @@ export default function CategoryFilter({ transition, paramKey }: Props) {
 		setOpen(true)
 	}
 
-	const filterDisplayNames: { [key in RoomSettings['category']]: string } = {
-		quote: 'Quotes',
-		'top-100': 'Top 100 words',
-		'top-1000': 'Top 1000 words'
-	}
-
 	return (
 		<FilterWithDropdown
 			ref={filterWithDropdownRef}
@@ -59,7 +54,7 @@ export default function CategoryFilter({ transition, paramKey }: Props) {
 			onOpen={onOpen}
 			onClose={() => setOpen(false)}
 			name="Category"
-			selected={validParamFilters.map((key) => filterDisplayNames[key])}
+			selected={validParamFilters.map((key) => roomCategoryDisplayNames[key])}
 			dropdownProps={{
 				focusOnOpenRef,
 				className: styles['dropdown']
@@ -72,7 +67,7 @@ export default function CategoryFilter({ transition, paramKey }: Props) {
 					<FilterChip
 						key={category}
 						ref={index === 0 ? focusOnOpenRef : undefined}
-						label={filterDisplayNames[category as RoomSettings['category']]}
+						label={roomCategoryDisplayNames[category as RoomSettings['category']]}
 						selected={selectedFilters.includes(category as RoomSettings['category'])}
 						onClick={() => toggleFilter(category as RoomSettings['category'])}
 					/>

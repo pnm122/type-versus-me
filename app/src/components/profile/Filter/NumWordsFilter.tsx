@@ -69,7 +69,7 @@ export default function NumWordsFilter({ transition, minWordsParamKey, maxWordsP
 				max={MAX_TEST_WORDS}
 				lowSelected={minWords}
 				highSelected={maxWords}
-				// step={5}
+				step={5}
 				onLowChange={(n) => setMinWords(n)}
 				onHighChange={(n) => setMaxWords(n)}
 				ariaLabel="Number of words"

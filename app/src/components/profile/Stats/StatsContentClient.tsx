@@ -5,8 +5,8 @@ import CategoryFilter from '../Filter/CategoryFilter'
 import styles from './style.module.scss'
 import createClasses from '@/utils/createClasses'
 import NumWordsFilter from '../Filter/NumWordsFilter'
-import statDisplayNames from './statDisplayNames'
 import IndeterminateProgress from '@/components/IndeterminateProgress/IndeterminateProgress'
+import { userStatsDisplayNames } from '@/utils/displayNameMappings'
 
 export default function StatsContentClient() {
 	const [isPending, startTransition] = useTransition()
@@ -45,7 +45,7 @@ export default function StatsContentClient() {
 							{key === 'maxWPM' ? 'wpm' : ''}
 						</h3>
 						<h4 className={styles['stat-box__name']}>
-							{statDisplayNames[key as keyof typeof statDisplayNames]}
+							{userStatsDisplayNames[key as keyof typeof userStatsDisplayNames]}
 						</h4>
 					</div>
 				))}
