@@ -50,7 +50,9 @@
 		&__input {
 			border: none;
 			outline: none;
-			padding-inline: 12px;
+			padding-left: 12px;
+			// Less padding on the right so number change UI fits better
+			padding-right: 4px;
 			height: 100%;
 			flex: 1;
 			min-width: 0;

@@ -1,0 +1,102 @@
+@use '@/scss/fonts' as *;
+
+.pagination {
+	display: grid;
+	min-height: 44px;
+	grid-template-rows: 44px;
+	grid-template-columns: 1fr;
+
+	.items-per-page {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		padding-inline: 12px;
+		height: 44px;
+		white-space: nowrap;
+
+		&__text {
+			@include font-body(14);
+		}
+
+		&__input {
+			height: 32px;
+			width: 64px;
+		}
+	}
+
+	.item-count {
+		@include font-body(14);
+		flex: 1;
+		padding-inline: 12px;
+		color: var(--placeholder);
+		display: flex;
+		align-items: center;
+		height: 44px;
+		white-space: nowrap;
+	}
+
+	.page-change-controls {
+		display: flex;
+		padding-left: 12px;
+		gap: 12px;
+
+		.page-changer {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			height: 44px;
+
+			&__input {
+				height: 32px;
+				width: 64px;
+			}
+
+			&__text {
+				@include font-body(14);
+				white-space: nowrap;
+			}
+		}
+
+		.page-change-buttons {
+			display: flex;
+			height: 44px;
+
+			&__button {
+				height: 100%;
+				width: unset;
+				aspect-ratio: 1;
+			}
+		}
+	}
+
+	&--detached {
+		.page-change-controls {
+			padding-left: 0;
+		}
+	}
+
+	&:not(.pagination--detached) {
+		background-color: var(--surface);
+		border-top: 1px solid var(--border);
+
+		.items-per-page,
+		.item-count {
+			border-bottom: 1px solid var(--border);
+		}
+	}
+
+	@container (width > 600px) {
+		grid-template-columns: max-content 1fr max-content;
+		&:not(.pagination--detached) {
+			.items-per-page,
+			.item-count {
+				border-bottom: none;
+				border-right: 1px solid var(--border);
+			}
+		}
+	}
+}
+
+*:has(> .pagination) {
+	container-type: inline-size;
+}
