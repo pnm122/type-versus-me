@@ -68,11 +68,11 @@ export default function Pagination({
 
 	useEffect(() => {
 		setShownItemsPerPage(itemsPerPage.toString())
-	}, [itemsPerPage])
+	}, [itemsPerPage, numItems])
 
 	useEffect(() => {
 		setShownPage((page + 1).toString())
-	}, [page])
+	}, [page, numItems])
 
 	function onItemsPerPageSubmit(e: React.FocusEvent | React.FormEvent) {
 		e.preventDefault()
