@@ -1,3 +1,4 @@
+import IndeterminateProgress from '../IndeterminateProgress/IndeterminateProgress'
 import styles from './style.module.scss'
 import TableRow from './TableRow'
 
@@ -15,10 +16,10 @@ export interface TableProps<T extends TableData> {
 		[key: string | number | symbol]: (row: TableRow<T>) => React.ReactNode
 	}
 	/**
-	 * Whether the table is loading. A number will show skeleton content for that many rows. `false` - no loading state is shown.
+	 * Whether the table is loading. `show-data` - the data in the table will still be shown with the loading state. A number will show skeleton content for that many rows. `false` - no loading state is shown.
 	 * @default false
 	 **/
-	loading?: number | false
+	loading?: 'show-data' | number | false
 	/** Max width for the table. If the table overflows this width, a scrollbar will be shown */
 	maxWidth?: string
 }
@@ -79,7 +80,8 @@ export default function Table<T extends Record<string, any>>({
 	loading,
 	maxWidth
 }: TableProps<T>) {
-	const anyRowIsExpandable = !loading && !!expandRender && Object.keys(expandRender).length !== 0
+	const anyRowIsExpandable =
+		!(typeof loading === 'number') && !!expandRender && Object.keys(expandRender).length !== 0
 
 	function getGridTemplateColumns() {
 		const expandColumn = anyRowIsExpandable ? ['var(--table-expand-cell-width)'] : []
@@ -105,6 +107,11 @@ export default function Table<T extends Record<string, any>>({
 		>
 			<thead>
 				<tr className={styles['table__heading']}>
+					{loading === 'show-data' && (
+						<th className={styles['loader']}>
+							<IndeterminateProgress />
+						</th>
+					)}
 					{anyRowIsExpandable && <th className={styles['cell']}></th>}
 					{Object.keys(columns).map((key) => (
 						<th className={styles['cell']} style={getCSSAlignStyle(columns[key].align)} key={key}>
@@ -114,7 +121,7 @@ export default function Table<T extends Record<string, any>>({
 				</tr>
 			</thead>
 			<tbody>
-				{loading
+				{typeof loading === 'number'
 					? Array(loading)
 							.fill(null)
 							.map((_, index) => (

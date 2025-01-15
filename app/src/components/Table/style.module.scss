@@ -20,6 +20,7 @@
 		background-color: var(--gray-20);
 		height: 32px;
 		border-bottom: 1px solid var(--surface);
+		position: relative;
 
 		.cell {
 			@include font-heading(14);
@@ -76,4 +77,10 @@
 	.expand-arrow {
 		transition: rotate 0.25s var(--timing);
 	}
+}
+
+.loader {
+	position: absolute;
+	inset: 0;
+	bottom: unset;
 }

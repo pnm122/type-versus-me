@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useId, useState } from 'react'
 import { getCSSAlignStyle, TableData, TableProps, TableRow as TableRowType } from './Table'
 import styles from './style.module.scss'
@@ -38,7 +40,8 @@ export default function TableRow<T extends TableData>({
 	}
 
 	const hasExpandContent = !!expandRender?.[row?.key ?? '']
-	const anyRowIsExpandable = !loading && !!expandRender && Object.keys(expandRender).length !== 0
+	const anyRowIsExpandable =
+		!(typeof loading === 'number') && !!expandRender && Object.keys(expandRender).length !== 0
 
 	return (
 		<tr
@@ -54,7 +57,7 @@ export default function TableRow<T extends TableData>({
 				'aria-controls': id
 			})}
 		>
-			{loading ? (
+			{typeof loading === 'number' ? (
 				Object.keys(columns).map((key) => (
 					<td key={key} className={styles['cell']}>
 						<Skeleton height="1.5rem" width={`${Math.random() * 50 + 50}%`} />
