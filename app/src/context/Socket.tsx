@@ -6,7 +6,7 @@ import ClientEvents from '$shared/types/events/client/_Events'
 import Data from '@/types/Data'
 import { LOADING } from '@/utils/constants'
 import { useNotification } from './Notification'
-import Loader from '@/components/Loader/Loader'
+import Loader from '@/components/base/Loader/Loader'
 import createClasses from '@/utils/createClasses'
 
 export type CustomSocket = Socket<ServerEvents, ClientEvents>

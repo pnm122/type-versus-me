@@ -1,7 +1,7 @@
 import { auth } from '@/auth'
-import ProfileInner from '@/components/profile/ProfileInner/ProfileInner'
-import Races from '@/components/profile/Races/Races'
-import Stats from '@/components/profile/Stats/Stats'
+import ProfileInner from '@/components/page/profile/ProfileInner/ProfileInner'
+import Races from '@/components/page/profile/Races/Races'
+import Stats from '@/components/page/profile/Stats/Stats'
 import { getUser } from '@/utils/database/user'
 
 export default async function Profile() {

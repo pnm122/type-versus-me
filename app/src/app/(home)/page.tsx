@@ -1,13 +1,13 @@
 'use client'
 
 import styles from './style.module.scss'
-import TyperPreview from '@/components/TyperPreview/TyperPreview'
-import Input from '@/components/Input/Input'
+import TyperPreview from '@/components/shared/TyperPreview/TyperPreview'
+import Input from '@/components/base/Input/Input'
 
 import PixelarticonsPlus from '~icons/pixelarticons/plus'
 import PixelarticonsArrowRight from '~icons/pixelarticons/arrow-right'
-import Button from '@/components/Button/Button'
-import ButtonIcon from '@/components/Button/ButtonIcon'
+import Button from '@/components/base/Button/Button'
+import ButtonIcon from '@/components/base/Button/ButtonIcon'
 import { useReducer, useState } from 'react'
 import { useSocket } from '@/context/Socket'
 import { useRouter } from 'next/navigation'
@@ -16,8 +16,8 @@ import { useNotification } from '@/context/Notification'
 import { errorNotification } from '@/utils/errorNotifications'
 import { useGlobalState } from '@/context/GlobalState'
 import { createRoom, joinRoom } from '@/utils/room'
-import UsernameAndColorInput from '@/components/UsernameAndColorInput/UsernameAndColorInput'
-import RoomSettingsPopover from '@/components/RoomSettingsPopover/RoomSettingsPopover'
+import UsernameAndColorInput from '@/components/shared/UsernameAndColorInput/UsernameAndColorInput'
+import RoomSettingsPopover from '@/components/shared/RoomSettingsPopover/RoomSettingsPopover'
 import { RoomSettings } from '$shared/types/Room'
 
 export default function Home() {

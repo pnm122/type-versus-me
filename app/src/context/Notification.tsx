@@ -1,7 +1,7 @@
 'use client'
 
-import { NotificationProps } from '@/components/Notification/Notification'
-import NotificationStack from '@/components/NotificationStack/NotificationStack'
+import { NotificationProps } from '@/components/base/Notification/Notification'
+import NotificationStack from '@/components/base/NotificationStack/NotificationStack'
 import transition from '@/utils/transition'
 import { createContext, useContext, useRef, useState } from 'react'
 

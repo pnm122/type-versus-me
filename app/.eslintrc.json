@@ -2,6 +2,7 @@
 	"extends": ["next/core-web-vitals", "next/typescript"],
 	"rules": {
 		"@typescript-eslint/no-explicit-any": "off",
-		"no-console": 2
+		"no-console": 2,
+    "react-hooks/exhaustive-deps": "off"
 	}
 }

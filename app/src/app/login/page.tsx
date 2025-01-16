@@ -2,7 +2,7 @@
 
 'use client'
 
-import GoogleSignIn from '@/components/GoogleSignIn/GoogleSignIn'
+import GoogleSignIn from '@/components/shared/GoogleSignIn/GoogleSignIn'
 import { signIn } from 'next-auth/react'
 import { useSearchParams } from 'next/navigation'
 import { Suspense } from 'react'
