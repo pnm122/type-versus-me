@@ -115,7 +115,7 @@ export default function Game({ ref }: { ref?: RefObject<HTMLDivElement> }) {
 							[styles['stats__typed--error']]: stats.errorsLeft > 0
 						})}
 					>
-						{stats.correctMade}/{room.test.length}
+						{stats.correctLeft}/{room.test.length}
 					</p>
 					{stats.errorsLeft > 0 && (
 						<p className={styles['stats__errors-left']}>

@@ -31,9 +31,7 @@ interface Stats {
 	correctLeft: number
 	/** End time in ms since epoch */
 	endTime: number
-	/** Words per minute without accounting for errors. (Keystrokes / 5) / (Elapsed time in minutes) */
-	rawWPM: number
-	/** Words for minute, counting only correct keystrokes. (Correct keystrokes / 5) / (Elapsed time in minutes) */
+	/** Words for minute, counting only correct keystrokes left. (Correct keystrokes left / 5) / (Elapsed time in minutes) */
 	netWPM: number
 	/** Percentage of correct keystrokes. (Correct keystrokes) / (Total keystrokes) */
 	accuracy: number

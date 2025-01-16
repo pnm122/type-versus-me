@@ -97,7 +97,6 @@ export function getInitialStats(numWords = 0): TyperStats {
 		correctMade: 0,
 		correctLeft: 0,
 		endTime: -1,
-		rawWPM: 0,
 		netWPM: 0,
 		accuracy: 0,
 		cursorPosition: { word: 0, letter: 0 }
