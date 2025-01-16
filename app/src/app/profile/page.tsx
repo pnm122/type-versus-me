@@ -4,10 +4,17 @@ import Races from '@/components/page/profile/Races/Races'
 import Stats from '@/components/page/profile/Stats/Stats'
 import { getUser } from '@/utils/database/user'
 
-export default async function Profile() {
+export default async function Profile({
+	searchParams: params
+}: {
+	searchParams: Promise<Record<string, string | string[]>>
+}) {
+	const searchParams = await params
 	const session = await auth()
 	const user = (await getUser(session!.user!.id!))!
 
 	// Can't import server components from client components, so pass them in here instead
-	return <ProfileInner user={user} stats={<Stats />} races={<Races />} />
+	return (
+		<ProfileInner user={user} stats={<Stats />} races={<Races searchParams={searchParams} />} />
+	)
 }

@@ -4,7 +4,7 @@
 
 .page {
 	@include container;
-	padding-top: 32px;
+	padding-block: 32px;
 	display: flex;
 	flex-direction: column;
 	gap: 24px;

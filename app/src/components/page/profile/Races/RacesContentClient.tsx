@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useTransition } from 'react'
 import CategoryFilter from '@/components/page/profile/Filter/CategoryFilter'
 import styles from './style.module.scss'
 import NumWordsFilter from '@/components/page/profile/Filter/NumWordsFilter'
@@ -9,11 +9,30 @@ import Pill from '@/components/base/Pill/Pill'
 import { roomCategoryDisplayNames } from '@/utils/displayNameMappings'
 import Pagination from '@/components/base/Pagination/Pagination'
 import { racesTableColumns, RacesTableData } from '@/components/page/profile/Races/table'
+import { useRouter } from 'next/navigation'
+import newParamsURL from '@/utils/newParamsURL'
+import useSafeParams from '@/hooks/useSafeParams'
+import {
+	ITEMS_PER_PAGE_PARAM_KEY,
+	MAX_ITEMS_PER_PAGE,
+	MIN_ITEMS_PER_PAGE,
+	PAGE_PARAM_KEY,
+	transformItemsPerPageParam,
+	transformPageParam
+} from './utils'
 
 export default function RacesContentClient() {
-	const transition = useTransition()
-	const [itemsPerPage, setItemsPerPage] = useState(10)
-	const [page, setPage] = useState(0)
+	interface Params {
+		[PAGE_PARAM_KEY]: number
+		[ITEMS_PER_PAGE_PARAM_KEY]: number
+	}
+
+	const [isPending, startTransition] = useTransition()
+	const router = useRouter()
+	const [safeParams, searchParams] = useSafeParams<Params>({
+		[PAGE_PARAM_KEY]: transformPageParam,
+		[ITEMS_PER_PAGE_PARAM_KEY]: transformItemsPerPageParam
+	})
 
 	const row: RacesTableData = {
 		time: new Date(2023, 10, 20),
@@ -28,26 +47,39 @@ export default function RacesContentClient() {
 		.fill(row)
 		.map((v, i) => ({ key: i, ...v }))
 
+	function onPaginationChange(newPage: number, newItemsPerPage: number) {
+		startTransition(() => {
+			router.push(
+				newParamsURL(searchParams, {
+					[PAGE_PARAM_KEY]: newPage.toString(),
+					[ITEMS_PER_PAGE_PARAM_KEY]: newItemsPerPage.toString()
+				})
+			)
+		})
+	}
+
 	return (
 		<section className={styles['races']}>
 			<div className={styles['header']}>
 				<div className={styles['header__main']}>
 					<h2 className={styles['heading']}>Your races</h2>
 					<div className={styles['filters']}>
-						<CategoryFilter paramKey="races-category" transition={transition} />
+						<CategoryFilter paramKey="races-category" transition={[isPending, startTransition]} />
 						<NumWordsFilter
 							minWordsParamKey="races-min-words"
 							maxWordsParamKey="races-max-words"
-							transition={transition}
+							transition={[isPending, startTransition]}
 						/>
 					</div>
 				</div>
 				<Pagination
 					numItems={rows.length}
-					itemsPerPage={itemsPerPage}
-					page={page}
-					onPageChange={(p) => setPage(p)}
-					maxItemsPerPage={25}
+					itemsPerPage={safeParams[ITEMS_PER_PAGE_PARAM_KEY]}
+					page={safeParams[PAGE_PARAM_KEY]}
+					onChange={onPaginationChange}
+					minItemsPerPage={MIN_ITEMS_PER_PAGE}
+					maxItemsPerPage={MAX_ITEMS_PER_PAGE}
+					loading={isPending}
 					style="detached"
 					hideItemsPerPage
 					hideItemCount
@@ -55,10 +87,10 @@ export default function RacesContentClient() {
 			</div>
 			<div className={styles['table']}>
 				<Table
-					loading={transition[0] ? 'show-data' : undefined}
+					loading={isPending ? 'show-data' : undefined}
 					maxWidth="100%"
 					columns={racesTableColumns}
-					rows={rows.slice(0, itemsPerPage)}
+					rows={rows.slice(0, safeParams[ITEMS_PER_PAGE_PARAM_KEY])}
 					render={{
 						time(value) {
 							return Intl.DateTimeFormat('en-US').format(value)
@@ -84,11 +116,12 @@ export default function RacesContentClient() {
 				/>
 				<Pagination
 					numItems={rows.length}
-					itemsPerPage={itemsPerPage}
-					page={page}
-					onPageChange={(p) => setPage(p)}
-					onItemsPerPageChange={(n) => setItemsPerPage(n)}
-					maxItemsPerPage={25}
+					itemsPerPage={safeParams[ITEMS_PER_PAGE_PARAM_KEY]}
+					page={safeParams[PAGE_PARAM_KEY]}
+					onChange={onPaginationChange}
+					minItemsPerPage={MIN_ITEMS_PER_PAGE}
+					maxItemsPerPage={MAX_ITEMS_PER_PAGE}
+					loading={isPending}
 				/>
 			</div>
 		</section>

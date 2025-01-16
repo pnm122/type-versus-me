@@ -3,6 +3,6 @@
 	"rules": {
 		"@typescript-eslint/no-explicit-any": "off",
 		"no-console": 2,
-    "react-hooks/exhaustive-deps": "off"
+		"react-hooks/exhaustive-deps": "off"
 	}
 }
