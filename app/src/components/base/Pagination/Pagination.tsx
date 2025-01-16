@@ -102,7 +102,12 @@ export default function Pagination({
 		e.preventDefault()
 
 		const newPage = parseInt(shownPage)
-		if (!Number.isNaN(newPage) && newPage >= 1 && newPage <= lastShownPage) {
+		if (
+			!Number.isNaN(newPage) &&
+			newPage >= 1 &&
+			newPage <= lastShownPage &&
+			newPage !== page + 1
+		) {
 			onChange?.(newPage - 1, itemsPerPage)
 		}
 	}
