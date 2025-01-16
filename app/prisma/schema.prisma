@@ -72,22 +72,17 @@ model VerificationToken {
 model Race {
   id            Int             @id @default(autoincrement())
   startTime     DateTime
-  category      RaceCategory
+  category      String
   numWords      Int
   timeLimit     Int
   scores        Score[]
-}
-
-enum RaceCategory {
-  QUOTE
-  TOP_100
-  TOP_1000
 }
 
 model Score {
   id            Int             @id @default(autoincrement())
   points        Int
   netWPM        Float
+  accuracy      Float
   raceId        Int
   userId        String
   race          Race            @relation(fields: [raceId], references: [id])

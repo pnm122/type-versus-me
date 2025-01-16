@@ -17,12 +17,14 @@ export interface User {
 
 export interface LastTestScore {
 	netWPM: number
+	accuracy: number
 	failed: boolean
 }
 
 export interface TestScore {
 	cursorPosition: CursorPosition
 	netWPM: number
+	accuracy: number
 }
 
 export type UserState = 'not-ready' | 'ready' | 'in-progress' | 'complete' | 'failed'

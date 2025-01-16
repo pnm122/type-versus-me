@@ -76,7 +76,7 @@ export default function Game({ ref }: { ref?: RefObject<HTMLDivElement> }) {
 	function onTyperChange(stats: TyperStats) {
 		updateUser(
 			'score',
-			{ cursorPosition: stats.cursorPosition, netWPM: stats.netWPM },
+			{ cursorPosition: stats.cursorPosition, netWPM: stats.netWPM, accuracy: stats.accuracy },
 			{ globalState, socket, notifs }
 		)
 		setStats(stats)
