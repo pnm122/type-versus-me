@@ -15,6 +15,10 @@ export default async function Profile({
 
 	// Can't import server components from client components, so pass them in here instead
 	return (
-		<ProfileInner user={user} stats={<Stats />} races={<Races searchParams={searchParams} />} />
+		<ProfileInner
+			user={user}
+			stats={<Stats searchParams={searchParams} user={user} />}
+			races={<Races searchParams={searchParams} user={user} />}
+		/>
 	)
 }

@@ -1,7 +1,9 @@
 import { RoomSettings } from '$shared/types/Room'
+import { UserStats } from '@/types/Database'
 
-export const userStatsDisplayNames = {
-	maxWPM: 'best words per minute',
+export const userStatsDisplayNames: { [key in keyof UserStats]: string } = {
+	maxWPM: 'best',
+	avgWPM: 'average',
 	wordsTyped: 'words typed',
 	racesPlayed: 'races played',
 	racesWon: 'races won'
