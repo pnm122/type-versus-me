@@ -6,6 +6,8 @@ import { User } from 'next-auth'
 interface Props {
 	filters: {
 		category: RoomSettings['category'][]
+		minWords: number
+		maxWords: number
 	}
 	user: User
 }
