@@ -75,3 +75,43 @@ export async function getUserStats(
 		return null
 	}
 }
+
+export async function getUserScores(
+	id: string,
+	page: number,
+	itemsPerPage: number,
+	filter: { category?: RoomSettings['category'][]; minWords?: number; maxWords?: number }
+) {
+	const where = {
+		userId: id,
+		race: {
+			category: { in: filter.category },
+			numWords: {
+				gte: filter.minWords,
+				lte: filter.maxWords
+			}
+		}
+	}
+
+	try {
+		return await prisma.score.findMany({
+			where,
+			skip: page * itemsPerPage,
+			take: itemsPerPage,
+			orderBy: {
+				race: {
+					startTime: 'desc'
+				}
+			},
+			include: {
+				race: true
+			}
+		})
+	} catch (e) {
+		if (e instanceof Prisma.PrismaClientKnownRequestError) {
+			console.error(`${e.code}:`, e.message)
+		}
+		console.error(e)
+		return null
+	}
+}
