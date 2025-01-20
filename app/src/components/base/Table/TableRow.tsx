@@ -13,11 +13,23 @@ import createClasses from '@/utils/createClasses'
 import PixelarticonsChevronUp from '~icons/pixelarticons/chevron-up'
 import Skeleton from '@/components/base/Skeleton/Skeleton'
 
-type Props<T extends TableData> = {
+type CommonProps<T extends TableData> = {
 	row?: TableRowType<T>
 } & Pick<TableProps<T>, 'render' | 'expandRender' | 'loading' | 'columns'>
 
+type Props<T extends TableData> =
+	| ({
+			hasNoData: false
+			noData?: null
+	  } & CommonProps<T>)
+	| ({
+			hasNoData: true
+			noData: TableProps<T>['noData']
+	  } & Partial<CommonProps<T>>)
+
 export default function TableRow<T extends TableData>({
+	hasNoData,
+	noData,
 	row,
 	render,
 	expandRender,
@@ -47,6 +59,21 @@ export default function TableRow<T extends TableData>({
 	const hasExpandContent = !!expandRender?.[row?.key ?? '']
 	const anyRowIsExpandable =
 		!(typeof loading === 'number') && !!expandRender && Object.keys(expandRender).length !== 0
+
+	if (hasNoData) {
+		return (
+			<tr className={styles['table__row']}>
+				<td
+					className={createClasses({
+						[styles['no-data']]: true,
+						[styles['cell']]: true
+					})}
+				>
+					{noData ?? 'There is no data.'}
+				</td>
+			</tr>
+		)
+	}
 
 	return (
 		<tr

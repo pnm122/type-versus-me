@@ -84,3 +84,8 @@
 	inset: 0;
 	bottom: unset;
 }
+
+.no-data {
+	grid-column: 1 / -1;
+	color: var(--placeholder);
+}

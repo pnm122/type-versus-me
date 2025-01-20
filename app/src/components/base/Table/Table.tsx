@@ -22,6 +22,8 @@ export interface TableProps<T extends TableData> {
 	loading?: 'show-data' | number | false
 	/** Max width for the table. If the table overflows this width, a scrollbar will be shown */
 	maxWidth?: string
+	/** Content to show when no data is present in the table. */
+	noData?: React.ReactNode
 }
 
 export type TableData = Record<string, any>
@@ -78,7 +80,8 @@ export default function Table<T extends Record<string, any>>({
 	render,
 	expandRender,
 	loading,
-	maxWidth
+	maxWidth,
+	noData
 }: TableProps<T>) {
 	const anyRowIsExpandable =
 		!(typeof loading === 'number') && !!expandRender && Object.keys(expandRender).length !== 0
@@ -121,18 +124,27 @@ export default function Table<T extends Record<string, any>>({
 				</tr>
 			</thead>
 			<tbody>
-				{typeof loading === 'number'
-					? Array(loading)
-							.fill(null)
-							.map((_, index) => (
-								<TableRow key={index} {...{ render, expandRender, loading, columns }} />
-							))
-					: rows.map((row) => (
+				{typeof loading === 'number' ? (
+					Array(loading)
+						.fill(null)
+						.map((_, index) => (
 							<TableRow
-								key={row.key.toString()}
-								{...{ row, render, expandRender, loading, columns }}
+								key={index}
+								hasNoData={false}
+								{...{ render, expandRender, loading, columns }}
 							/>
-						))}
+						))
+				) : rows.length === 0 ? (
+					<TableRow hasNoData={true} noData={noData} />
+				) : (
+					rows.map((row) => (
+						<TableRow
+							key={row.key.toString()}
+							hasNoData={false}
+							{...{ row, render, expandRender, loading, columns }}
+						/>
+					))
+				)}
 			</tbody>
 		</table>
 	)
