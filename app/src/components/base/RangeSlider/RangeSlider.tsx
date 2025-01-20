@@ -290,17 +290,27 @@ export default function RangeSlider({
 		// set offset to 0 so the calculation can be done without the offset already set
 		slider.current.style.setProperty('--range-low-label-x-offset', '0px')
 		slider.current.style.setProperty('--range-high-label-x-offset', '0px')
-		const lowLabelLeft = lowLabelRef.current!.getBoundingClientRect().left
-		const highLabelRight = highLabelRef.current!.getBoundingClientRect().right
-		const { left: sliderLeft, right: sliderRight } = slider.current!.getBoundingClientRect()
+		const lowRect = lowLabelRef.current!.getBoundingClientRect()
+		const highRect = highLabelRef.current!.getBoundingClientRect()
+		const sliderRect = slider.current!.getBoundingClientRect()
+
+		function getOffset(labelRect: DOMRect, sliderRect: DOMRect) {
+			if (labelRect.left < sliderRect.left) {
+				return sliderRect.left - labelRect.left
+			} else if (labelRect.right > sliderRect.right) {
+				return sliderRect.right - labelRect.right
+			} else {
+				return 0
+			}
+		}
 
 		slider.current.style.setProperty(
 			'--range-low-label-x-offset',
-			`${lowLabelLeft < sliderLeft ? sliderLeft - lowLabelLeft : 0}px`
+			`${getOffset(lowRect, sliderRect)}px`
 		)
 		slider.current.style.setProperty(
 			'--range-high-label-x-offset',
-			`${highLabelRight > sliderRight ? sliderRight - highLabelRight : 0}px`
+			`${getOffset(highRect, sliderRect)}px`
 		)
 	}, [min, max, lowSelected, highSelected, step])
 
