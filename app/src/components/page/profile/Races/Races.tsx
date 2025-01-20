@@ -5,7 +5,6 @@ import { User } from 'next-auth'
 
 export default async function Races({
 	searchParams,
-	// eslint-disable-next-line
 	user
 }: {
 	searchParams: Record<string, string | string[]>
@@ -13,7 +12,7 @@ export default async function Races({
 }) {
 	return (
 		<Suspense fallback={<RacesLoading searchParams={searchParams} />}>
-			<RacesContentServer />
+			<RacesContentServer searchParams={searchParams} user={user} />
 		</Suspense>
 	)
 }

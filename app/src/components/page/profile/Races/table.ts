@@ -1,17 +1,13 @@
-import { RoomSettings } from '$shared/types/Room'
-import { TableColumnsFrom, TableData } from '@/components/base/Table/Table'
+import { TableColumnsFrom } from '@/components/base/Table/Table'
+import { Race, Score } from '@prisma/client'
 
-export interface RacesTableData extends TableData {
-	time: Date
-	netWPM: number
-	accuracy: number
-	placement: number
-	category: RoomSettings['category']
-	numWords: number
-}
+export type RacesTableData = Pick<Score, 'accuracy' | 'netWPM'> &
+	Pick<Race, 'category' | 'numWords' | 'startTime'> & {
+		placement: number
+	}
 
 export const racesTableColumns: TableColumnsFrom<RacesTableData> = {
-	time: {
+	startTime: {
 		displayName: 'Time',
 		width: 'minmax(max-content, 1fr)'
 	},

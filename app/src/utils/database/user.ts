@@ -104,7 +104,11 @@ export async function getUserScores(
 				}
 			},
 			include: {
-				race: true
+				race: {
+					include: {
+						scores: true
+					}
+				}
 			}
 		})
 	} catch (e) {

@@ -13,15 +13,26 @@ import { useRouter } from 'next/navigation'
 import newParamsURL from '@/utils/newParamsURL'
 import useSafeParams from '@/hooks/useSafeParams'
 import {
+	getPlacement,
 	ITEMS_PER_PAGE_PARAM_KEY,
 	MAX_ITEMS_PER_PAGE,
+	MAX_WORDS_PARAM_KEY,
 	MIN_ITEMS_PER_PAGE,
+	MIN_WORDS_PARAM_KEY,
 	PAGE_PARAM_KEY,
+	ScoreAndRace,
 	transformItemsPerPageParam,
 	transformPageParam
 } from './utils'
+import { User } from 'next-auth'
+import { RoomSettings } from '$shared/types/Room'
 
-export default function RacesContentClient() {
+interface Props {
+	scores: ScoreAndRace[] | null
+	userId: Required<User>['id']
+}
+
+export default function RacesContentClient({ scores, userId }: Props) {
 	interface Params {
 		[PAGE_PARAM_KEY]: number
 		[ITEMS_PER_PAGE_PARAM_KEY]: number
@@ -34,18 +45,16 @@ export default function RacesContentClient() {
 		[ITEMS_PER_PAGE_PARAM_KEY]: transformItemsPerPageParam
 	})
 
-	const row: RacesTableData = {
-		time: new Date(2023, 10, 20),
-		netWPM: 114,
-		accuracy: 100,
-		placement: 1,
-		category: 'top-1000',
-		numWords: 25
-	}
-
-	const rows: TableRowsFrom<RacesTableData> = Array(50)
-		.fill(row)
-		.map((v, i) => ({ key: i, ...v }))
+	const rows: TableRowsFrom<RacesTableData> =
+		scores?.map((s) => ({
+			startTime: s.race.startTime,
+			netWPM: s.netWPM,
+			accuracy: s.accuracy,
+			placement: getPlacement(userId, s.race.scores),
+			category: s.race.category,
+			numWords: s.race.numWords,
+			key: s.id
+		})) ?? []
 
 	function onPaginationChange(newPage: number, newItemsPerPage: number) {
 		startTransition(() => {
@@ -66,8 +75,8 @@ export default function RacesContentClient() {
 					<div className={styles['filters']}>
 						<CategoryFilter paramKey="races-category" transition={[isPending, startTransition]} />
 						<NumWordsFilter
-							minWordsParamKey="races-min-words"
-							maxWordsParamKey="races-max-words"
+							minWordsParamKey={MIN_WORDS_PARAM_KEY}
+							maxWordsParamKey={MAX_WORDS_PARAM_KEY}
 							transition={[isPending, startTransition]}
 						/>
 					</div>
@@ -92,7 +101,7 @@ export default function RacesContentClient() {
 					columns={racesTableColumns}
 					rows={rows.slice(0, safeParams[ITEMS_PER_PAGE_PARAM_KEY])}
 					render={{
-						time(value) {
+						startTime(value) {
 							return Intl.DateTimeFormat('en-US').format(value)
 						},
 						netWPM(value) {
@@ -105,14 +114,12 @@ export default function RacesContentClient() {
 							)
 						},
 						category(value) {
-							return roomCategoryDisplayNames[value]
+							return roomCategoryDisplayNames[value as RoomSettings['category']]
 						}
 					}}
-					expandRender={{
-						0: () => {
-							return 'Expanded content'
-						}
-					}}
+					expandRender={Object.fromEntries(
+						scores?.map((s) => [s.id, () => `Expanded content`]) ?? []
+					)}
 				/>
 				<Pagination
 					numItems={rows.length}
