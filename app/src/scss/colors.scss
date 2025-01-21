@@ -1,3 +1,43 @@
+// Create a regular nad light gradient for a cursor
+@mixin cursor-gradient($name, $stops...) {
+	$mapped-stops: ();
+	$mapped-light-stops: ();
+	@each $stop in $stops {
+		$mapped-stops: append($mapped-stops, var(--cursor-#{$stop}), comma);
+		$mapped-light-stops: append($mapped-light-stops, var(--cursor-#{$stop}-light), comma);
+	}
+
+	--cursor-#{$name}: linear-gradient(to bottom, #{$mapped-stops});
+	--cursor-#{$name}-light: linear-gradient(to bottom, #{$mapped-light-stops});
+}
+
+// Shared colors
+:root {
+	// Shared cursor colors
+	--cursor-gray: var(--gray-70);
+	--cursor-gray-light: var(--gray-20);
+	@include cursor-gradient(twilight, red, purple);
+	@include cursor-gradient(flame, red, yellow);
+	@include cursor-gradient(spring, yellow, green);
+	@include cursor-gradient(ocean, green, blue);
+	@include cursor-gradient(crystal, cyan, purple);
+	@include cursor-gradient(amethyst, purple, pink);
+	@include cursor-gradient(sunrise, pink, orange);
+	@include cursor-gradient(aurora, pink, cyan);
+	@include cursor-gradient(rainbow, red, orange, yellow, green, cyan, blue, purple, pink);
+
+	// Aliases
+	--surface: var(--gray-10);
+	--unselected: var(--gray-20);
+	--border: var(--gray-20);
+	--disabled: var(--gray-20);
+	--on-disabled: var(--gray-60);
+	--placeholder: var(--gray-50);
+	--untyped: var(--gray-50);
+	--text: var(--gray-80);
+	--extra: var(--negative-contrast);
+}
+
 [data-theme='light'] {
 	// Base colors
 	--white: #fdfcf9;
@@ -35,20 +75,9 @@
 	--positive: #02891b;
 	--positive-light: #dbf8d9;
 
-	// Aliases
-	--surface: var(--gray-10);
-	--unselected: var(--gray-20);
-	--border: var(--gray-20);
-	--disabled: var(--gray-20);
-	--on-disabled: var(--gray-60);
-	--placeholder: var(--gray-50);
-	--untyped: var(--gray-50);
-	--text: var(--gray-80);
 	--background: var(--white);
 	--heading: var(--black);
 	--correct: var(--black);
-	--extra: var(--negative-contrast);
-
 	--shadow-color: rgb(0, 0, 0, 0.15);
 
 	color-scheme: light;
@@ -92,19 +121,9 @@
 	--positive-light: #1b3519;
 
 	// Aliases
-	--surface: var(--gray-10);
-	--unselected: var(--gray-20);
-	--border: var(--gray-20);
-	--disabled: var(--gray-20);
-	--on-disabled: var(--gray-60);
-	--placeholder: var(--gray-50);
-	--untyped: var(--gray-50);
-	--text: var(--gray-80);
 	--background: var(--black);
 	--heading: var(--white);
 	--correct: var(--white);
-	--extra: var(--negative-contrast);
-
 	--shadow-color: rgb(0, 0, 0, 0.35);
 
 	color-scheme: dark;

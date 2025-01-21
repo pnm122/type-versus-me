@@ -120,6 +120,7 @@ export default function RacesContentClient({ scores, userId }: Props) {
 					expandRender={Object.fromEntries(
 						scores?.map((s) => [s.id, () => `Expanded content`]) ?? []
 					)}
+					noData="You haven't played any races yet."
 				/>
 				<Pagination
 					numItems={rows.length}

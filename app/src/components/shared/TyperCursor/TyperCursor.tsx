@@ -95,7 +95,7 @@ export default function TyperCursor({
 				[styles['cursor']]: true,
 				[styles['cursor--opponent']]: opponent
 			})}
-			style={{ backgroundColor: `var(--cursor-${color})` }}
+			style={{ background: `var(--cursor-${color})` }}
 			ref={cursor}
 		/>
 	)

@@ -16,33 +16,69 @@ export const UNLOCKS: Record<number, Unlock | undefined> = {
 		type: 'cursor-color',
 		value: 'red'
 	}),
-	5: u({
+	6: u({
 		type: 'cursor-color',
 		value: 'blue'
 	}),
-	7: u({
+	10: u({
 		type: 'cursor-color',
 		value: 'green'
 	}),
-	10: u({
+	14: u({
 		type: 'cursor-color',
 		value: 'purple'
 	}),
-	13: u({
+	18: u({
 		type: 'cursor-color',
 		value: 'orange'
 	}),
-	16: u({
+	24: u({
 		type: 'cursor-color',
 		value: 'yellow'
 	}),
-	20: u({
+	30: u({
 		type: 'cursor-color',
 		value: 'cyan'
 	}),
-	25: u({
+	36: u({
 		type: 'cursor-color',
 		value: 'pink'
+	}),
+	40: u({
+		type: 'cursor-color',
+		value: 'ocean'
+	}),
+	44: u({
+		type: 'cursor-color',
+		value: 'sunrise'
+	}),
+	48: u({
+		type: 'cursor-color',
+		value: 'flame'
+	}),
+	52: u({
+		type: 'cursor-color',
+		value: 'twilight'
+	}),
+	56: u({
+		type: 'cursor-color',
+		value: 'spring'
+	}),
+	60: u({
+		type: 'cursor-color',
+		value: 'crystal'
+	}),
+	64: u({
+		type: 'cursor-color',
+		value: 'amethyst'
+	}),
+	68: u({
+		type: 'cursor-color',
+		value: 'aurora'
+	}),
+	72: u({
+		type: 'cursor-color',
+		value: 'rainbow'
 	})
 } as const
 

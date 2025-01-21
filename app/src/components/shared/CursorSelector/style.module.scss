@@ -14,24 +14,13 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		background-color: var(--surface);
-		border: 2px solid var(--surface);
-
-		&:disabled {
-			background-color: var(--disabled);
-			border-color: var(--disabled);
-		}
-	}
-
-	&--surface .selector__item {
-		background-color: var(--gray-20);
-		border-color: var(--gray-20);
-
-		&:disabled {
-			--cursor-color: var(--gray-40);
-			background-color: var(--background);
-			border-color: var(--background);
-		}
+		background: var(--selector-background);
+		// When the border color is a gradient, this will be used
+		border-image: var(--selector-border) 1;
+		// When the border color is not a gradient, this will be used
+		border-color: var(--selector-border);
+		border-width: 2px;
+		border-style: solid;
 	}
 }
 
