@@ -26,6 +26,7 @@ model User {
 
   // App-specific data
   username      String
+  cursorColor   String          @default("gray")
   points        Int             @default(0)
   scores        Score[]
 }
