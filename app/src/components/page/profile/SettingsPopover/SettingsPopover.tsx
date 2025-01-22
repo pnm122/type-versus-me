@@ -1,7 +1,7 @@
 import Button from '@/components/base/Button/Button'
 import Input from '@/components/base/Input/Input'
 import Popover from '@/components/base/Popover/Popover'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import styles from './style.module.scss'
 import IconButton from '@/components/base/Button/IconButton'
 import PixelarticonsDice from '~icons/pixelarticons/dice'
@@ -28,6 +28,7 @@ export default function SettingsPopover({
 }: Props) {
 	const [username, setUsername] = useState(currentUsername)
 	const [color, setColor] = useState(currentColor)
+	const inputRef = useRef<HTMLInputElement>(null)
 
 	useEffect(() => {
 		if (open) {
@@ -41,7 +42,12 @@ export default function SettingsPopover({
 	}
 
 	return (
-		<Popover open={open} onBackdropClicked={onClose} className={styles['popover']}>
+		<Popover
+			open={open}
+			focusOnOpenRef={inputRef}
+			onBackdropClicked={onClose}
+			className={styles['popover']}
+		>
 			<div className={styles['username']}>
 				<Input
 					id="username"
@@ -52,7 +58,7 @@ export default function SettingsPopover({
 					wrapperClassName={styles['username__input']}
 					minLength={3}
 					maxLength={16}
-					// ref={inputRef}
+					ref={inputRef}
 					required
 				/>
 				<IconButton

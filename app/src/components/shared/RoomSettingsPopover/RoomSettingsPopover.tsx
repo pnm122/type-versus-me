@@ -7,7 +7,7 @@ import ButtonIcon from '@/components/base/Button/ButtonIcon'
 import PixelarticonsSave from '~icons/pixelarticons/save'
 import PixelarticonsClose from '~icons/pixelarticons/close'
 import PixelarticonsPlus from '~icons/pixelarticons/plus'
-import { useEffect, useRef } from 'react'
+import { useRef } from 'react'
 import { MAX_TEST_TIME, MAX_TEST_WORDS, MIN_TEST_TIME, MIN_TEST_WORDS } from '$shared/constants'
 
 interface Props {
@@ -34,16 +34,8 @@ export default function RoomSettingsPopover({
 		onSubmit()
 	}
 
-	useEffect(() => {
-		if (!open) return
-
-		setTimeout(() => {
-			firstButton.current?.focus()
-		}, 25)
-	}, [open])
-
 	return (
-		<Popover open={open} onBackdropClicked={() => onClose()}>
+		<Popover open={open} focusOnOpenRef={firstButton} onBackdropClicked={() => onClose()}>
 			<form className={styles['form']} onSubmit={onFormSubmit}>
 				<h1 className={styles['form__heading']}>Room settings</h1>
 				<div className={styles['category-selector']}>

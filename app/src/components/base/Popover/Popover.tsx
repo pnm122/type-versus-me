@@ -1,5 +1,8 @@
+'use client'
+
 import createClasses from '@/utils/createClasses'
 import styles from './style.module.scss'
+import { useEffect } from 'react'
 
 type Props = React.PropsWithChildren<{
 	/**
@@ -18,6 +21,8 @@ type Props = React.PropsWithChildren<{
 	bodyScrollableWhenOpen?: boolean
 	/** Whether the popover is open. */
 	open: boolean
+	/** Element to focus when the popover opens. */
+	focusOnOpenRef?: React.RefObject<HTMLElement>
 }>
 
 export default function Popover({
@@ -26,8 +31,16 @@ export default function Popover({
 	className,
 	bodyScrollableWhenOpen = false,
 	open,
+	focusOnOpenRef,
 	children
 }: Props) {
+	useEffect(() => {
+		if (open) {
+			// Need a small delay presumably because the element is technically not visible yet
+			setTimeout(() => focusOnOpenRef?.current?.focus(), 25)
+		}
+	}, [open])
+
 	return (
 		<div
 			className={createClasses({
