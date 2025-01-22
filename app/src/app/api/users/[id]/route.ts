@@ -4,11 +4,15 @@ import { NextResponse } from 'next/server'
 export async function GET(_: any, { params }: { params: Promise<{ id: string }> }) {
 	const { id } = await params
 
-	const res = await getUser(id)
+	const { data, error } = await getUser(id)
 
-	if (!res) {
+	if (!error && !data) {
 		return NextResponse.json({}, { status: 404 })
 	}
 
-	return NextResponse.json(res)
+	if (error) {
+		return NextResponse.json({}, { status: 500 })
+	}
+
+	return NextResponse.json(data)
 }

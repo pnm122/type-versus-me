@@ -35,7 +35,11 @@ export default async function RacesContentServer({
 	const page = transformPageParam(searchParams[PAGE_PARAM_KEY])
 	const itemsPerPage = transformItemsPerPageParam(searchParams[ITEMS_PER_PAGE_PARAM_KEY])
 
-	const scores = await getUserScores(user.id!, page, itemsPerPage, { category, minWords, maxWords })
+	const { data: scores } = await getUserScores(user.id!, page, itemsPerPage, {
+		category,
+		minWords,
+		maxWords
+	})
 
 	return <RacesContentClient scores={scores} userId={user.id!} />
 }

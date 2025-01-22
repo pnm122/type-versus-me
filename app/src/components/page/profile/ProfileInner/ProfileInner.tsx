@@ -56,8 +56,7 @@ function Profile({ stats, races }: Omit<Props, 'user'>) {
 				{races}
 			</main>
 			<SettingsPopover
-				username={user.username}
-				color={user.cursorColor as CursorColor}
+				user={user}
 				open={settingsOpen}
 				onClose={() => setSettingsOpen(false)}
 				points={user.points}

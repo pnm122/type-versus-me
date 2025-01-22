@@ -11,7 +11,7 @@ export default async function Profile({
 }) {
 	const searchParams = await params
 	const session = await auth()
-	const user = (await getUser(session!.user!.id!))!
+	const user = (await getUser(session!.user!.id!)).data!
 
 	// Can't import server components from client components, so pass them in here instead
 	return (

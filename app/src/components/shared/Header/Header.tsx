@@ -7,7 +7,7 @@ import { getUser } from '@/utils/database/user'
 
 export default async function Header() {
 	const session = await auth()
-	const user = session?.user?.id ? await getUser(session?.user?.id) : null
+	const user = session?.user?.id ? (await getUser(session?.user?.id)).data : null
 
 	return (
 		<header className={styles['header']}>

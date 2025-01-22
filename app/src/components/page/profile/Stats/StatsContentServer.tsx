@@ -13,7 +13,7 @@ interface Props {
 }
 
 export default async function StatsContentServer({ filters, user }: Props) {
-	const stats = await getUserStats(user.id!, filters)
+	const { data: stats } = await getUserStats(user.id!, filters)
 
 	return <StatsContentClient stats={stats} />
 }
