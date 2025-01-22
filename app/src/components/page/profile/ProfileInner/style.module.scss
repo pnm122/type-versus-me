@@ -42,3 +42,9 @@
 		}
 	}
 }
+
+.level-and-points-skeleton {
+	@media screen and (width > $screen-md) {
+		min-width: 350px;
+	}
+}

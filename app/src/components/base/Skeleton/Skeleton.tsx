@@ -1,4 +1,6 @@
+import React from 'react'
 import styles from './style.module.scss'
+import createClasses from '@/utils/createClasses'
 
 interface Props {
 	/**
@@ -21,23 +23,33 @@ interface Props {
 	 * @default "var(--gray-30)"
 	 **/
 	shimmerColor?: string
+	/** Optional styles to use for the skeleton */
+	style?: React.CSSProperties
+	/** Optional class(es) to use for the skeleton */
+	className?: string
 }
 
 export default function Skeleton({
 	width = '100%',
 	height = '2em',
 	backgroundColor = 'var(--gray-20)',
-	shimmerColor = 'var(--gray-30)'
+	shimmerColor = 'var(--gray-30)',
+	style,
+	className
 }: Props) {
 	return (
 		<div
-			className={styles['skeleton']}
+			className={createClasses({
+				[styles['skeleton']]: true,
+				...(className ? { [className]: true } : {})
+			})}
 			style={
 				{
 					width,
 					height,
 					'--skeleton-background-color': backgroundColor,
-					'--skeleton-shimmer-color': shimmerColor
+					'--skeleton-shimmer-color': shimmerColor,
+					...style
 				} as React.CSSProperties
 			}
 		/>
