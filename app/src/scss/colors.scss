@@ -31,17 +31,6 @@
 	@include cursor-gradient(sunrise, pink, orange);
 	@include cursor-gradient(aurora, pink, cyan);
 	@include cursor-gradient(rainbow, red, orange, yellow, green, cyan, blue, purple, pink);
-
-	// Aliases
-	--surface: var(--gray-10);
-	--unselected: var(--gray-20);
-	--border: var(--gray-20);
-	--disabled: var(--gray-20);
-	--on-disabled: var(--gray-60);
-	--placeholder: var(--gray-50);
-	--untyped: var(--gray-50);
-	--text: var(--gray-80);
-	--extra: var(--negative-contrast);
 }
 
 [data-theme='light'] {
@@ -77,6 +66,15 @@
 	--heading: var(--black);
 	--correct: var(--black);
 	--shadow-color: rgb(0, 0, 0, 0.15);
+	--surface: var(--gray-10);
+	--unselected: var(--gray-20);
+	--border: var(--gray-20);
+	--disabled: var(--gray-20);
+	--on-disabled: var(--gray-60);
+	--placeholder: var(--gray-50);
+	--untyped: var(--gray-50);
+	--text: var(--gray-80);
+	--extra: var(--negative-contrast);
 
 	color-scheme: light;
 }
@@ -115,6 +113,15 @@
 	--heading: var(--white);
 	--correct: var(--white);
 	--shadow-color: rgb(0, 0, 0, 0.35);
+	--surface: var(--gray-10);
+	--unselected: var(--gray-20);
+	--border: var(--gray-20);
+	--disabled: var(--gray-20);
+	--on-disabled: var(--gray-60);
+	--placeholder: var(--gray-50);
+	--untyped: var(--gray-50);
+	--text: var(--gray-80);
+	--extra: var(--negative-contrast);
 
 	color-scheme: dark;
 }

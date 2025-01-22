@@ -1,10 +1,12 @@
 import { CursorColor } from '$shared/types/Cursor'
 import CursorColors from '$shared/utils/CursorColors'
-import { getUnlocks } from '@/utils/unlocks'
+import { getUnlocks, UNLOCKS } from '@/utils/unlocks'
 import CursorPreview from '../CursorPreview/CursorPreview'
 import styles from './style.module.scss'
 import { getLevel } from '@/utils/level'
 import PixelarticonsLock from '~icons/pixelarticons/lock'
+import SimpleTooltip from '@/components/base/SimpleTooltip/SimpleTooltip'
+import { useId } from 'react'
 
 interface Props {
 	selected?: CursorColor
@@ -16,6 +18,8 @@ interface Props {
 }
 
 export default function CursorSelector({ selected, onChange, points, isOnSurface }: Props) {
+	const id = useId()
+
 	const level = getLevel(points)
 	const unlocks = getUnlocks(level)
 
@@ -62,9 +66,16 @@ export default function CursorSelector({ selected, onChange, points, isOnSurface
 						} as React.CSSProperties
 					}
 					onClick={() => onChange(c)}
+					aria-label={isLocked(c) ? undefined : `${c} cursor`}
+					aria-labelledby={isLocked(c) ? `${id}-${c}` : undefined}
 				>
 					{isLocked(c) ? (
-						<PixelarticonsLock className={styles['lock']} />
+						<>
+							<PixelarticonsLock className={styles['lock']} />
+							<SimpleTooltip className={styles['tooltip']} id={`${id}-${c}`}>
+								Unlocks at level {Object.entries(UNLOCKS).find((u) => u[1]?.value === c)?.[0]}
+							</SimpleTooltip>
+						</>
 					) : (
 						<CursorPreview size="large" color={c} />
 					)}

@@ -21,11 +21,20 @@
 		border-color: var(--selector-border);
 		border-width: 2px;
 		border-style: solid;
+		position: relative;
 
 		.lock {
 			width: 24px;
 			height: 24px;
 			color: var(--on-disabled);
+		}
+
+		.tooltip {
+			visibility: hidden;
+		}
+
+		&:hover .tooltip {
+			visibility: visible;
 		}
 	}
 }
