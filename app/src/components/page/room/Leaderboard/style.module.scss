@@ -108,6 +108,8 @@
 		align-items: center;
 		justify-content: space-between;
 		container-type: inline-size;
+		width: var(--leaderboard-user-width);
+		background: var(--leaderboard-user-background);
 
 		&--failed {
 			padding-inline: 0;

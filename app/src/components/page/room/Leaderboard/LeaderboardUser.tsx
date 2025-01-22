@@ -37,10 +37,12 @@ export default function LeaderboardUser({ user }: { user: User }) {
 	return (
 		<li className={styles['user']}>
 			<div
-				style={{
-					width: user.lastScore.failed ? 12 : `${ratioToHighestWPM * 100}%`,
-					backgroundColor: `var(--cursor-${user.color})`
-				}}
+				style={
+					{
+						'--leaderboard-user-width': user.lastScore.failed ? 12 : `${ratioToHighestWPM * 100}%`,
+						'--leaderboard-user-background': `var(--cursor-${user.color}-horizontal)`
+					} as React.CSSProperties
+				}
 				className={createClasses({
 					[styles['user__bar']]: true,
 					[styles['user__bar--failed']]: user.lastScore.failed

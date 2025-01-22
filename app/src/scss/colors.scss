@@ -9,13 +9,19 @@
 
 	--cursor-#{$name}: linear-gradient(to bottom, #{$mapped-stops});
 	--cursor-#{$name}-light: linear-gradient(to bottom, #{$mapped-light-stops});
+	--cursor-#{$name}-horizontal: linear-gradient(to right, #{$mapped-stops});
+}
+
+@mixin cursor-solid($name, $regular, $light) {
+	--cursor-#{$name}: #{$regular};
+	--cursor-#{$name}-light: #{$light};
+	--cursor-#{$name}-horizontal: #{$regular};
 }
 
 // Shared colors
 :root {
 	// Shared cursor colors
-	--cursor-gray: var(--gray-70);
-	--cursor-gray-light: var(--gray-20);
+	@include cursor-solid(gray, var(--gray-70), var(--gray-20));
 	@include cursor-gradient(twilight, red, purple);
 	@include cursor-gradient(flame, red, yellow);
 	@include cursor-gradient(spring, yellow, green);
@@ -54,22 +60,14 @@
 	--gray-70: #585754;
 	--gray-80: #373634;
 	--gray-90: #1d1c1c;
-	--cursor-red: #f70000;
-	--cursor-red-light: #ffd6cc;
-	--cursor-orange: #ca5c00;
-	--cursor-orange-light: #ffd8b6;
-	--cursor-yellow: #b79f00;
-	--cursor-yellow-light: #f1e7a9;
-	--cursor-green: #009f00;
-	--cursor-green-light: #c4f3c4;
-	--cursor-cyan: #009790;
-	--cursor-cyan-light: #a5f6f0;
-	--cursor-blue: #0673ff;
-	--cursor-blue-light: #c6e9ff;
-	--cursor-purple: #874dff;
-	--cursor-purple-light: #e3deff;
-	--cursor-pink: #d600d0;
-	--cursor-pink-light: #ffd2fe;
+	@include cursor-solid(red, #f70000, #ffd6cc);
+	@include cursor-solid(orange, #ca5c00, #ffd8b6);
+	@include cursor-solid(yellow, #b79f00, #f1e7a9);
+	@include cursor-solid(green, #009f00, #c4f3c4);
+	@include cursor-solid(cyan, #009790, #a5f6f0);
+	@include cursor-solid(blue, #0673ff, #c6e9ff);
+	@include cursor-solid(purple, #874dff, #e3deff);
+	@include cursor-solid(pink, #d600d0, #ffd2fe);
 	--negative: #d50323;
 	--negative-contrast: #620000;
 	--positive: #02891b;
@@ -99,22 +97,14 @@
 	--gray-70: #d0ceca;
 	--gray-80: #e4e3e1;
 	--gray-90: #f3f2f2;
-	--cursor-red: #fa5263;
-	--cursor-red-light: #430e14;
-	--cursor-orange: #ec7b34;
-	--cursor-orange-light: #411400;
-	--cursor-yellow: #cdb430;
-	--cursor-yellow-light: #2e2300;
-	--cursor-green: #3abc34;
-	--cursor-green-light: #052d04;
-	--cursor-cyan: #3ab3ac;
-	--cursor-cyan-light: #002d2b;
-	--cursor-blue: #5e9aff;
-	--cursor-blue-light: #0a224a;
-	--cursor-purple: #a481ff;
-	--cursor-purple-light: #271a46;
-	--cursor-pink: #e560de;
-	--cursor-pink-light: #381236;
+	@include cursor-solid(red, #fa5263, #430e14);
+	@include cursor-solid(orange, #ec7b34, #411400);
+	@include cursor-solid(yellow, #cdb430, #2e2300);
+	@include cursor-solid(green, #3abc34, #052d04);
+	@include cursor-solid(cyan, #3ab3ac, #002d2b);
+	@include cursor-solid(blue, #5e9aff, #0a224a);
+	@include cursor-solid(purple, #a481ff, #271a46);
+	@include cursor-solid(pink, #e560de, #381236);
 	--negative: #ff5e5a;
 	--negative-contrast: #feaaa3;
 	--positive: #2bca2b;
