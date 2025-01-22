@@ -6,7 +6,6 @@ import PixelarticonsSave from '~icons/pixelarticons/save'
 import PixelarticonsClose from '~icons/pixelarticons/close'
 import { useRef } from 'react'
 import { CursorColor } from '$shared/types/Cursor'
-import { useGlobalState } from '@/context/GlobalState'
 import TyperPreview from '@/components/shared/TyperPreview/TyperPreview'
 import Dropdown from '@/components/base/Dropdown/Dropdown'
 
@@ -33,7 +32,6 @@ export default function UserSettings({
 	id,
 	toggleButton
 }: Props) {
-	const { room, user } = useGlobalState()
 	const inputRef = useRef<HTMLInputElement>(null)
 
 	function onSubmit(e: React.FormEvent<any>) {
@@ -55,7 +53,6 @@ export default function UserSettings({
 		>
 			<UsernameAndColorInput
 				{...{ username, color, onUsernameChange, onColorChange }}
-				disabledColors={room?.users.filter((u) => u.id !== user?.id).map((u) => u.color)}
 				isOnSurface
 				inputRef={inputRef}
 			/>

@@ -12,6 +12,10 @@ type Unlock<T extends UnlockType = UnlockType> = {
 }
 
 export const UNLOCKS: Record<number, Unlock | undefined> = {
+	1: u({
+		type: 'cursor-color',
+		value: 'gray'
+	}),
 	3: u({
 		type: 'cursor-color',
 		value: 'red'
@@ -85,4 +89,8 @@ export const UNLOCKS: Record<number, Unlock | undefined> = {
 // Enforce type and value match
 function u<T extends UnlockType>(unlock: Unlock<T>): Unlock<T> {
 	return unlock
+}
+
+export function getUnlocks(level: number): Record<number, Unlock | undefined> {
+	return Object.fromEntries(Object.entries(UNLOCKS).filter((u) => parseInt(u[0]) <= level))
 }

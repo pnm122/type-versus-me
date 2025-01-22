@@ -6,7 +6,6 @@ import styles from './style.module.scss'
 import PixelarticonsDice from '~icons/pixelarticons/dice'
 import CursorSelector from '@/components/shared/CursorSelector/CursorSelector'
 import { useGlobalState } from '@/context/GlobalState'
-import CursorColors from '$shared/utils/CursorColors'
 import { CursorColor } from '$shared/types/Cursor'
 
 interface Props {
@@ -30,8 +29,6 @@ interface Props {
 	onColorChange?: (c: CursorColor) => void
 	/** Change the styling for when the component is on a surface. */
 	isOnSurface?: boolean
-	/** List of colors to disable in the color input. */
-	disabledColors?: CursorColor[]
 	inputRef?: React.RefObject<HTMLInputElement>
 }
 
@@ -41,7 +38,6 @@ export default function UsernameAndColorInput({
 	onUsernameChange,
 	onColorChange,
 	isOnSurface,
-	disabledColors,
 	inputRef
 }: Props) {
 	const globalState = useGlobalState()
@@ -90,7 +86,7 @@ export default function UsernameAndColorInput({
 			<CursorSelector
 				selected={color ?? user?.color}
 				onChange={onColorChangeDefault}
-				disabled={color || user ? disabledColors : CursorColors}
+				points={6000}
 				isOnSurface={isOnSurface}
 			/>
 		</div>
