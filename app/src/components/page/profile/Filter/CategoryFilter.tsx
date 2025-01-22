@@ -11,6 +11,8 @@ import FilterChip from '@/components/base/FilterChip/FilterChip'
 import { roomCategoryDisplayNames } from '@/utils/displayNameMappings'
 import useSafeParams from '@/hooks/useSafeParams'
 import { transformCategory } from '@/components/page/profile/utils'
+import ButtonIcon from '@/components/base/Button/ButtonIcon'
+import PixelarticonsSave from '~icons/pixelarticons/save'
 
 interface Props {
 	transition: [boolean, TransitionStartFunction]
@@ -75,7 +77,10 @@ export default function CategoryFilter({ transition, paramKey }: Props) {
 					/>
 				))}
 			</div>
-			<Button onClick={onSave}>Save</Button>
+			<Button onClick={onSave}>
+				<ButtonIcon icon={<PixelarticonsSave />} />
+				Save
+			</Button>
 		</FilterWithDropdown>
 	)
 }

@@ -7,6 +7,8 @@ import { MAX_TEST_WORDS, MIN_TEST_WORDS } from '$shared/constants'
 import Button from '@/components/base/Button/Button'
 import useNumWordsParams from '@/hooks/useNumWordsParams'
 import RangeSlider from '@/components/base/RangeSlider/RangeSlider'
+import PixelarticonsSave from '~icons/pixelarticons/save'
+import ButtonIcon from '@/components/base/Button/ButtonIcon'
 
 interface Props {
 	transition: [boolean, TransitionStartFunction]
@@ -75,6 +77,7 @@ export default function NumWordsFilter({ transition, minWordsParamKey, maxWordsP
 				ariaLabel="Number of words"
 			/>
 			<Button ref={focusOnOpenRef} onClick={onSave}>
+				<ButtonIcon icon={<PixelarticonsSave />} />
 				Save
 			</Button>
 		</FilterWithDropdown>

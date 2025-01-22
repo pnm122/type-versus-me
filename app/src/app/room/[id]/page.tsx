@@ -52,5 +52,6 @@ export default function Room() {
 		return <InRoom />
 	}
 
+	// TODO: Get rid of concept of join room page
 	return <JoinRoom />
 }

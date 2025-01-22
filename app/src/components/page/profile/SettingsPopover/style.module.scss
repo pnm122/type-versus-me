@@ -1,0 +1,32 @@
+@use '@/scss/fonts' as *;
+
+.popover {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+
+	.username {
+		display: flex;
+		align-items: flex-start;
+		width: 100%;
+
+		&__input {
+			flex: 1;
+		}
+
+		&__generate {
+			margin-top: calc((0.875rem * $line-height-body) + 2px);
+		}
+	}
+
+	.color {
+		display: flex;
+		flex-direction: column;
+		gap: 6px;
+
+		&__heading {
+			@include font-heading(14);
+			color: var(--text);
+		}
+	}
+}

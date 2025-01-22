@@ -9,6 +9,7 @@ import SettingsPopover from '@/components/page/profile/SettingsPopover/SettingsP
 import { useState } from 'react'
 import { ProfileContext, useProfile } from '@/context/Profile'
 import LevelAndPoints from '@/components/page/profile/LevelAndPoints/LevelAndPoints'
+import { CursorColor } from '$shared/types/Cursor'
 
 interface Props {
 	user: User
@@ -54,7 +55,13 @@ function Profile({ stats, races }: Omit<Props, 'user'>) {
 				</section>
 				{races}
 			</main>
-			<SettingsPopover open={settingsOpen} onClose={() => setSettingsOpen(false)} />
+			<SettingsPopover
+				username={user.username}
+				color={user.cursorColor as CursorColor}
+				open={settingsOpen}
+				onClose={() => setSettingsOpen(false)}
+				points={user.points}
+			/>
 		</>
 	)
 }

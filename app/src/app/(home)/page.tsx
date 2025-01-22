@@ -16,7 +16,6 @@ import { useNotification } from '@/context/Notification'
 import { errorNotification } from '@/utils/errorNotifications'
 import { useGlobalState } from '@/context/GlobalState'
 import { createRoom, joinRoom } from '@/utils/room'
-import UsernameAndColorInput from '@/components/shared/UsernameAndColorInput/UsernameAndColorInput'
 import RoomSettingsPopover from '@/components/shared/RoomSettingsPopover/RoomSettingsPopover'
 import { RoomSettings } from '$shared/types/Room'
 
@@ -96,7 +95,6 @@ export default function Home() {
 							'taptaptap.live'
 						)}
 					</h1>
-					<UsernameAndColorInput />
 					<div className={styles['main__group']}>
 						<Button onClick={onCreateRoomClicked} loading={createRoomLoading} disabled={!user}>
 							<ButtonIcon icon={<PixelarticonsPlus />} />

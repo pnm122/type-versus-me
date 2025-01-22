@@ -1,6 +1,5 @@
 'use client'
 
-import UsernameAndColorInput from '@/components/shared/UsernameAndColorInput/UsernameAndColorInput'
 import styles from './style.module.scss'
 import Button from '@/components/base/Button/Button'
 import ButtonIcon from '@/components/base/Button/ButtonIcon'
@@ -29,7 +28,6 @@ export default function JoinRoom() {
 		<main className={styles['page']}>
 			<div className={styles['main']}>
 				<div className={styles['main__inputs']}>
-					<UsernameAndColorInput />
 					<div className={styles['cursor-preview']}>
 						<TyperPreview
 							text="Your cursor will look like this."
