@@ -1,14 +1,14 @@
 import { User, UserState } from './types/User'
-import CursorColors from './utils/CursorColors'
 
 export const MAX_ROOMS = 8 as const
-export const MAX_USERS_PER_ROOM = CursorColors.length
+export const MAX_USERS_PER_ROOM = 8 as const
 export const INITIAL_USER_STATE: UserState = 'not-ready' as const
 export const INITIAL_USER_SCORE: Required<User>['score'] = {
 	cursorPosition: {
 		word: 0,
 		letter: 0
 	},
+	accuracy: 0,
 	netWPM: 0
 } as const
 
