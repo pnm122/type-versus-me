@@ -2,7 +2,6 @@
 
 import { User } from '@prisma/client'
 import styles from './style.module.scss'
-import CursorPreview from '@/components/shared/CursorPreview/CursorPreview'
 import IconButton from '@/components/base/Button/IconButton'
 import PixelarticonsEdit from '~icons/pixelarticons/edit'
 import SettingsPopover from '@/components/page/profile/SettingsPopover/SettingsPopover'
@@ -10,6 +9,7 @@ import { useState } from 'react'
 import { ProfileContext, useProfile } from '@/context/Profile'
 import LevelAndPoints from '@/components/page/profile/LevelAndPoints/LevelAndPoints'
 import { CursorColor } from '$shared/types/Cursor'
+import UserAndCursor from '@/components/shared/UserAndCursor/UserAndCursor'
 
 interface Props {
 	user: User
@@ -36,11 +36,11 @@ function Profile({ stats, races }: Omit<Props, 'user'>) {
 				<section className={styles['page__top']}>
 					<div className={styles['user']}>
 						<div className={styles['user__preview-and-edit']}>
-							<div className={styles['preview']}>
-								{/* TODO: Get from user object */}
-								<CursorPreview size="medium" color={'red'} />
-								<h1 className={styles['preview__username']}>{user.username}</h1>
-							</div>
+							<UserAndCursor
+								size="large"
+								username={user.username}
+								color={user.cursorColor as CursorColor}
+							/>
 							<IconButton
 								style="tertiary"
 								icon={<PixelarticonsEdit />}

@@ -16,27 +16,23 @@
 
 		.username {
 			@include font-heading(16);
+			display: inline;
 
-			&__main {
-				position: relative;
-				display: inline;
-
-				.admin-icon {
-					width: 1em;
-					height: 1em;
-					position: absolute;
-					right: 0;
-					top: 0;
-					transform: translate(65%, -65%) rotate(30deg);
-					color: var(--primary);
-				}
+			.admin-icon {
+				width: 1em;
+				height: 1em;
+				position: absolute;
+				right: 0;
+				top: 0;
+				transform: translate(65%, -65%) rotate(30deg);
+				color: var(--primary);
 			}
+		}
 
-			&__you {
-				@include font-heading(12);
-				color: var(--placeholder);
-				display: inline;
-			}
+		.you {
+			@include font-heading(12);
+			color: var(--placeholder);
+			display: inline;
 		}
 	}
 }

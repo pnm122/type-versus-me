@@ -1,0 +1,30 @@
+@use '@/scss/fonts' as *;
+
+.user-and-cursor {
+	display: flex;
+	align-items: center;
+
+	&--small {
+		gap: 4px;
+
+		.user-and-cursor__username {
+			@include font-heading(16);
+		}
+	}
+
+	&--medium {
+		gap: 6px;
+
+		.user-and-cursor__username {
+			@include font-heading(20);
+		}
+	}
+
+	&--large {
+		gap: 8px;
+
+		.user-and-cursor__username {
+			@include font-heading(24);
+		}
+	}
+}

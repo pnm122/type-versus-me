@@ -14,6 +14,8 @@ import PixelarticonsLogin from '~icons/pixelarticons/login'
 import { usePathname } from 'next/navigation'
 import ButtonIcon from '@/components/base/Button/ButtonIcon'
 import { User } from '@prisma/client'
+import UserAndCursor from '../UserAndCursor/UserAndCursor'
+import { CursorColor } from '$shared/types/Cursor'
 
 interface Props {
 	session: Session | null
@@ -43,7 +45,11 @@ export default function Account({ session, user }: Props) {
 					onClick={toggleExpanded}
 					ref={toggleButton}
 				>
-					{user.username}
+					<UserAndCursor
+						size="small"
+						username={user.username}
+						color={user.cursorColor as CursorColor}
+					/>
 				</Button>
 			) : (
 				<IconButton
