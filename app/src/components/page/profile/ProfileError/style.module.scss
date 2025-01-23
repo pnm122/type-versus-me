@@ -1,0 +1,29 @@
+@use '@/scss/fonts' as *;
+@use '@/scss/mixins' as *;
+
+.page {
+	@include container;
+	height: calc(100vh - var(--header-size));
+	max-height: calc(-webkit-fill-available - var(--header-size));
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: 12px;
+
+	&__heading {
+		@include font-heading(64);
+	}
+
+	&__text {
+		@include font-body(20);
+	}
+
+	&__subtext {
+		@include font-body(14);
+		color: var(--placeholder);
+	}
+
+	&__refresh {
+		width: fit-content !important;
+	}
+}

@@ -27,7 +27,6 @@ interface Props {
 export default function SettingsPopover({ open, onClose, user, points }: Props) {
 	const [username, setUsername] = useState(user.username)
 	const [color, setColor] = useState(user.cursorColor as CursorColor)
-	const [loading, setLoading] = useState(false)
 	const inputRef = useRef<HTMLInputElement>(null)
 	const notifs = useNotification()
 	const router = useRouter()
@@ -51,20 +50,18 @@ export default function SettingsPopover({ open, onClose, user, points }: Props) 
 			<form
 				className={styles['form']}
 				action={async () => {
-					setLoading(true)
-					const { error } = await updateUser(user.id, { username, cursorColor: color })
-					setLoading(false)
+					startTransition(async () => {
+						const { error } = await updateUser(user.id, { username, cursorColor: color })
 
-					if (error) {
-						notifs.push({
-							style: 'error',
-							text: error.message
-						})
-					} else {
-						startTransition(async () => {
+						if (error) {
+							notifs.push({
+								style: 'error',
+								text: `There was an error updating your settings. Please refresh and try again. (Error code: "${error.code}")`
+							})
+						} else {
 							router.refresh()
-						})
-					}
+						}
+					})
 				}}
 			>
 				<div className={styles['username']}>
@@ -92,7 +89,7 @@ export default function SettingsPopover({ open, onClose, user, points }: Props) 
 					<h2 className={styles['color__heading']}>Cursor style</h2>
 					<CursorSelector selected={color} onChange={setColor} points={points} isOnSurface={true} />
 				</div>
-				<Button loading={loading || isPending} type="submit">
+				<Button loading={isPending} type="submit">
 					<ButtonIcon icon={<PixelarticonsSave />} />
 					Save
 				</Button>
