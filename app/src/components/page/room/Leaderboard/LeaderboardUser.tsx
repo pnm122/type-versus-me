@@ -19,7 +19,9 @@ export default function LeaderboardUser({ user }: { user: User }) {
 	const username = (
 		<h2 className={styles['username']}>
 			<span className={styles['username__text']}>{user.username}</span>
-			{currentUser.id === user.id && <span className={styles['username__you']}> (you)</span>}
+			{currentUser.socketId === user.socketId && (
+				<span className={styles['username__you']}> (you)</span>
+			)}
 		</h2>
 	)
 

@@ -37,7 +37,7 @@ export function mockSocket(id = 'test') {
 
 export function mockUser<T extends Partial<User> = Partial<User>>(u?: T): User & T {
 	return {
-		id: 'test',
+		socketId: 'test',
 		username: 'Test',
 		color: 'blue',
 		...u

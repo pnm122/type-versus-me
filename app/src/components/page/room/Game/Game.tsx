@@ -66,9 +66,9 @@ export default function Game({ ref }: { ref?: RefObject<HTMLDivElement> }) {
 	if (!room || !room.test) return <></>
 
 	const otherCursors: Cursor[] = room.users
-		.filter((u) => u.id !== user!.id)
+		.filter((u) => u.socketId !== user!.socketId)
 		.map((u) => ({
-			id: u.id,
+			id: u.socketId,
 			color: u.color,
 			position: u.score?.cursorPosition ?? { word: 0, letter: 0 }
 		}))

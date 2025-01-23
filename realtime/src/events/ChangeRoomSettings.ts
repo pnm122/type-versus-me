@@ -17,11 +17,13 @@ export default function ChangeRoomSettings(
 	// eslint-disable-next-line
 	callback: ChangeRoomSettingsCallback
 ) {
-	if (!isValidEventAndPayload(socket, callback, value?.userId, value?.roomId, value?.settings)) {
+	if (
+		!isValidEventAndPayload(socket, callback, value?.userSocketId, value?.roomId, value?.settings)
+	) {
 		return
 	}
 
-	const { roomId, userId, settings } = value
+	const { roomId, userSocketId, settings } = value
 
 	if (
 		check(
@@ -61,7 +63,7 @@ export default function ChangeRoomSettings(
 		return
 	}
 
-	if (check(room!.admin !== userId, 'user-not-admin', callback)) {
+	if (check(room!.admin !== userSocketId, 'user-not-admin', callback)) {
 		return
 	}
 

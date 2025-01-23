@@ -56,7 +56,7 @@ export function GlobalStateProvider({ children }: React.PropsWithChildren) {
 		const color = getColor()
 
 		setUser({
-			id: socket.value.id!,
+			socketId: socket.value.id!,
 			username,
 			color
 		})

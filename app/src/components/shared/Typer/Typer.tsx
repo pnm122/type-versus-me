@@ -51,7 +51,7 @@ interface Props {
 	/**
 	 * Reference to this Typer's exposed functions
 	 */
-	ref?: React.RefObject<TyperRef>
+	ref?: React.RefObject<TyperRef | null>
 }
 
 export default function Typer({

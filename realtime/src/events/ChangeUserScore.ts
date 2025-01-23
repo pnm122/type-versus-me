@@ -12,11 +12,11 @@ export default function ChangeUserScore(
 	value: ChangeUserScorePayload,
 	callback: ChangeUserScoreCallback
 ) {
-	if (!isValidEventAndPayload(socket, callback, value?.id, value?.score)) {
+	if (!isValidEventAndPayload(socket, callback, value?.socketId, value?.score)) {
 		return
 	}
 
-	const room = state.getRoomFromUser(value.id)
+	const room = state.getRoomFromUser(value.socketId)
 	if (check(!room, 'user-not-in-room', callback)) {
 		return
 	}
@@ -25,7 +25,7 @@ export default function ChangeUserScore(
 		return
 	}
 
-	state.updateUser(value.id, { score: value.score })
+	state.updateUser(value.socketId, { score: value.score })
 	io.in(room!.id).emit('change-user-data', value)
 
 	callback({

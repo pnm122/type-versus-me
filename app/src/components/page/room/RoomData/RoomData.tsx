@@ -125,7 +125,7 @@ export default function RoomData() {
 				<div className={styles['user-info']}>
 					<ul className={styles['user-info__users']}>
 						{room.users.map((u) => (
-							<User key={u.id} user={u} />
+							<User key={u.socketId} user={u} />
 						))}
 					</ul>
 					<h3 className={styles['user-info__num-players']}>
@@ -153,7 +153,7 @@ export default function RoomData() {
 					<span className={styles['room-settings__text']}>
 						{getCategoryText()} | {room.settings.numWords} words | {getTimeLimitText()} time limit
 					</span>
-					{room.admin === user.id && (
+					{room.admin === user.socketId && (
 						<IconButton
 							icon={<PixelarticonsEdit />}
 							onClick={() => settingsDispatch({ key: 'open', value: true })}

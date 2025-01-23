@@ -64,6 +64,7 @@ export default function SettingsPopover({ open, onClose, user, points }: Props) 
 					})
 				}}
 			>
+				<input ref={inputRef} />
 				<div className={styles['username']}>
 					<Input
 						id="username"

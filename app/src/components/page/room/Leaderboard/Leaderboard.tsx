@@ -39,7 +39,7 @@ export default function Leaderboard() {
 				<Collapsible open={open} openDirection="down" id="leaderboard-results">
 					<ol className={styles['leaderboard__results']}>
 						{sortedScores.map((u) => (
-							<LeaderboardUser key={u.id} user={u} />
+							<LeaderboardUser key={u.socketId} user={u} />
 						))}
 					</ol>
 				</Collapsible>

@@ -1,8 +1,10 @@
 import { CursorColor, CursorPosition } from './Cursor'
 
 export interface User {
-	/** Unique identifier for the User. Matches their socket connection ID. */
-	id: string
+	/** Socket connection ID. */
+	socketId: string
+	/** User ID from database. Only exists if the user has an account. */
+	userId?: string
 	/** User's displayed username. Must be unique for the room they are in. */
 	username: string
 	/** User's displayed color. Must be unique for the room they are in. */

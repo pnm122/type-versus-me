@@ -12,7 +12,7 @@ type Props = {
 	wrapperClassName?: string
 	inputClassName?: string
 	units?: string
-	ref?: React.RefObject<HTMLInputElement>
+	ref?: React.Ref<HTMLInputElement>
 } & Omit<
 	React.InputHTMLAttributes<HTMLInputElement>,
 	'value' | 'size' | 'required' | 'disabled' | 'id' | 'className'

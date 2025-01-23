@@ -41,7 +41,7 @@ class State {
 			id: this.generateRoomId(),
 			state: 'waiting',
 			users: [admin],
-			admin: admin.id,
+			admin: admin.socketId,
 			settings
 		}
 
@@ -81,33 +81,36 @@ class State {
 		return this.getRoom(id)
 	}
 
-	removeUserFromRoom(roomId: Room['id'], userId: User['id']): Readonly<Room | undefined> {
+	removeUserFromRoom(roomId: Room['id'], userId: User['socketId']): Readonly<Room | undefined> {
 		this.rooms = this.rooms.map((r) =>
 			r.id === roomId
 				? {
 						...r,
-						users: r.users.filter((u) => u.id !== userId)
+						users: r.users.filter((u) => u.socketId !== userId)
 					}
 				: r
 		)
 		return this.getRoom(roomId)
 	}
 
-	getUserInRoom(roomId: Room['id'], userId: User['id']): Readonly<User | undefined> {
+	getUserInRoom(roomId: Room['id'], userId: User['socketId']): Readonly<User | undefined> {
 		return this.rooms.reduce<User | undefined>(
-			(acc, r) => (acc || r.id !== roomId ? acc : r.users.find((u) => u.id === userId)),
+			(acc, r) => (acc || r.id !== roomId ? acc : r.users.find((u) => u.socketId === userId)),
 			undefined
 		)
 	}
 
-	getRoomFromUser(userId: User['id']): Readonly<Room | undefined> {
-		return this.rooms.find((r) => !!r.users.find((u) => u.id === userId))
+	getRoomFromUser(userId: User['socketId']): Readonly<Room | undefined> {
+		return this.rooms.find((r) => !!r.users.find((u) => u.socketId === userId))
 	}
 
-	updateUser(userId: User['id'], user: Partial<Omit<User, 'id'>>): Readonly<User | undefined> {
+	updateUser(
+		userId: User['socketId'],
+		user: Partial<Omit<User, 'id'>>
+	): Readonly<User | undefined> {
 		this.rooms = this.rooms.map((r) => ({
 			...r,
-			users: r.users.map((u) => (u.id === userId ? { ...u, ...user } : u))
+			users: r.users.map((u) => (u.socketId === userId ? { ...u, ...user } : u))
 		}))
 		const roomId = this.getRoomFromUser(userId)?.id
 		return roomId ? this.getUserInRoom(roomId, userId) : undefined

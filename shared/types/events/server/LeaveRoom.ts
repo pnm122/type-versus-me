@@ -2,7 +2,7 @@ import { Room } from '$shared/types/Room'
 import { User } from '../../User'
 
 type Payload = {
-	userId: User['id']
+	userSocketId: User['socketId']
 	room: Room
 }
 

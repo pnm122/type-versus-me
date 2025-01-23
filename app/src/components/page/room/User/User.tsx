@@ -9,7 +9,7 @@ interface Props {
 	user: UserType
 }
 
-export default function User({ user: { id, username, color, score, state } }: Props) {
+export default function User({ user: { socketId, username, color, score, state } }: Props) {
 	const globalState = useGlobalState()
 	const { user, room } = globalState
 
@@ -17,11 +17,11 @@ export default function User({ user: { id, username, color, score, state } }: Pr
 		<>
 			<span className={styles['username']}>
 				{username}
-				{room?.admin === id && (
+				{room?.admin === socketId && (
 					<RiVipCrownFill aria-label="Admin" className={styles['admin-icon']} />
 				)}
 			</span>
-			{id === user!.id && <span className={styles['you']}> (you)</span>}
+			{socketId === user!.socketId && <span className={styles['you']}> (you)</span>}
 		</>
 	)
 

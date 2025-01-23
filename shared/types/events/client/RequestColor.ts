@@ -1,7 +1,7 @@
 import { User } from '../../User'
 import { Return } from '../../Return'
 
-type Payload = Pick<User, 'id' | 'color'>
+type Payload = Pick<User, 'socketId' | 'color'>
 
 type Callback = (
 	value: Return<

@@ -5,7 +5,7 @@ import createClasses from '@/utils/createClasses'
 import { useGlobalState } from '@/context/GlobalState'
 
 type Props = Omit<Cursor, 'id'> & {
-	typer: React.RefObject<HTMLElement>
+	typer: React.RefObject<HTMLElement | null>
 	opponent?: boolean
 	wordClassName?: string
 	characterClassName?: string

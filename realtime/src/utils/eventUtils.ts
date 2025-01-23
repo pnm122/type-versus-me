@@ -18,7 +18,7 @@ import { Room } from '$shared/types/Room'
  */
 export function isValidEventAndPayload<
 	Callback extends (value: Return<any, 'missing-argument' | 'invalid-user-id'>) => void
->(socket: CustomSocket, callback: Callback, userId: User['id'], ...expectedValues: any[]) {
+>(socket: CustomSocket, callback: Callback, socketId: User['socketId'], ...expectedValues: any[]) {
 	if (typeof callback !== 'function') return false
 
 	const anyFailed =
@@ -28,7 +28,7 @@ export function isValidEventAndPayload<
 
 	if (anyFailed) return false
 
-	if (check(socket.id !== userId, 'invalid-user-id', callback)) {
+	if (check(socket.id !== socketId, 'invalid-user-id', callback)) {
 		return false
 	}
 
@@ -73,7 +73,7 @@ export async function setRoomToInProgress(room: Room) {
 	io.in(room.id).emit('change-room-data', { state: 'in-progress', test })
 
 	state.getRoom(room.id)!.users.forEach((u) => {
-		state.updateUser(u.id, { score: INITIAL_USER_SCORE, state: 'in-progress' })
+		state.updateUser(u.socketId, { score: INITIAL_USER_SCORE, state: 'in-progress' })
 	})
 	io.in(room.id).emit('change-all-user-data', { score: INITIAL_USER_SCORE, state: 'in-progress' })
 }

@@ -41,13 +41,13 @@ export function onLeaveRoom(
 	const { globalState, notifs } = context
 	if (!globalState.room) return
 
-	const leavingUser = globalState.room.users.find((u) => u.id === res.userId)
+	const leavingUser = globalState.room.users.find((u) => u.socketId === res.userSocketId)
 	if (!leavingUser) {
 		return
 	}
 
 	globalState.setRoom((r) =>
-		r ? { ...r, users: r.users.filter((u) => u.id !== res.userId) } : null
+		r ? { ...r, users: r.users.filter((u) => u.socketId !== res.userSocketId) } : null
 	)
 	notifs.push({
 		text: `${leavingUser.username} has left the room.`
@@ -199,7 +199,7 @@ export async function changeRoomSettings(
 	}
 
 	const res = await socket.value.emitWithAck('change-room-settings', {
-		userId: globalState.user.id,
+		userSocketId: globalState.user.socketId,
 		roomId: globalState.room.id,
 		settings
 	})

@@ -60,7 +60,7 @@ describe('check', () => {
 describe('setRoomToInProgress', () => {
 	function init() {
 		const { room } = createRoomForTesting().value!
-		state.addUserToRoom(room.id, mockUser({ id: 'userB' }))
+		state.addUserToRoom(room.id, mockUser({ socketId: 'userB' }))
 
 		return { room }
 	}
