@@ -45,6 +45,7 @@ export default async function ChangeUserState(
 		value.state === 'complete' || value.state === 'failed'
 			? {
 					netWPM: state.getUserInRoom(room!.id, value.id)!.score!.netWPM,
+					accuracy: state.getUserInRoom(room!.id, value.id)!.score!.accuracy,
 					failed: value.state === 'failed'
 				}
 			: undefined

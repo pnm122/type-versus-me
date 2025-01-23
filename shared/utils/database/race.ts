@@ -1,4 +1,4 @@
-import { prisma } from '@/prisma'
+import { prisma } from '$shared/prisma'
 import { Prisma, Race } from '@prisma/client'
 
 export async function createRace(

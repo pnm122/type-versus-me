@@ -119,7 +119,7 @@ describe('ChangeUserState', () => {
 
 	describe('the user is changing state to complete or failed', () => {
 		async function init(failed = false) {
-			const score = { netWPM: 85, cursorPosition: { word: 50, letter: 5 } }
+			const score = { netWPM: 85, accuracy: 0.95, cursorPosition: { word: 50, letter: 5 } }
 			const { room, user } = createRoomForTesting(
 				mockUser({ id: 'userA' }),
 				mockSocket('userA')
@@ -139,6 +139,7 @@ describe('ChangeUserState', () => {
 			expect(state.getUserInRoom(room.id, user.id)).toMatchObject({
 				lastScore: {
 					netWPM: score.netWPM,
+					accuracy: score.accuracy,
 					failed: false
 				}
 			})
@@ -157,6 +158,7 @@ describe('ChangeUserState', () => {
 						.objectContaining({
 							lastScore: {
 								netWPM: score.netWPM,
+								accuracy: score.accuracy,
 								failed: false
 							}
 						})
@@ -171,6 +173,7 @@ describe('ChangeUserState', () => {
 			expect(state.getUserInRoom(room.id, user.id)).toMatchObject({
 				lastScore: {
 					netWPM: score.netWPM,
+					accuracy: score.accuracy,
 					failed: true
 				}
 			})

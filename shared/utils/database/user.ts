@@ -2,8 +2,8 @@
 
 import { CursorColor } from '$shared/types/Cursor'
 import { RoomSettings } from '$shared/types/Room'
-import { prisma } from '@/prisma'
-import { UserStats } from '@/types/Database'
+import { prisma } from '$shared/prisma'
+import { UserStats } from '$shared/types/Database'
 import { Prisma, User } from '@prisma/client'
 
 export async function getUser(

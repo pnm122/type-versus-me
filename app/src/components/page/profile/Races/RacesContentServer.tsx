@@ -1,4 +1,4 @@
-import { getUserScores } from '@/utils/database/user'
+import { getUserScores } from '$shared/utils/database/user'
 import {
 	transformAllNumWords,
 	transformCategory,
