@@ -22,7 +22,7 @@ type Props = React.PropsWithChildren<{
 	/** Whether the popover is open. */
 	open: boolean
 	/** Element to focus when the popover opens. */
-	focusOnOpenRef?: React.RefObject<HTMLElement>
+	focusOnOpenRef?: React.RefObject<any>
 }>
 
 export default function Popover({

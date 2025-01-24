@@ -6,12 +6,12 @@ import { INITIAL_USER_SCORE, INITIAL_USER_STATE, MAX_USERS_PER_ROOM } from '$sha
 /** Create a room and return the user, room, and socket */
 function initRoom(userId = 'abcdef') {
 	const socket = mockSocket(userId)
-	const { value } = createRoomForTesting(mockUser({ id: userId }), socket)
+	const { value } = createRoomForTesting(mockUser({ socketId: userId }), socket)
 	expect(value).not.toBeNull()
 	return { ...value!, socket }
 }
 
-const secondUser = () => mockUser({ id: 'userB', username: 'secondUser' })
+const secondUser = () => mockUser({ socketId: 'userB', username: 'secondUser' })
 const secondUserSocket = () => mockSocket('userB')
 
 describe('JoinRoom', () => {
@@ -127,7 +127,10 @@ describe('JoinRoom', () => {
 			Array(MAX_USERS_PER_ROOM - 1)
 				.fill(null)
 				.forEach((_, index) => {
-					state.addUserToRoom(roomId, mockUser({ id: `user${index}`, username: `user${index}` }))
+					state.addUserToRoom(
+						roomId,
+						mockUser({ socketId: `user${index}`, username: `user${index}` })
+					)
 				})
 
 			JoinRoom(secondUserSocket(), { roomId, user: secondUser() }, callback)
@@ -151,7 +154,7 @@ describe('JoinRoom', () => {
 				mockSocket('userB'),
 				{
 					roomId,
-					user: { id: 'userB', username: user.username, color: 'orange' }
+					user: { socketId: 'userB', username: user.username, color: 'orange' }
 				},
 				callback
 			)
@@ -174,7 +177,7 @@ describe('JoinRoom', () => {
 		JoinRoom(secondUserSocket(), { roomId, user: secondUser() }, () => {})
 
 		expect(state.getRoom(roomId)!.users[1]).toMatchObject({
-			id: secondUser().id
+			socketId: secondUser().socketId
 		})
 	})
 
@@ -212,7 +215,7 @@ describe('JoinRoom', () => {
 
 		expect(callback.mock.lastCall[0].value).toMatchObject({
 			user: {
-				id: secondUser().id,
+				socketId: secondUser().socketId,
 				username: secondUser().username,
 				score: INITIAL_USER_SCORE,
 				state: INITIAL_USER_STATE
@@ -237,7 +240,7 @@ describe('JoinRoom', () => {
 		expect(emitSpy.mock.lastCall?.[0]).toBe('join-room')
 		expect(emitSpy.mock.lastCall?.[1]).toMatchObject({
 			user: {
-				id: secondUser().id,
+				socketId: secondUser().socketId,
 				username: secondUser().username,
 				score: INITIAL_USER_SCORE,
 				state: INITIAL_USER_STATE
@@ -258,7 +261,7 @@ describe('JoinRoom', () => {
 		expect(callback.mock.lastCall[0]).toMatchObject({
 			value: {
 				user: {
-					id: 'userB'
+					socketId: 'userB'
 				}
 			}
 		})

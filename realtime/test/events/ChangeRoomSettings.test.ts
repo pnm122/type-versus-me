@@ -8,7 +8,7 @@ describe('ChangeRoomSettings', () => {
 
 		ChangeRoomSettings(
 			mockSocket(),
-			{ userId: user.id, roomId: room.id, settings: room.settings },
+			{ userSocketId: user.socketId, roomId: room.id, settings: room.settings },
 			// @ts-expect-error missing parameters on purpose
 			null
 		)
@@ -21,7 +21,7 @@ describe('ChangeRoomSettings', () => {
 			const { user } = createRoomForTesting().value!
 
 			ChangeRoomSettings(
-				mockSocket(user.id),
+				mockSocket(user.socketId),
 				// @ts-expect-error missing parameters on purpose
 				null,
 				callback
@@ -33,12 +33,12 @@ describe('ChangeRoomSettings', () => {
 			})
 		})
 
-		it('gives the correct error if no userId is given', () => {
+		it('gives the correct error if no userSocketId is given', () => {
 			const callback = jest.fn()
 			const { user, room } = createRoomForTesting().value!
 
 			ChangeRoomSettings(
-				mockSocket(user.id),
+				mockSocket(user.socketId),
 				// @ts-expect-error missing parameters on purpose
 				{ roomId: room.id, settings: { category: 'quote' } },
 				callback
@@ -55,9 +55,9 @@ describe('ChangeRoomSettings', () => {
 			const { user } = createRoomForTesting().value!
 
 			ChangeRoomSettings(
-				mockSocket(user.id),
+				mockSocket(user.socketId),
 				// @ts-expect-error missing parameters on purpose
-				{ userId: user.id, settings: { category: 'quote' } },
+				{ userSocketId: user.socketId, settings: { category: 'quote' } },
 				callback
 			)
 
@@ -72,9 +72,9 @@ describe('ChangeRoomSettings', () => {
 			const { user, room } = createRoomForTesting().value!
 
 			ChangeRoomSettings(
-				mockSocket(user.id),
+				mockSocket(user.socketId),
 				// @ts-expect-error missing parameters on purpose
-				{ userId: user.id, roomId: room.id },
+				{ userSocketId: user.socketId, roomId: room.id },
 				callback
 			)
 
@@ -89,8 +89,8 @@ describe('ChangeRoomSettings', () => {
 			const { user, room } = createRoomForTesting().value!
 
 			ChangeRoomSettings(
-				mockSocket(user.id),
-				{ userId: 'INVALID_ID', roomId: room.id, settings: { category: 'quote' } },
+				mockSocket(user.socketId),
+				{ userSocketId: 'INVALID_ID', roomId: room.id, settings: { category: 'quote' } },
 				callback
 			)
 
@@ -105,9 +105,9 @@ describe('ChangeRoomSettings', () => {
 			const { user, room } = createRoomForTesting().value!
 
 			ChangeRoomSettings(
-				mockSocket(user.id),
+				mockSocket(user.socketId),
 				{
-					userId: user.id,
+					userSocketId: user.socketId,
 					roomId: room.id,
 					// @ts-expect-error intentionally invalid category
 					settings: { category: 'INVALID_CATEGORY', numWords: 50, timeLimit: 150 }
@@ -126,9 +126,9 @@ describe('ChangeRoomSettings', () => {
 			const { user, room } = createRoomForTesting().value!
 
 			ChangeRoomSettings(
-				mockSocket(user.id),
+				mockSocket(user.socketId),
 				{
-					userId: user.id,
+					userSocketId: user.socketId,
 					roomId: room.id,
 					settings: { category: 'quote', numWords: -1, timeLimit: 150 }
 				},
@@ -146,9 +146,9 @@ describe('ChangeRoomSettings', () => {
 			const { user, room } = createRoomForTesting().value!
 
 			ChangeRoomSettings(
-				mockSocket(user.id),
+				mockSocket(user.socketId),
 				{
-					userId: user.id,
+					userSocketId: user.socketId,
 					roomId: room.id,
 					settings: { category: 'quote', numWords: 50, timeLimit: -1 }
 				},
@@ -166,9 +166,9 @@ describe('ChangeRoomSettings', () => {
 			const { user } = createRoomForTesting().value!
 
 			ChangeRoomSettings(
-				mockSocket(user.id),
+				mockSocket(user.socketId),
 				{
-					userId: user.id,
+					userSocketId: user.socketId,
 					roomId: 'INVALID_ID',
 					settings: { category: 'quote', numWords: 50, timeLimit: 150 }
 				},
@@ -185,12 +185,12 @@ describe('ChangeRoomSettings', () => {
 			const callback = jest.fn()
 			const { room } = createRoomForTesting().value!
 
-			state.addUserToRoom(room.id, mockUser({ id: 'userB' }))
+			state.addUserToRoom(room.id, mockUser({ socketId: 'userB' }))
 
 			ChangeRoomSettings(
 				mockSocket('userB'),
 				{
-					userId: 'userB',
+					userSocketId: 'userB',
 					roomId: room.id,
 					settings: { category: 'quote', numWords: 50, timeLimit: 150 }
 				},
@@ -210,9 +210,9 @@ describe('ChangeRoomSettings', () => {
 			state.updateRoom(room.id, { state: 'in-progress' })
 
 			ChangeRoomSettings(
-				mockSocket(user.id),
+				mockSocket(user.socketId),
 				{
-					userId: user.id,
+					userSocketId: user.socketId,
 					roomId: room.id,
 					settings: { category: 'quote', numWords: 50, timeLimit: 150 }
 				},
@@ -231,8 +231,8 @@ describe('ChangeRoomSettings', () => {
 		const settingsUpdate = { category: 'quote', numWords: 50 } as const
 
 		ChangeRoomSettings(
-			mockSocket(user.id),
-			{ userId: user.id, roomId: room.id, settings: settingsUpdate },
+			mockSocket(user.socketId),
+			{ userSocketId: user.socketId, roomId: room.id, settings: settingsUpdate },
 			() => {}
 		)
 
@@ -249,8 +249,8 @@ describe('ChangeRoomSettings', () => {
 		const { inSpy, emitSpy } = ioSpies()
 
 		ChangeRoomSettings(
-			mockSocket(user.id),
-			{ userId: user.id, roomId: room.id, settings: settingsUpdate },
+			mockSocket(user.socketId),
+			{ userSocketId: user.socketId, roomId: room.id, settings: settingsUpdate },
 			() => {}
 		)
 
@@ -269,8 +269,8 @@ describe('ChangeRoomSettings', () => {
 		const settingsUpdate = { category: 'quote', numWords: 50 } as const
 
 		ChangeRoomSettings(
-			mockSocket(user.id),
-			{ userId: user.id, roomId: room.id, settings: settingsUpdate },
+			mockSocket(user.socketId),
+			{ userSocketId: user.socketId, roomId: room.id, settings: settingsUpdate },
 			callback
 		)
 

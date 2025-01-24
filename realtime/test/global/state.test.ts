@@ -27,9 +27,9 @@ describe('state', () => {
 
 	describe('removeRoom', () => {
 		it('removes the correct room from the room list', () => {
-			createRoom({ id: 'a' })
-			const room = createRoom({ id: 'b' })
-			createRoom({ id: 'c' })
+			createRoom({ socketId: 'a' })
+			const room = createRoom({ socketId: 'b' })
+			createRoom({ socketId: 'c' })
 
 			state.removeRoom(room.id)
 
@@ -38,17 +38,17 @@ describe('state', () => {
 		})
 
 		it('returns the room that was removed', () => {
-			createRoom({ id: 'a' })
-			const room = createRoom({ id: 'b' })
-			createRoom({ id: 'c' })
+			createRoom({ socketId: 'a' })
+			const room = createRoom({ socketId: 'b' })
+			createRoom({ socketId: 'c' })
 			const removedRoom = state.removeRoom(room.id)
 			expect(room).toEqual(removedRoom)
 		})
 
 		it('changes nothing if an invalid ID is passed', () => {
-			createRoom({ id: 'a' })
-			createRoom({ id: 'b' })
-			createRoom({ id: 'c' })
+			createRoom({ socketId: 'a' })
+			createRoom({ socketId: 'b' })
+			createRoom({ socketId: 'c' })
 
 			const before = state.getRooms()
 			state.removeRoom('INVALID_ID')
@@ -60,17 +60,17 @@ describe('state', () => {
 
 	describe('getRoom', () => {
 		it('returns the correct room', () => {
-			createRoom({ id: 'a' })
-			const room = createRoom({ id: 'b' })
-			createRoom({ id: 'c' })
+			createRoom({ socketId: 'a' })
+			const room = createRoom({ socketId: 'b' })
+			createRoom({ socketId: 'c' })
 			const roomFromGetRoom = state.getRoom(room.id)
 			expect(room).toEqual(roomFromGetRoom)
 		})
 
 		it('returns nothing if an invalid ID is passed', () => {
-			createRoom({ id: 'a' })
-			createRoom({ id: 'b' })
-			createRoom({ id: 'c' })
+			createRoom({ socketId: 'a' })
+			createRoom({ socketId: 'b' })
+			createRoom({ socketId: 'c' })
 
 			const res = state.getRoom('INVALID_ID')
 			expect(res).toBeUndefined()
@@ -100,9 +100,9 @@ describe('state', () => {
 		})
 
 		it('changes nothing if an invalid ID is passed', () => {
-			createRoom({ id: 'a' })
-			createRoom({ id: 'b' })
-			createRoom({ id: 'c' })
+			createRoom({ socketId: 'a' })
+			createRoom({ socketId: 'b' })
+			createRoom({ socketId: 'c' })
 
 			const before = state.getRooms()
 			state.updateRoom('INVALID_ID', update)
@@ -114,15 +114,15 @@ describe('state', () => {
 
 	describe('addUserToRoom', () => {
 		const newUser = {
-			id: 'test',
+			socketId: 'test',
 			username: 'Test',
 			color: 'blue'
 		} as const
 
 		it('adds the user to the correct room', () => {
-			const roomA = createRoom({ id: 'a' })
-			const roomB = createRoom({ id: 'b' })
-			const roomC = createRoom({ id: 'c' })
+			const roomA = createRoom({ socketId: 'a' })
+			const roomB = createRoom({ socketId: 'b' })
+			const roomC = createRoom({ socketId: 'c' })
 
 			state.addUserToRoom(roomB.id, newUser)
 
@@ -140,9 +140,9 @@ describe('state', () => {
 		})
 
 		it('changes nothing if an invalid ID is passed', () => {
-			createRoom({ id: 'a' })
-			createRoom({ id: 'b' })
-			createRoom({ id: 'c' })
+			createRoom({ socketId: 'a' })
+			createRoom({ socketId: 'b' })
+			createRoom({ socketId: 'c' })
 
 			const before = state.getRooms()
 			state.addUserToRoom('INVALID_ID', newUser)
@@ -153,18 +153,18 @@ describe('state', () => {
 	})
 
 	describe('removeUserFromRoom', () => {
-		function newUser(id: string) {
+		function newUser(socketId: string) {
 			return {
-				id,
+				socketId,
 				username: '',
 				color: 'blue'
 			} as const
 		}
 
 		it('removes the user from the correct room', () => {
-			const roomA = createRoom({ id: 'a' })
-			const roomB = createRoom({ id: 'b' })
-			const roomC = createRoom({ id: 'c' })
+			const roomA = createRoom({ socketId: 'a' })
+			const roomB = createRoom({ socketId: 'b' })
+			const roomC = createRoom({ socketId: 'c' })
 
 			state.removeUserFromRoom(roomB.id, 'b')
 
@@ -182,9 +182,9 @@ describe('state', () => {
 		})
 
 		it('changes nothing if an invalid room ID is passed', () => {
-			const roomA = createRoom({ id: 'a' })
-			const roomB = createRoom({ id: 'b' })
-			const roomC = createRoom({ id: 'c' })
+			const roomA = createRoom({ socketId: 'a' })
+			const roomB = createRoom({ socketId: 'b' })
+			const roomC = createRoom({ socketId: 'c' })
 
 			state.addUserToRoom(roomA.id, newUser('test'))
 
@@ -200,9 +200,9 @@ describe('state', () => {
 		})
 
 		it('changes nothing if an invalid user ID is passed', () => {
-			const roomA = createRoom({ id: 'a' })
-			const roomB = createRoom({ id: 'b' })
-			const roomC = createRoom({ id: 'c' })
+			const roomA = createRoom({ socketId: 'a' })
+			const roomB = createRoom({ socketId: 'b' })
+			const roomC = createRoom({ socketId: 'c' })
 
 			state.addUserToRoom(roomA.id, newUser('test'))
 
@@ -220,24 +220,24 @@ describe('state', () => {
 
 	describe('getUserInRoom', () => {
 		function createRooms() {
-			const roomA = createRoom({ id: 'a' })
-			const roomB = createRoom({ id: 'b' })
-			const roomC = createRoom({ id: 'c' })
+			const roomA = createRoom({ socketId: 'a' })
+			const roomB = createRoom({ socketId: 'b' })
+			const roomC = createRoom({ socketId: 'c' })
 
 			state.addUserToRoom(roomA.id, {
-				id: 'test',
+				socketId: 'test',
 				username: 'User Room A',
 				color: 'blue'
 			})
 
 			state.addUserToRoom(roomB.id, {
-				id: 'test',
+				socketId: 'test',
 				username: 'User Room B',
 				color: 'blue'
 			})
 
 			state.addUserToRoom(roomC.id, {
-				id: 'test',
+				socketId: 'test',
 				username: 'User Room C',
 				color: 'blue'
 			})
@@ -260,24 +260,24 @@ describe('state', () => {
 
 	describe('getRoomFromUser', () => {
 		function createRooms() {
-			const roomA = createRoom({ id: 'a' })
-			const roomB = createRoom({ id: 'b' })
-			const roomC = createRoom({ id: 'c' })
+			const roomA = createRoom({ socketId: 'a' })
+			const roomB = createRoom({ socketId: 'b' })
+			const roomC = createRoom({ socketId: 'c' })
 
 			state.addUserToRoom(roomA.id, {
-				id: 'userA',
+				socketId: 'userA',
 				username: 'User Room A',
 				color: 'blue'
 			})
 
 			state.addUserToRoom(roomB.id, {
-				id: 'userB',
+				socketId: 'userB',
 				username: 'User Room B',
 				color: 'blue'
 			})
 
 			state.addUserToRoom(roomC.id, {
-				id: 'userC',
+				socketId: 'userC',
 				username: 'User Room C',
 				color: 'blue'
 			})
@@ -305,8 +305,8 @@ describe('state', () => {
 			const initialUser = mockUser()
 			const room = createRoom()
 			state.addUserToRoom(room.id, initialUser)
-			state.updateUser(initialUser.id, { username: 'Pierce' })
-			expect(state.getUserInRoom(room.id, initialUser.id)).toEqual({
+			state.updateUser(initialUser.socketId, { username: 'Pierce' })
+			expect(state.getUserInRoom(room.id, initialUser.socketId)).toEqual({
 				...initialUser,
 				username: 'Pierce'
 			})
@@ -316,7 +316,7 @@ describe('state', () => {
 			const initialUser = mockUser()
 			const room = createRoom()
 			state.addUserToRoom(room.id, initialUser)
-			const newUser = state.updateUser(initialUser.id, { username: 'Pierce' })
+			const newUser = state.updateUser(initialUser.socketId, { username: 'Pierce' })
 			expect(newUser).toEqual({ ...initialUser, username: 'Pierce' })
 		})
 

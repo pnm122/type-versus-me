@@ -15,8 +15,8 @@ export type DropdownProps<T extends React.ElementType> = React.PropsWithChildren
 	as?: React.ElementType
 	className?: string
 	/** Button that toggles the dropdown. If provided, it must handle opening and closing the dropdown. */
-	toggleButton?: React.RefObject<HTMLElement>
-	focusOnOpenRef?: React.RefObject<HTMLElement>
+	toggleButton?: React.RefObject<HTMLElement | null>
+	focusOnOpenRef?: React.RefObject<HTMLElement | null>
 }> &
 	Omit<React.HTMLAttributes<T>, 'className'>
 

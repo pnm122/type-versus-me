@@ -11,7 +11,9 @@ export default function CreateRoom(
 	value: CreateRoomPayload,
 	callback: CreateRoomCallback
 ) {
-	if (!isValidEventAndPayload(socket, callback, value?.user?.id, value?.user, value?.settings)) {
+	if (
+		!isValidEventAndPayload(socket, callback, value?.user?.socketId, value?.user, value?.settings)
+	) {
 		return
 	}
 
@@ -25,7 +27,7 @@ export default function CreateRoom(
 		return
 	}
 
-	if (check(state.getRoomFromUser(user.id), 'user-in-room-already', callback)) {
+	if (check(state.getRoomFromUser(user.socketId), 'user-in-room-already', callback)) {
 		return
 	}
 

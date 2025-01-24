@@ -10,17 +10,17 @@ export default function RequestColor(
 	value: RequestColorPayload,
 	callback: RequestColorCallback
 ) {
-	if (!isValidEventAndPayload(socket, callback, value?.id, value?.color)) {
+	if (!isValidEventAndPayload(socket, callback, value?.socketId, value?.color)) {
 		return
 	}
 
-	const { id, color } = value
+	const { socketId, color } = value
 
 	if (check(!isValidColor(color), 'invalid-color', callback)) {
 		return
 	}
 
-	const room = state.getRoomFromUser(id)
+	const room = state.getRoomFromUser(socketId)
 	if (check(!room, 'user-not-in-room', callback)) {
 		return
 	}
@@ -30,8 +30,8 @@ export default function RequestColor(
 		return
 	}
 
-	state.updateUser(id, { color })
-	io.in(room!.id).emit('change-user-data', { id, color })
+	state.updateUser(socketId, { color })
+	io.in(room!.id).emit('change-user-data', { socketId, color })
 
 	callback({
 		value: { color },

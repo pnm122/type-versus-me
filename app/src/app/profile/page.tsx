@@ -3,7 +3,7 @@ import ProfileError from '@/components/page/profile/ProfileError/ProfileError'
 import ProfileInner from '@/components/page/profile/ProfileInner/ProfileInner'
 import Races from '@/components/page/profile/Races/Races'
 import Stats from '@/components/page/profile/Stats/Stats'
-import { getUser } from '@/utils/database/user'
+import { getUser } from '$shared/utils/database/user'
 
 export default async function Profile({
 	searchParams: params

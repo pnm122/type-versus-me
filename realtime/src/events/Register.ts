@@ -13,7 +13,7 @@ export default function Register(
 	if (typeof callback !== 'function') return
 
 	const newUser: User = {
-		id: socket.id,
+		socketId: socket.id,
 		username: isValidUsername(value && value.username) ? value.username! : generateUsername(),
 		color: isValidColor(value && value.color) ? value.color! : generateColor()
 	}

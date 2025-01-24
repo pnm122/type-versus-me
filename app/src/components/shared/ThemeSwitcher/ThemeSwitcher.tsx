@@ -8,7 +8,11 @@ import { useEffect, useRef, useState } from 'react'
 import { useTheme } from 'next-themes'
 import SelectedBox from '@/components/base/SelectedBox/SelectedBox'
 
-export default function ThemeSwitcher({ ref }: { ref?: React.RefObject<HTMLButtonElement> }) {
+export default function ThemeSwitcher({
+	ref
+}: {
+	ref?: React.RefObject<HTMLButtonElement | null>
+}) {
 	const { theme, setTheme } = useTheme()
 	const lightTheme = useRef<HTMLDivElement>(null)
 	const darkTheme = useRef<HTMLDivElement>(null)

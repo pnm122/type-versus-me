@@ -1,5 +1,5 @@
 import { auth } from '@/auth'
-import { getUser } from '@/utils/database/user'
+import { getUser } from '$shared/utils/database/user'
 import HeaderClient from './HeaderClient'
 
 export default async function HeaderServer() {

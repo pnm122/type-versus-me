@@ -16,7 +16,7 @@ describe('RequestColor', () => {
 			const callback = jest.fn()
 			const { user } = createRoomForTesting(mockUser()).value!
 
-			RequestColor(mockSocket('INVALID_ID'), { id: user.id, color: 'red' }, callback)
+			RequestColor(mockSocket('INVALID_ID'), { socketId: user.socketId, color: 'red' }, callback)
 
 			expect(callback).toHaveBeenCalledWith({
 				value: null,
@@ -28,7 +28,7 @@ describe('RequestColor', () => {
 
 		it('gives the correct error if the user is not in a room', () => {
 			const callback = jest.fn()
-			RequestColor(socket, { id: 'test', color: 'red' }, callback)
+			RequestColor(socket, { socketId: 'test', color: 'red' }, callback)
 
 			expect(callback).toHaveBeenCalledWith({
 				value: null,
@@ -42,7 +42,7 @@ describe('RequestColor', () => {
 			const callback = jest.fn()
 			const { user } = createRoomForTesting(mockUser()).value!
 			// @ts-expect-error missing parameters on purpose
-			RequestColor(socket, { id: user.id, color: 'INVALID_COLOR' }, callback)
+			RequestColor(socket, { socketId: user.socketId, color: 'INVALID_COLOR' }, callback)
 
 			expect(callback).toHaveBeenCalledWith({
 				value: null,
@@ -55,9 +55,9 @@ describe('RequestColor', () => {
 		it('gives the correct error if the color is taken', () => {
 			const callback = jest.fn()
 			const { user, room } = createRoomForTesting(mockUser({ color: 'red' })).value!
-			state.addUserToRoom(room.id, mockUser({ id: 'userB', color: 'green' }))
+			state.addUserToRoom(room.id, mockUser({ socketId: 'userB', color: 'green' }))
 
-			RequestColor(socket, { id: user.id, color: 'green' }, callback)
+			RequestColor(socket, { socketId: user.socketId, color: 'green' }, callback)
 
 			expect(callback).toHaveBeenCalledWith({
 				value: null,
@@ -72,7 +72,7 @@ describe('RequestColor', () => {
 		const callback = jest.fn()
 		const { user } = createRoomForTesting(mockUser({ color: 'red' })).value!
 
-		RequestColor(socket, { id: user.id, color: 'blue' }, callback)
+		RequestColor(socket, { socketId: user.socketId, color: 'blue' }, callback)
 
 		expect(callback).toHaveBeenCalledWith({
 			value: {
@@ -87,9 +87,12 @@ describe('RequestColor', () => {
 		const socket = mockSocket()
 		const { user, room } = createRoomForTesting(mockUser({ color: 'red' })).value!
 
-		RequestColor(socket, { id: user.id, color: 'blue' }, () => {})
+		RequestColor(socket, { socketId: user.socketId, color: 'blue' }, () => {})
 
 		expect(inSpy).toHaveBeenCalledWith(room.id)
-		expect(emitSpy).toHaveBeenCalledWith('change-user-data', { id: user.id, color: 'blue' })
+		expect(emitSpy).toHaveBeenCalledWith('change-user-data', {
+			socketId: user.socketId,
+			color: 'blue'
+		})
 	})
 })

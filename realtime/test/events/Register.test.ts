@@ -21,7 +21,7 @@ describe('Register', () => {
 
 		expect(callback).toHaveBeenCalledWith({
 			value: {
-				id: socket.id,
+				socketId: socket.id,
 				...user
 			},
 			error: null

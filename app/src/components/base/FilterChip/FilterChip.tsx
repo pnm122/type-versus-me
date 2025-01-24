@@ -5,7 +5,7 @@ interface Props {
 	label: string
 	selected: boolean
 	onClick: () => void
-	ref?: React.RefObject<HTMLButtonElement>
+	ref?: React.RefObject<HTMLButtonElement | null>
 }
 
 export default function FilterChip({ label, selected, onClick, ref }: Props) {

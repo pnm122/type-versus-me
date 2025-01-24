@@ -112,7 +112,9 @@ export default function RoomData() {
 	}
 
 	async function onSubmitRoomSettings() {
-		const res = await changeRoomSettings(settings, { globalState, socket, notifs })
+		// eslint-disable-next-line
+		const { open, ...newSettings } = settings
+		const res = await changeRoomSettings(newSettings, { globalState, socket, notifs })
 
 		if (!res.error) {
 			settingsDispatch({ key: 'open', value: false })
@@ -125,7 +127,7 @@ export default function RoomData() {
 				<div className={styles['user-info']}>
 					<ul className={styles['user-info__users']}>
 						{room.users.map((u) => (
-							<User key={u.id} user={u} />
+							<User key={u.socketId} user={u} />
 						))}
 					</ul>
 					<h3 className={styles['user-info__num-players']}>
@@ -153,7 +155,7 @@ export default function RoomData() {
 					<span className={styles['room-settings__text']}>
 						{getCategoryText()} | {room.settings.numWords} words | {getTimeLimitText()} time limit
 					</span>
-					{room.admin === user.id && (
+					{room.admin === user.socketId && (
 						<IconButton
 							icon={<PixelarticonsEdit />}
 							onClick={() => settingsDispatch({ key: 'open', value: true })}

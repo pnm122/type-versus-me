@@ -1,4 +1,4 @@
-import { getUserStats } from '@/utils/database/user'
+import { getUserStats } from '$shared/utils/database/user'
 import StatsContentClient from './StatsContentClient'
 import { RoomSettings } from '$shared/types/Room'
 import { User } from 'next-auth'

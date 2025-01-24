@@ -21,7 +21,7 @@ describe('ChangeUserState', () => {
 
 			await ChangeUserState(
 				mockSocket('userA'),
-				mockUser({ id: user.id, state: 'in-progress' }),
+				mockUser({ socketId: user.socketId, state: 'in-progress' }),
 				callback
 			)
 
@@ -48,7 +48,7 @@ describe('ChangeUserState', () => {
 
 		it('gives the correct error if the user is not in a room', async () => {
 			const callback = jest.fn()
-			await ChangeUserState(mockSocket('test'), { id: 'test', state: 'ready' }, callback)
+			await ChangeUserState(mockSocket('test'), { socketId: 'test', state: 'ready' }, callback)
 
 			expect(callback).toHaveBeenCalledWith({
 				value: null,
@@ -72,7 +72,11 @@ describe('ChangeUserState', () => {
 						state.updateRoom(room.id, { state: roomState as RoomState })
 
 						const callback = jest.fn()
-						await ChangeUserState(mockSocket(user.id), { id: user.id, state: userState }, callback)
+						await ChangeUserState(
+							mockSocket(user.socketId),
+							{ socketId: user.socketId, state: userState },
+							callback
+						)
 
 						expect(callback).toHaveBeenCalledWith({
 							value: null,
@@ -89,9 +93,13 @@ describe('ChangeUserState', () => {
 	it('changes the user state in the state', async () => {
 		const { user, room } = createRoomForTesting().value!
 		// Make sure that not all users will be in the ready state
-		state.addUserToRoom(room.id, mockUser({ id: 'ADDITIONAL_USER' }))
+		state.addUserToRoom(room.id, mockUser({ socketId: 'ADDITIONAL_USER' }))
 
-		await ChangeUserState(mockSocket(user.id), { id: user.id, state: 'ready' }, async () => {})
+		await ChangeUserState(
+			mockSocket(user.socketId),
+			{ socketId: user.socketId, state: 'ready' },
+			async () => {}
+		)
 
 		expect(state.getRoom(room.id)!.users[0]!.state).toBe('ready')
 	})
@@ -101,34 +109,37 @@ describe('ChangeUserState', () => {
 		const { user, room } = createRoomForTesting().value!
 		const socket = mockSocket()
 
-		await ChangeUserState(socket, { id: user.id, state: 'ready' }, async () => {})
+		await ChangeUserState(socket, { socketId: user.socketId, state: 'ready' }, async () => {})
 
 		expect(inSpy).toHaveBeenCalledWith(room.id)
-		expect(emitSpy).toHaveBeenCalledWith('change-user-data', { id: user.id, state: 'ready' })
+		expect(emitSpy).toHaveBeenCalledWith('change-user-data', {
+			socketId: user.socketId,
+			state: 'ready'
+		})
 	})
 
 	it('sets the room to in progress if all users will be in the ready state', async () => {
 		const spy = jest.spyOn(eventUtils, 'setRoomToInProgress')
 		const { room, user } = createRoomForTesting().value!
-		const socket = mockSocket(user.id)
+		const socket = mockSocket(user.socketId)
 
-		await ChangeUserState(socket, { id: user.id, state: 'ready' }, async () => {})
+		await ChangeUserState(socket, { socketId: user.socketId, state: 'ready' }, async () => {})
 
 		expect(spy).toHaveBeenCalledWith(room)
 	})
 
 	describe('the user is changing state to complete or failed', () => {
 		async function init(failed = false) {
-			const score = { netWPM: 85, cursorPosition: { word: 50, letter: 5 } }
+			const score = { netWPM: 85, accuracy: 0.95, cursorPosition: { word: 50, letter: 5 } }
 			const { room, user } = createRoomForTesting(
-				mockUser({ id: 'userA' }),
+				mockUser({ socketId: 'userA' }),
 				mockSocket('userA')
 			).value!
 			state.updateRoom(room.id, { state: 'in-progress' })
-			state.updateUser(user.id, { state: 'in-progress', score: score })
+			state.updateUser(user.socketId, { state: 'in-progress', score: score })
 			await ChangeUserState(
 				mockSocket('userA'),
-				{ id: 'userA', state: failed ? 'failed' : 'complete' },
+				{ socketId: 'userA', state: failed ? 'failed' : 'complete' },
 				async () => {}
 			)
 			return { score, room, user }
@@ -136,9 +147,10 @@ describe('ChangeUserState', () => {
 
 		it('updates the user last score to their last recorded score in the state when changing to complete', async () => {
 			const { score, room, user } = await init()
-			expect(state.getUserInRoom(room.id, user.id)).toMatchObject({
+			expect(state.getUserInRoom(room.id, user.socketId)).toMatchObject({
 				lastScore: {
 					netWPM: score.netWPM,
+					accuracy: score.accuracy,
 					failed: false
 				}
 			})
@@ -157,6 +169,7 @@ describe('ChangeUserState', () => {
 						.objectContaining({
 							lastScore: {
 								netWPM: score.netWPM,
+								accuracy: score.accuracy,
 								failed: false
 							}
 						})
@@ -168,9 +181,10 @@ describe('ChangeUserState', () => {
 
 		it('updates the user last score to their last recorded score in the state when changing to failed', async () => {
 			const { score, room, user } = await init(true)
-			expect(state.getUserInRoom(room.id, user.id)).toMatchObject({
+			expect(state.getUserInRoom(room.id, user.socketId)).toMatchObject({
 				lastScore: {
 					netWPM: score.netWPM,
+					accuracy: score.accuracy,
 					failed: true
 				}
 			})
@@ -180,17 +194,17 @@ describe('ChangeUserState', () => {
 	describe('all users will be in the complete or failed state and the room state is in-progress', () => {
 		async function init(socket = mockSocket('userB')) {
 			const { room, user } = createRoomForTesting(
-				mockUser({ id: 'userA' }),
+				mockUser({ socketId: 'userA' }),
 				mockSocket('userA')
 			).value!
 			state.updateRoom(room.id, { state: 'in-progress' })
-			state.updateUser(user.id, { state: 'failed', score: INITIAL_USER_SCORE })
+			state.updateUser(user.socketId, { state: 'failed', score: INITIAL_USER_SCORE })
 			state.addUserToRoom(
 				room.id,
-				mockUser({ id: socket.id, state: 'in-progress', score: INITIAL_USER_SCORE })
+				mockUser({ socketId: socket.id, state: 'in-progress', score: INITIAL_USER_SCORE })
 			)
 
-			await ChangeUserState(socket, { id: socket.id, state: 'complete' }, async () => {})
+			await ChangeUserState(socket, { socketId: socket.id, state: 'complete' }, async () => {})
 
 			return { room }
 		}
@@ -230,6 +244,13 @@ describe('ChangeUserState', () => {
 				score: INITIAL_USER_SCORE
 			})
 		})
+
+		it('adds scores to the database', async () => {
+			const spy = jest.spyOn(eventUtils, 'saveScoresToDatabase').mockImplementation()
+			const { room } = await init()
+
+			expect(spy).toHaveBeenCalledWith(room.id)
+		})
 	})
 
 	it('calls the callback with the new state', async () => {
@@ -237,7 +258,7 @@ describe('ChangeUserState', () => {
 		const socket = mockSocket()
 
 		const { user } = createRoomForTesting().value!
-		await ChangeUserState(socket, { id: user.id, state: 'ready' }, callback)
+		await ChangeUserState(socket, { socketId: user.socketId, state: 'ready' }, callback)
 
 		expect(callback).toHaveBeenLastCalledWith({
 			value: { state: 'ready' },

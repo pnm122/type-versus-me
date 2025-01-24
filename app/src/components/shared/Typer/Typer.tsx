@@ -51,7 +51,7 @@ interface Props {
 	/**
 	 * Reference to this Typer's exposed functions
 	 */
-	ref?: React.RefObject<TyperRef>
+	ref?: React.RefObject<TyperRef | null>
 }
 
 export default function Typer({
@@ -178,7 +178,7 @@ export default function Typer({
 			correctMade,
 			correctLeft: newCorrect,
 			netWPM: newCorrect / 5 / ((Date.now() - startTime) / 60000),
-			accuracy: (correctMade * 100) / (correctMade + errorsMade),
+			accuracy: correctMade / (correctMade + errorsMade),
 			cursorPosition: getCursorPosition(newTyped)
 		}
 

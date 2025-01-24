@@ -1,10 +1,17 @@
 import { User } from './User'
 
 export interface RoomMetadata {
+	/** Unique identifier for the room */
 	id: string
-	admin: User['id']
+	/** Unique identifier for the current race. Only exists if the room state is "in-progress" */
+	raceId?: number
+	/** Socket ID of the room admin. Admins are the only user that can edit room settings. The initial admin is the user who created the room, with subsequent reassignments only occurring if this user leaves the room. Admins are selected by first to join the room. */
+	admin: User['socketId']
+	/** Text for the current race. Only relevant if the room state is "in-progress" */
 	test?: string
+	/** Current state of the room */
 	state: RoomState
+	/** Settings for the room */
 	settings: RoomSettings
 }
 

@@ -59,7 +59,7 @@ export function setUser(u: Partial<Omit<User, 'id'>>, context: Pick<Context, 'gl
 			? {
 					...r,
 					users: r.users.map((user) =>
-						user.id === globalState.user?.id ? { ...user, ...u } : user
+						user.socketId === globalState.user?.socketId ? { ...user, ...u } : user
 					)
 				}
 			: null
@@ -95,22 +95,22 @@ export async function updateUser<T extends keyof Omit<User, 'id'>>(
 	const res = await (() => {
 		if (key === 'username') {
 			return socket.value.emitWithAck('change-username', {
-				id: globalState.user.id,
+				socketId: globalState.user.socketId,
 				username: value as User['username']
 			})
 		} else if (key === 'color') {
 			return socket.value.emitWithAck('request-color', {
-				id: globalState.user.id,
+				socketId: globalState.user.socketId,
 				color: value as User['color']
 			})
 		} else if (key === 'state') {
 			return socket.value.emitWithAck('change-user-state', {
-				id: globalState.user.id,
+				socketId: globalState.user.socketId,
 				state: value as Required<User>['state']
 			})
 		} else {
 			return socket.value.emitWithAck('change-user-score', {
-				id: globalState.user.id,
+				socketId: globalState.user.socketId,
 				score: value as Required<User>['score']
 			})
 		}
@@ -159,11 +159,11 @@ export async function onChangeUserData(
 		r
 			? {
 					...r,
-					users: r.users.map((u) => (u.id === data.id ? { ...u, ...data } : u))
+					users: r.users.map((u) => (u.socketId === data.socketId ? { ...u, ...data } : u))
 				}
 			: null
 	)
-	if (data.id === globalState.user?.id) {
+	if (data.socketId === globalState.user?.socketId) {
 		globalState.setUser((u) =>
 			u
 				? {

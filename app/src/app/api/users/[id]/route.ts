@@ -1,4 +1,4 @@
-import { getUser } from '@/utils/database/user'
+import { getUser } from '$shared/utils/database/user'
 import { NextResponse } from 'next/server'
 
 export async function GET(_: any, { params }: { params: Promise<{ id: string }> }) {

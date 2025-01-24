@@ -12,6 +12,7 @@ import { ServerLeaveRoomPayload } from '$shared/types/events/server/LeaveRoom'
 import { ChangeRoomDataPayload } from '$shared/types/events/server/ChangeRoomData'
 import { ChangeAllUserDataPayload } from '$shared/types/events/server/ChangeAllUserData'
 import { ChangeUserDataPayload } from '$shared/types/events/server/ChangeUserData'
+import { getAuth } from '@/actions/auth'
 
 export type GlobalState = {
 	user: User | null
@@ -42,6 +43,20 @@ export function GlobalStateProvider({ children }: React.PropsWithChildren) {
 
 	const globalState = { user, setUser, room, setRoom, activeUserCount, waitForStateChange }
 
+	async function initUser() {
+		const username = getUsername()
+		const color = getColor()
+
+		const session = await getAuth()
+
+		setUser({
+			socketId: socket.value!.id!,
+			userId: session?.user?.id,
+			username,
+			color
+		})
+	}
+
 	useEffect(() => {
 		if (stateHasChanged.current) {
 			stateHasChanged.current()
@@ -52,14 +67,7 @@ export function GlobalStateProvider({ children }: React.PropsWithChildren) {
 	useEffect(() => {
 		if (socket.state !== 'valid') return
 
-		const username = getUsername()
-		const color = getColor()
-
-		setUser({
-			id: socket.value.id!,
-			username,
-			color
-		})
+		initUser()
 	}, [socket])
 
 	useEffect(() => {

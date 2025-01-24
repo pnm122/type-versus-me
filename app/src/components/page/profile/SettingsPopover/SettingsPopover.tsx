@@ -12,7 +12,7 @@ import generateUsername from '$shared/utils/generateUsername'
 import CursorSelector from '@/components/shared/CursorSelector/CursorSelector'
 import ButtonIcon from '@/components/base/Button/ButtonIcon'
 import PixelarticonsSave from '~icons/pixelarticons/save'
-import { updateUser } from '@/utils/database/user'
+import { updateUser } from '$shared/utils/database/user'
 import { User } from '@prisma/client'
 import { useNotification } from '@/context/Notification'
 import { useRouter } from 'next/navigation'
@@ -64,6 +64,7 @@ export default function SettingsPopover({ open, onClose, user, points }: Props) 
 					})
 				}}
 			>
+				<input ref={inputRef} />
 				<div className={styles['username']}>
 					<Input
 						id="username"

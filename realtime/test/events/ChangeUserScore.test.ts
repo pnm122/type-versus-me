@@ -14,7 +14,11 @@ describe('ChangeUserScore', () => {
 	describe('errors', () => {
 		it('gives the correct error if the user ID does not match the session ID', () => {
 			const callback = jest.fn()
-			ChangeUserScore(mockSocket('userA'), { id: 'userB', score: INITIAL_USER_SCORE }, callback)
+			ChangeUserScore(
+				mockSocket('userA'),
+				{ socketId: 'userB', score: INITIAL_USER_SCORE },
+				callback
+			)
 
 			expect(callback).toHaveBeenCalledWith({
 				value: null,
@@ -27,7 +31,7 @@ describe('ChangeUserScore', () => {
 		it('gives the correct error if the score is not provided', () => {
 			const callback = jest.fn()
 			// @ts-expect-error missing parameters on purpose
-			ChangeUserScore(mockSocket('test'), { id: 'test' }, callback)
+			ChangeUserScore(mockSocket('test'), { socketId: 'test' }, callback)
 
 			expect(callback).toHaveBeenCalledWith({
 				value: null,
@@ -41,7 +45,11 @@ describe('ChangeUserScore', () => {
 			const callback = jest.fn()
 			const { room } = createRoomForTesting().value!
 			state.updateRoom(room.id, { state: 'in-progress' })
-			ChangeUserScore(mockSocket('userB'), { id: 'userB', score: INITIAL_USER_SCORE }, callback)
+			ChangeUserScore(
+				mockSocket('userB'),
+				{ socketId: 'userB', score: INITIAL_USER_SCORE },
+				callback
+			)
 
 			expect(callback).toHaveBeenCalledWith({
 				value: null,
@@ -56,8 +64,8 @@ describe('ChangeUserScore', () => {
 				const { room, user } = createRoomForTesting().value!
 				state.updateRoom(room.id, { state: roomState as RoomState })
 				ChangeUserScore(
-					mockSocket(user.id),
-					{ id: user.id, score: { ...INITIAL_USER_SCORE, netWPM: 100 } },
+					mockSocket(user.socketId),
+					{ socketId: user.socketId, score: { ...INITIAL_USER_SCORE, netWPM: 100 } },
 					callback
 				)
 
@@ -75,21 +83,28 @@ describe('ChangeUserScore', () => {
 		const { room, user } = createRoomForTesting().value!
 		state.updateRoom(room.id, { state: 'in-progress' })
 		const newScore = { ...INITIAL_USER_SCORE, netWPM: 100 }
-		ChangeUserScore(mockSocket(user.id), { id: user.id, score: newScore }, () => {})
+		ChangeUserScore(
+			mockSocket(user.socketId),
+			{ socketId: user.socketId, score: newScore },
+			() => {}
+		)
 
-		expect(state.getUserInRoom(room.id, user.id)!.score).toEqual(newScore)
+		expect(state.getUserInRoom(room.id, user.socketId)!.score).toEqual(newScore)
 	})
 
 	it('tells all other users in the room that the user score has changed', () => {
 		const { inSpy, emitSpy } = ioSpies()
 		const { room, user } = createRoomForTesting().value!
-		const socket = mockSocket(user.id)
+		const socket = mockSocket(user.socketId)
 		state.updateRoom(room.id, { state: 'in-progress' })
 		const newScore = { ...INITIAL_USER_SCORE, netWPM: 100 }
-		ChangeUserScore(socket, { id: user.id, score: newScore }, () => {})
+		ChangeUserScore(socket, { socketId: user.socketId, score: newScore }, () => {})
 
 		expect(inSpy).toHaveBeenLastCalledWith(room.id)
-		expect(emitSpy).toHaveBeenLastCalledWith('change-user-data', { id: user.id, score: newScore })
+		expect(emitSpy).toHaveBeenLastCalledWith('change-user-data', {
+			socketId: user.socketId,
+			score: newScore
+		})
 	})
 
 	it('calls the callback with the new score', () => {
@@ -97,7 +112,11 @@ describe('ChangeUserScore', () => {
 		const { room, user } = createRoomForTesting().value!
 		state.updateRoom(room.id, { state: 'in-progress' })
 		const newScore = { ...INITIAL_USER_SCORE, netWPM: 100 }
-		ChangeUserScore(mockSocket(user.id), { id: user.id, score: newScore }, callback)
+		ChangeUserScore(
+			mockSocket(user.socketId),
+			{ socketId: user.socketId, score: newScore },
+			callback
+		)
 
 		expect(callback).toHaveBeenLastCalledWith({
 			value: { score: newScore },
