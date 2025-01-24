@@ -13,7 +13,7 @@ import useInterval from '@/hooks/useInterval'
 import { getInitialStats } from '@/utils/typer'
 import { TyperStats } from '@/types/Typer'
 
-export default function Game({ ref }: { ref?: RefObject<HTMLDivElement> }) {
+export default function Game({ ref }: { ref?: RefObject<HTMLDivElement | null> }) {
 	const [startTime, setStartTime] = useState(-1)
 	const [finished, setFinished] = useState(false)
 	const [stats, setStats] = useState<TyperStats>(getInitialStats())

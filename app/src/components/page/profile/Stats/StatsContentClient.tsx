@@ -7,7 +7,7 @@ import createClasses from '@/utils/createClasses'
 import NumWordsFilter from '@/components/page/profile/Filter/NumWordsFilter'
 import IndeterminateProgress from '@/components/base/IndeterminateProgress/IndeterminateProgress'
 import { userStatsDisplayNames } from '@/utils/displayNameMappings'
-import { UserStats } from '@/types/Database'
+import { UserStats } from '$shared/types/Database'
 import {
 	CATEGORY_PARAM_KEY,
 	MAX_WORDS_PARAM_KEY,
