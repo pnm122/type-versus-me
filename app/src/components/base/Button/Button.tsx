@@ -9,7 +9,7 @@ export type ButtonProps = React.PropsWithChildren<
 		/** Link to use if the button is intended for use as a link */
 		href?: string
 		loading?: boolean
-		ref?: React.RefObject<HTMLElement>
+		ref?: React.RefObject<HTMLElement | null>
 	} & React.ButtonHTMLAttributes<HTMLButtonElement | HTMLAnchorElement>
 >
 

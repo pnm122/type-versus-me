@@ -5,7 +5,7 @@ import debounce from 'debounce'
 
 interface Props {
 	/** Element to attach the box's size and position to. This element must be in the same stacking context as the box. */
-	selected?: React.RefObject<HTMLElement>
+	selected?: React.RefObject<HTMLElement | null>
 	/** Optional additional class(es) to give the box. */
 	className?: string
 	/**

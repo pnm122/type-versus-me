@@ -12,7 +12,7 @@ type Props<T extends React.ElementType> = React.PropsWithChildren<{
 	onClose: () => void
 	name: string
 	selected: string[]
-	ref?: React.RefObject<HTMLDivElement>
+	ref?: React.RefObject<HTMLDivElement | null>
 	className?: string
 	dropdownProps: Omit<DropdownProps<T>, 'id' | 'onClose' | 'open' | 'toggleButton'>
 }>
