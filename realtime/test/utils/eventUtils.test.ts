@@ -4,6 +4,7 @@ import { createRoomForTesting, ioSpies, mockUser } from '../test-utils'
 import state from '@/global/state'
 import { INITIAL_USER_SCORE } from '$shared/constants'
 import io from '@/global/server'
+import { createRace } from '$shared/utils/database/race'
 
 const socket = {
 	id: 'TEST_ID'
@@ -73,7 +74,7 @@ describe('setRoomToInProgress', () => {
 		expect(state.getRoom(room.id)!.state).toBe('in-progress')
 	})
 
-	it('emits a change room event with the in-progress state and new test to all users in the room', async () => {
+	it('emits a change room event with the in-progress state, new test, and race ID to all users in the room', async () => {
 		const { room } = init()
 		const { inSpy, emitSpy } = ioSpies()
 
@@ -82,7 +83,9 @@ describe('setRoomToInProgress', () => {
 		expect(inSpy).toHaveBeenCalledWith(room.id)
 		expect(emitSpy).toHaveBeenCalledWith('change-room-data', {
 			state: 'in-progress',
-			test: expect.any(String)
+			test: expect.any(String),
+			// @ts-expect-error doesn't need an argument since this is mocked
+			raceId: (await createRace()).data.id
 		})
 	})
 
@@ -115,5 +118,15 @@ describe('setRoomToInProgress', () => {
 			state: 'in-progress',
 			score: INITIAL_USER_SCORE
 		})
+	})
+
+	it('creates a race in the database', async () => {
+		const { room } = init()
+		await setRoomToInProgress(room)
+		expect(createRace).toHaveBeenCalledWith(
+			expect.objectContaining({
+				...room.settings
+			})
+		)
 	})
 })

@@ -61,7 +61,16 @@ export default async function ChangeUserState(
 		room!.users.every((u) => u.socketId === value.socketId || u.state === 'ready') &&
 		value.state === 'ready'
 	if (allUsersReady) {
-		await setRoomToInProgress(room!)
+		const error = await setRoomToInProgress(room!)
+		if (error) {
+			return callback({
+				value: null,
+				error: {
+					reason: 'database-error',
+					details: error
+				}
+			})
+		}
 	}
 
 	const allUsersDone =
