@@ -92,18 +92,33 @@ describe('LeaveRoom', () => {
 		expect(spy).toHaveBeenCalled()
 	})
 
-	it('sets the room to complete in the state if all users are completed or failed', async () => {
-		const { room, user, secondUser } = init()
-		const socket = mockSocket(user.socketId)
-		state.updateUser(secondUser!.socketId, { state: 'complete' })
-		state.addUserToRoom(
-			room.id,
-			mockUser({ socketId: 'userC', username: 'AnotherOne', state: 'failed' })
-		)
+	describe('all users are completed or failed', () => {
+		async function initForAllDone() {
+			const { room, user, secondUser } = init()
+			const socket = mockSocket(user.socketId)
+			state.updateUser(secondUser!.socketId, { state: 'complete' })
+			state.addUserToRoom(
+				room.id,
+				mockUser({ socketId: 'userC', username: 'AnotherOne', state: 'failed' })
+			)
 
-		await LeaveRoom(socket, () => {})
+			await LeaveRoom(socket, () => {})
 
-		expect(state.getRoom(room.id)!.state).toBe('complete')
+			return { room }
+		}
+
+		it('sets the room to complete in the state', async () => {
+			const { room } = await initForAllDone()
+
+			expect(state.getRoom(room.id)!.state).toBe('complete')
+		})
+
+		it('adds scores to the database', async () => {
+			const spy = jest.spyOn(eventUtils, 'saveScoresToDatabase').mockImplementation()
+			const { room } = await initForAllDone()
+
+			expect(spy).toHaveBeenCalledWith(room.id)
+		})
 	})
 
 	it('emits a room data change event with the complete state if all users are completed or failed', async () => {

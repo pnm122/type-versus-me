@@ -96,6 +96,7 @@ export async function setRoomToInProgress(room: Room) {
 	return null
 }
 
+/** Adds all users' `lastScore`s to the database, and calculates and adds the points earned from the score to the user */
 export async function saveScoresToDatabase(roomId: Room['id']) {
 	const newScores = state
 		.getRoom(roomId)!
@@ -105,7 +106,10 @@ export async function saveScoresToDatabase(roomId: Room['id']) {
 			netWPM: lastScore!.failed ? -1 : lastScore!.netWPM,
 			isWinner: lastScore!.failed
 				? false
-				: users.sort((a, b) => b.lastScore!.netWPM - a.lastScore!.netWPM).at(0)?.userId === userId,
+				: users
+						.filter((u) => !u.lastScore?.failed)
+						.sort((a, b) => b.lastScore!.netWPM - a.lastScore!.netWPM)
+						.at(0)?.userId === userId,
 			raceId: state.getRoom(roomId)!.raceId!,
 			userId: userId!
 		}))

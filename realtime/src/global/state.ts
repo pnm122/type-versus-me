@@ -81,12 +81,12 @@ class State {
 		return this.getRoom(id)
 	}
 
-	removeUserFromRoom(roomId: Room['id'], userId: User['socketId']): Readonly<Room | undefined> {
+	removeUserFromRoom(roomId: Room['id'], socketId: User['socketId']): Readonly<Room | undefined> {
 		this.rooms = this.rooms.map((r) =>
 			r.id === roomId
 				? {
 						...r,
-						users: r.users.filter((u) => u.socketId !== userId)
+						users: r.users.filter((u) => u.socketId !== socketId)
 					}
 				: r
 		)
@@ -100,20 +100,20 @@ class State {
 		)
 	}
 
-	getRoomFromUser(userId: User['socketId']): Readonly<Room | undefined> {
-		return this.rooms.find((r) => !!r.users.find((u) => u.socketId === userId))
+	getRoomFromUser(socketId: User['socketId']): Readonly<Room | undefined> {
+		return this.rooms.find((r) => !!r.users.find((u) => u.socketId === socketId))
 	}
 
 	updateUser(
-		userId: User['socketId'],
+		socketId: User['socketId'],
 		user: Partial<Omit<User, 'id'>>
 	): Readonly<User | undefined> {
 		this.rooms = this.rooms.map((r) => ({
 			...r,
-			users: r.users.map((u) => (u.socketId === userId ? { ...u, ...user } : u))
+			users: r.users.map((u) => (u.socketId === socketId ? { ...u, ...user } : u))
 		}))
-		const roomId = this.getRoomFromUser(userId)?.id
-		return roomId ? this.getUserInRoom(roomId, userId) : undefined
+		const roomId = this.getRoomFromUser(socketId)?.id
+		return roomId ? this.getUserInRoom(roomId, socketId) : undefined
 	}
 
 	reset() {

@@ -244,6 +244,13 @@ describe('ChangeUserState', () => {
 				score: INITIAL_USER_SCORE
 			})
 		})
+
+		it('adds scores to the database', async () => {
+			const spy = jest.spyOn(eventUtils, 'saveScoresToDatabase').mockImplementation()
+			const { room } = await init()
+
+			expect(spy).toHaveBeenCalledWith(room.id)
+		})
 	})
 
 	it('calls the callback with the new state', async () => {
