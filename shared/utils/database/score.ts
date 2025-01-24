@@ -2,16 +2,38 @@ import { prisma } from '$shared/prisma'
 import { Prisma, Score } from '@prisma/client'
 
 export async function createScores(data: Omit<Score, 'id'>[]): Promise<{
-	data: Prisma.BatchPayload | null
+	data: true | null
 	error: Prisma.PrismaClientKnownRequestError | null
 }> {
 	try {
-		const res = await prisma.score.createMany({
+		await prisma.score.createMany({
 			data
 		})
 
+		const updateUserResults = await Promise.allSettled(
+			data.map((score) =>
+				prisma.user.update({
+					where: {
+						id: score.userId
+					},
+					data: {
+						points: {
+							increment: score.points
+						}
+					}
+				})
+			)
+		)
+
+		if (updateUserResults.every((res) => res.status === 'fulfilled')) {
+			return {
+				data: true,
+				error: null
+			}
+		}
+
 		return {
-			data: res,
+			data: null,
 			error: null
 		}
 	} catch (error) {

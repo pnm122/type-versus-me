@@ -6,7 +6,12 @@ import { RoomState } from '$shared/types/Room'
 import { UserState } from '$shared/types/User'
 import state from '@/global/state'
 import CustomSocket from '@/types/CustomSocket'
-import { check, isValidEventAndPayload, setRoomToInProgress } from '@/utils/eventUtils'
+import {
+	check,
+	isValidEventAndPayload,
+	saveScoresToDatabase,
+	setRoomToInProgress
+} from '@/utils/eventUtils'
 import io from '@/global/server'
 import { INITIAL_USER_SCORE } from '$shared/constants'
 
@@ -86,6 +91,8 @@ export default async function ChangeUserState(
 			state.updateUser(u.socketId, { score: INITIAL_USER_SCORE, state: 'not-ready' })
 		})
 		io.in(room!.id).emit('change-all-user-data', { score: INITIAL_USER_SCORE, state: 'not-ready' })
+
+		await saveScoresToDatabase(room!.id)
 
 		return callback({
 			value: { state: 'not-ready' },

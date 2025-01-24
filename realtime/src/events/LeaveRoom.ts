@@ -2,7 +2,7 @@ import { LeaveRoomCallback } from '$shared/types/events/client/LeaveRoom'
 import io from '@/global/server'
 import state from '@/global/state'
 import CustomSocket from '@/types/CustomSocket'
-import { check, setRoomToInProgress } from '@/utils/eventUtils'
+import { check, saveScoresToDatabase, setRoomToInProgress } from '@/utils/eventUtils'
 
 export default async function LeaveRoom(socket: CustomSocket, callback: LeaveRoomCallback) {
 	if (typeof callback !== 'function') return
@@ -35,6 +35,8 @@ export default async function LeaveRoom(socket: CustomSocket, callback: LeaveRoo
 	if (allUsersDone) {
 		state.updateRoom(room!.id, { state: 'complete' })
 		io.in(room!.id).emit('change-room-data', { state: 'complete' })
+
+		await saveScoresToDatabase(room!.id)
 	}
 
 	if (state.getRoom(room!.id)!.admin === socket.id) {

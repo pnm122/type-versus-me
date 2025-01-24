@@ -168,7 +168,7 @@ export async function getUserScores(
 
 export async function updateUser(
 	id: string,
-	{ username, cursorColor }: { username?: string; cursorColor: CursorColor }
+	{ username, cursorColor }: { username?: string; cursorColor?: CursorColor }
 ): Promise<{ error: Prisma.PrismaClientKnownRequestError | null }> {
 	try {
 		await prisma.user.update({

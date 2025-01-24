@@ -8,6 +8,8 @@ import generateTest from './generateTest'
 import io from '@/global/server'
 import { Room } from '$shared/types/Room'
 import { createRace } from '$shared/utils/database/race'
+import getPointsFromScore from '$shared/utils/getPointsFromScore'
+import { createScores } from '$shared/utils/database/score'
 
 /**
  * Check if an event with a payload is valid, returning appropriate errors through the callback if found.
@@ -92,4 +94,31 @@ export async function setRoomToInProgress(room: Room) {
 	io.in(room.id).emit('change-all-user-data', { score: INITIAL_USER_SCORE, state: 'in-progress' })
 
 	return null
+}
+
+export async function saveScoresToDatabase(roomId: Room['id']) {
+	const newScores = state
+		.getRoom(roomId)!
+		.users.filter((u) => u.userId)
+		.map(({ lastScore, userId }, _, users) => ({
+			accuracy: lastScore!.failed ? -1 : lastScore!.accuracy,
+			netWPM: lastScore!.failed ? -1 : lastScore!.netWPM,
+			isWinner: lastScore!.failed
+				? false
+				: users.sort((a, b) => b.lastScore!.netWPM - a.lastScore!.netWPM).at(0)?.userId === userId,
+			raceId: state.getRoom(roomId)!.raceId!,
+			userId: userId!
+		}))
+		.map((s) => ({
+			...s,
+			points: getPointsFromScore({
+				netWPM: s.netWPM,
+				accuracy: s.accuracy,
+				isWinner: s.isWinner,
+				numWords: state.getRoom(roomId)!.settings.numWords,
+				numUsers: state.getRoom(roomId)!.users.length
+			})
+		}))
+
+	await createScores(newScores)
 }

@@ -112,7 +112,9 @@ export default function RoomData() {
 	}
 
 	async function onSubmitRoomSettings() {
-		const res = await changeRoomSettings(settings, { globalState, socket, notifs })
+		// eslint-disable-next-line
+		const { open, ...newSettings } = settings
+		const res = await changeRoomSettings(newSettings, { globalState, socket, notifs })
 
 		if (!res.error) {
 			settingsDispatch({ key: 'open', value: false })

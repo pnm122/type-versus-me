@@ -178,7 +178,7 @@ export default function Typer({
 			correctMade,
 			correctLeft: newCorrect,
 			netWPM: newCorrect / 5 / ((Date.now() - startTime) / 60000),
-			accuracy: (correctMade * 100) / (correctMade + errorsMade),
+			accuracy: correctMade / (correctMade + errorsMade),
 			cursorPosition: getCursorPosition(newTyped)
 		}
 
