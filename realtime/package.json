@@ -3,13 +3,14 @@
   "version": "0.1.0",
   "scripts": {
     "dev": "npx tsx watch src/index.ts",
-    "build": "npx tsc && npx tsc-alias && copyfiles -u 1 \"./static/**/*.txt\" ./dist/realtime/static",
+    "build": "npm run generate && npx tsc && npx tsc-alias && copyfiles -u 1 \"./static/**/*.txt\" ./dist/realtime/static",
     "start": "node dist/realtime/src/index.js",
     "test": "jest",
     "test:related": "jest --findRelatedTests --passWithNoTests",
     "test:watch": "jest --watch",
     "coverage": "jest --coverage",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "generate": "cd .. && npm run prisma:generate"
   },
   "author": "Pierce Martin <pnmartin02@gmail.com> (https://github.com/pnm122)",
   "license": "MIT",
