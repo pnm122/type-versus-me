@@ -8,52 +8,24 @@ import PixelarticonsPlus from '~icons/pixelarticons/plus'
 import PixelarticonsArrowRight from '~icons/pixelarticons/arrow-right'
 import Button from '@/components/base/Button/Button'
 import ButtonIcon from '@/components/base/Button/ButtonIcon'
-import { useReducer, useState } from 'react'
+import { useState } from 'react'
 import { useSocket } from '@/context/Socket'
 import { useRouter } from 'next/navigation'
 import { isValidUsername } from '$shared/utils/validators'
 import { useNotification } from '@/context/Notification'
 import { errorNotification } from '@/utils/errorNotifications'
-import { useGlobalState } from '@/context/GlobalState'
-import { createRoom, joinRoom } from '@/utils/room'
-import RoomSettingsPopover from '@/components/shared/RoomSettingsPopover/RoomSettingsPopover'
-import { RoomSettings } from '$shared/types/Room'
+import { joinRoom } from '@/utils/realtime/room'
+import { CursorColor } from '$shared/types/Cursor'
+import useAuth from '@/hooks/useAuth'
 
 export default function Home() {
-	type Settings = RoomSettings & { open: boolean }
-	type Action<T extends keyof Settings> = { key: T; value: Settings[T] }
-
 	const [joinRoomCode, setJoinRoomCode] = useState('')
-	const [createRoomLoading, setCreateRoomLoading] = useState(false)
 	const [joinRoomLoading, setJoinRoomLoading] = useState(false)
-	const [settings, settingsDispatch] = useReducer(settingsReducer, {
-		category: 'top-100',
-		numWords: 40,
-		timeLimit: 120,
-		open: false
-	})
-	const globalState = useGlobalState()
+
 	const socket = useSocket()
 	const router = useRouter()
 	const notifs = useNotification()
-
-	const { user } = globalState
-
-	function settingsReducer<T extends keyof Settings>(state: Settings, { key, value }: Action<T>) {
-		return {
-			...state,
-			[key]: value
-		}
-	}
-
-	async function onCreateRoomClicked() {
-		if (socket.state !== 'valid' || !user) return
-		if (!isValidUsername(user.username)) {
-			return notifs.push(errorNotification('invalid-username'))
-		}
-
-		settingsDispatch({ key: 'open', value: true })
-	}
+	const { user } = useAuth()
 
 	async function onJoinRoomSubmit(e: React.FormEvent) {
 		e.preventDefault()
@@ -63,21 +35,8 @@ export default function Home() {
 		}
 
 		setJoinRoomLoading(true)
-		const res = await joinRoom(joinRoomCode, { socket, notifs, globalState })
+		const res = await joinRoom(joinRoomCode, user, { socket, notifs })
 		setJoinRoomLoading(false)
-
-		if (res.error) return
-
-		router.push(`/room/${res.value.room.id}`)
-	}
-
-	async function onSubmitCreateRoomSettings() {
-		setCreateRoomLoading(true)
-		const res = await createRoom(
-			{ category: settings.category, numWords: settings.numWords, timeLimit: settings.timeLimit },
-			{ socket, notifs, globalState }
-		)
-		setCreateRoomLoading(false)
 
 		if (res.error) return
 
@@ -89,14 +48,17 @@ export default function Home() {
 			<main className={styles['page']}>
 				<form onSubmit={onJoinRoomSubmit} className={styles['main']}>
 					<h1 className={styles['main__title']}>
-						{user ? (
-							<TyperPreview text="taptaptap.live" cursorColor={user.color} />
+						{socket.state === 'valid' ? (
+							<TyperPreview
+								text="taptaptap.live"
+								cursorColor={user ? (user.cursorColor as CursorColor) : 'gray'}
+							/>
 						) : (
 							'taptaptap.live'
 						)}
 					</h1>
 					<div className={styles['main__group']}>
-						<Button onClick={onCreateRoomClicked} loading={createRoomLoading} disabled={!user}>
+						<Button href="/room/create" disabled={socket.state !== 'valid'}>
 							<ButtonIcon icon={<PixelarticonsPlus />} />
 							Create a room
 						</Button>
@@ -109,10 +71,15 @@ export default function Home() {
 								wrapperClassName={styles['join__input']}
 								minLength={5}
 								maxLength={5}
-								disabled={!user}
+								disabled={socket.state !== 'valid'}
 								required
 							/>
-							<Button style="secondary" type="submit" disabled={!user} loading={joinRoomLoading}>
+							<Button
+								style="secondary"
+								type="submit"
+								disabled={socket.state !== 'valid'}
+								loading={joinRoomLoading}
+							>
 								Join
 								<ButtonIcon icon={<PixelarticonsArrowRight />} />
 							</Button>
@@ -120,18 +87,6 @@ export default function Home() {
 					</div>
 				</form>
 			</main>
-			<RoomSettingsPopover
-				open={settings.open}
-				settings={{
-					category: settings.category,
-					numWords: settings.numWords,
-					timeLimit: settings.timeLimit
-				}}
-				onClose={() => settingsDispatch({ key: 'open', value: false })}
-				onChange={(key, value) => settingsDispatch({ key, value })}
-				onSubmit={onSubmitCreateRoomSettings}
-				type="create-room"
-			/>
 		</>
 	)
 }

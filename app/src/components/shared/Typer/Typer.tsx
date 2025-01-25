@@ -14,8 +14,8 @@ import TyperCursor from '@/components/shared/TyperCursor/TyperCursor'
 import { CursorColor, CursorPosition } from '$shared/types/Cursor'
 import { getCursorPosition, getInitialStats, getTextRegions, words } from '@/utils/typer'
 import { TyperStats, Word } from '@/types/Typer'
-import { useGlobalState } from '@/context/GlobalState'
 import debounce from 'debounce'
+import { useRoom } from '@/context/Room'
 
 export interface TyperRef {
 	focus: () => void
@@ -69,7 +69,7 @@ export default function Typer({
 		}
 	}))
 
-	const { user } = useGlobalState()
+	const { user } = useRoom()
 
 	const cursorColor: CursorColor = user?.color ?? 'blue'
 

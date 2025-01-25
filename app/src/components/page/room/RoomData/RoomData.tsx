@@ -4,32 +4,30 @@ import Button from '@/components/base/Button/Button'
 import PixelarticonsLogout from '~icons/pixelarticons/logout'
 import ButtonIcon from '@/components/base/Button/ButtonIcon'
 import PixelarticonsCopy from '~icons/pixelarticons/copy'
-
 import { MAX_USERS_PER_ROOM } from '$shared/constants'
 import { useNotification } from '@/context/Notification'
 import Checkbox from '@/components/base/Checkbox/Checkbox'
 import { useReducer, useState } from 'react'
 import { User as UserType } from '$shared/types/User'
-import { useGlobalState } from '@/context/GlobalState'
-import { updateUser } from '@/utils/user'
+import { updateUser } from '@/utils/realtime/user'
 import { useSocket } from '@/context/Socket'
-import { changeRoomSettings, leaveRoom } from '@/utils/room'
+import { changeRoomSettings, leaveRoom } from '@/utils/realtime/room'
 import { useRouter } from 'next/navigation'
 import Collapsible from '@/components/base/Collapsible/Collapsible'
 import IconButton from '@/components/base/Button/IconButton'
 import PixelarticonsEdit from '~icons/pixelarticons/edit'
-import RoomSettingsPopover from '@/components/shared/RoomSettingsPopover/RoomSettingsPopover'
+import RoomSettingsPopover from '@/components/page/room/RoomSettingsPopover/RoomSettingsPopover'
 import { RoomSettings } from '$shared/types/Room'
+import { useRoom } from '@/context/Room'
 
 export default function RoomData() {
 	type Settings = RoomSettings & { open: boolean }
 	type Action<T extends keyof Settings> = { key: T; value: Settings[T] }
 
-	const globalState = useGlobalState()
 	const notifs = useNotification()
 	const socket = useSocket()
 	const router = useRouter()
-	const { room, user } = globalState
+	const { room, user } = useRoom()
 	// 'Predict' what state the user will be in before waiting for server
 	// This way, the state changes can feel instantaneous, but still be verified by the server
 	const [predictedUserState, setPredictedUserState] = useState<UserType['state'] | null>(null)
@@ -69,17 +67,21 @@ export default function RoomData() {
 
 	async function onCheckboxChange(ready: boolean) {
 		setPredictedUserState(ready ? 'ready' : 'not-ready')
-		await updateUser('state', ready ? 'ready' : 'not-ready', {
-			globalState,
-			notifs,
-			socket
-		})
+		await updateUser(
+			'state',
+			ready ? 'ready' : 'not-ready',
+			{ user },
+			{
+				notifs,
+				socket
+			}
+		)
 		setPredictedUserState(null)
 	}
 
 	function handleLeaveRoom() {
 		router.push('/')
-		leaveRoom({ globalState, socket, notifs })
+		leaveRoom({ socket, notifs })
 	}
 
 	function getCategoryText() {
@@ -114,7 +116,7 @@ export default function RoomData() {
 	async function onSubmitRoomSettings() {
 		// eslint-disable-next-line
 		const { open, ...newSettings } = settings
-		const res = await changeRoomSettings(newSettings, { globalState, socket, notifs })
+		const res = await changeRoomSettings(newSettings, { user, room }, { socket, notifs })
 
 		if (!res.error) {
 			settingsDispatch({ key: 'open', value: false })
@@ -192,7 +194,6 @@ export default function RoomData() {
 				onClose={() => settingsDispatch({ key: 'open', value: false })}
 				onChange={(key, value) => settingsDispatch({ key, value })}
 				onSubmit={onSubmitRoomSettings}
-				type="save"
 			/>
 		</>
 	)

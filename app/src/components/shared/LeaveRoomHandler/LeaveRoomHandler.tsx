@@ -1,25 +1,21 @@
 'use client'
 
-import { useGlobalState } from '@/context/GlobalState'
 import { useNotification } from '@/context/Notification'
 import { useSocket } from '@/context/Socket'
-import { leaveRoom } from '@/utils/room'
-import { usePathname } from 'next/navigation'
+import { leaveRoom } from '@/utils/realtime/room'
+import { useParams, usePathname } from 'next/navigation'
 import React, { useEffect } from 'react'
 
 export default function LeaveRoomHandler() {
-	const globalState = useGlobalState()
 	const socket = useSocket()
 	const notifs = useNotification()
+	const params = useParams()
 	const pathname = usePathname()
 
 	useEffect(() => {
-		if (!globalState.room) return
-
-		// Leave the room the user is currently in if they are in one and the new route doesn't match the room's path
-		const inCurrentRoom = pathname === `/room/${globalState.room.id}`
-		if (!inCurrentRoom) {
-			leaveRoom({ globalState, socket, notifs })
+		// Will call leaveRoom unnecessarily, but this is the only way I can think of doing this without some hacky useEffect cleanup shit
+		if (!params.roomId) {
+			leaveRoom({ socket, notifs })
 		}
 	}, [pathname])
 

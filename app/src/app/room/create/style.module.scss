@@ -1,0 +1,9 @@
+@use '@/scss/mixins' as *;
+
+.page {
+	height: calc(100vh - var(--header-size));
+	max-height: calc(-webkit-fill-available - var(--header-size));
+	display: grid;
+	place-items: center;
+	@include max-width(400px, 24px);
+}

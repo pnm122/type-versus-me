@@ -1,13 +1,13 @@
 import { User } from '$shared/types/User'
-import { useGlobalState } from '@/context/GlobalState'
 import styles from './style.module.scss'
 import Pill from '@/components/base/Pill/Pill'
 import PixelarticonsClose from '~icons/pixelarticons/close'
 import sortUsersByScore from '@/utils/sortUsersByScore'
 import createClasses from '@/utils/createClasses'
+import { useRoom } from '@/context/Room'
 
 export default function LeaderboardUser({ user }: { user: User }) {
-	const { room, user: currentUser } = useGlobalState()
+	const { room, user: currentUser } = useRoom()
 
 	if (!room || !user.lastScore || !currentUser) return <></>
 

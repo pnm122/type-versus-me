@@ -1,4 +1,3 @@
-import { useGlobalState } from '@/context/GlobalState'
 import styles from './style.module.scss'
 import LeaderboardUser from './LeaderboardUser'
 import sortUsersByScore from '@/utils/sortUsersByScore'
@@ -6,9 +5,10 @@ import { useState } from 'react'
 import createClasses from '@/utils/createClasses'
 import PixelarticonsChevronUp from '~icons/pixelarticons/chevron-up'
 import Collapsible from '@/components/base/Collapsible/Collapsible'
+import { useRoom } from '@/context/Room'
 
 export default function Leaderboard() {
-	const { room } = useGlobalState()
+	const { room } = useRoom()
 	const [open, setOpen] = useState(true)
 
 	const sortedScores = sortUsersByScore(room?.users ?? [])

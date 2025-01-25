@@ -1,17 +1,16 @@
-import { useGlobalState } from '@/context/GlobalState'
 import styles from './style.module.scss'
 import Game from '@/components/page/room/Game/Game'
 import Leaderboard from '@/components/page/room/Leaderboard/Leaderboard'
 import { useEffect, useLayoutEffect, useRef } from 'react'
 import debounce from 'debounce'
+import { useRoom } from '@/context/Room'
 
 export default function MainRoom() {
-	const globalState = useGlobalState()
 	const gameRef = useRef<HTMLDivElement>(null)
 	const waitingTextRef = useRef<HTMLHeadingElement>(null)
 	const topRef = useRef<HTMLDivElement>(null)
 	const resetHeightTimeout = useRef<NodeJS.Timeout | null>(null)
-	const { room } = globalState
+	const { room } = useRoom()
 
 	useLayoutEffect(() => {
 		updateHeight()

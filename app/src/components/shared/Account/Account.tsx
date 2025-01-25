@@ -6,27 +6,23 @@ import IconButton from '@/components/base/Button/IconButton'
 import { useEffect, useRef, useState } from 'react'
 import PixelarticonsUser from '~icons/pixelarticons/user'
 import { signOutAction } from '@/actions/auth'
-import { Session } from 'next-auth'
 import ThemeSwitcher from '@/components/shared/ThemeSwitcher/ThemeSwitcher'
 import Dropdown from '@/components/base/Dropdown/Dropdown'
 import PixelarticonsLogout from '~icons/pixelarticons/logout'
 import PixelarticonsLogin from '~icons/pixelarticons/login'
 import { usePathname } from 'next/navigation'
 import ButtonIcon from '@/components/base/Button/ButtonIcon'
-import { User } from '@prisma/client'
 import UserAndCursor from '../UserAndCursor/UserAndCursor'
 import { CursorColor } from '$shared/types/Cursor'
+import { useAuthContext } from '@/context/Auth'
+import Skeleton from '@/components/base/Skeleton/Skeleton'
 
-interface Props {
-	session: Session | null
-	user: User | null
-}
-
-export default function Account({ session, user }: Props) {
+export default function Account() {
 	const path = usePathname()
 	const [expanded, setExpanded] = useState(false)
 	const firstButton = useRef<HTMLButtonElement>(null)
 	const toggleButton = useRef<HTMLElement>(null)
+	const { session, user, state } = useAuthContext()
 
 	useEffect(() => {
 		setExpanded(false)
@@ -36,9 +32,11 @@ export default function Account({ session, user }: Props) {
 		setExpanded(!expanded)
 	}
 
-	return (
+	return state === 'loading' ? (
+		<Skeleton width="100px" height="1.5rem" />
+	) : (
 		<div className={styles['account']}>
-			{session?.user && user ? (
+			{session && user ? (
 				<Button
 					className={styles['account__user']}
 					style="tertiary"
@@ -71,7 +69,7 @@ export default function Account({ session, user }: Props) {
 				className={styles['account__dropdown']}
 			>
 				<div className={styles['links']}>
-					{session?.user ? (
+					{session && user ? (
 						<>
 							<Button
 								ref={firstButton}

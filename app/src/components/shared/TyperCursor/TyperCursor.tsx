@@ -2,7 +2,7 @@ import { Cursor } from '@/types/Cursor'
 import { useEffect, useRef } from 'react'
 import styles from '@/components/shared/Typer/style.module.scss'
 import createClasses from '@/utils/createClasses'
-import { useGlobalState } from '@/context/GlobalState'
+import { useRoom } from '@/context/Room'
 
 type Props = Omit<Cursor, 'id'> & {
 	typer: React.RefObject<HTMLElement | null>
@@ -19,7 +19,7 @@ export default function TyperCursor({
 	wordClassName = styles['word'],
 	characterClassName = styles['character']
 }: Props) {
-	const { user } = useGlobalState()
+	const { user } = useRoom()
 	const cursor = useRef<HTMLDivElement>(null)
 	const cursorBlinkingTimeout = useRef<NodeJS.Timeout | null>(null)
 

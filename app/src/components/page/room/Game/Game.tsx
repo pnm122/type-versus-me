@@ -3,15 +3,15 @@
 import Typer, { TyperRef } from '@/components/shared/Typer/Typer'
 import styles from './style.module.scss'
 import { RefObject, useEffect, useRef, useState } from 'react'
-import { useGlobalState } from '@/context/GlobalState'
 import { useNotification } from '@/context/Notification'
 import { useSocket } from '@/context/Socket'
 import { Cursor } from '@/types/Cursor'
-import { updateUser } from '@/utils/user'
+import { updateUser } from '@/utils/realtime/user'
 import createClasses from '@/utils/createClasses'
 import useInterval from '@/hooks/useInterval'
 import { getInitialStats } from '@/utils/typer'
 import { TyperStats } from '@/types/Typer'
+import { useRoom } from '@/context/Room'
 
 export default function Game({ ref }: { ref?: RefObject<HTMLDivElement | null> }) {
 	const [startTime, setStartTime] = useState(-1)
@@ -19,11 +19,10 @@ export default function Game({ ref }: { ref?: RefObject<HTMLDivElement | null> }
 	const [stats, setStats] = useState<TyperStats>(getInitialStats())
 	const [timeToStart, setTimeToStart] = useState(-1)
 	const [timeLeft, setTimeLeft] = useState(-1)
-	const globalState = useGlobalState()
 	const socket = useSocket()
 	const notifs = useNotification()
 	const typer = useRef<TyperRef>(null)
-	const { room, user } = globalState
+	const { room, user } = useRoom()
 
 	useInterval(
 		nextTimeLeft,
@@ -42,7 +41,7 @@ export default function Game({ ref }: { ref?: RefObject<HTMLDivElement | null> }
 	useEffect(() => {
 		if (timeLeft === 0 && !finished) {
 			setFinished(true)
-			updateUser('state', 'failed', { globalState, notifs, socket })
+			updateUser('state', 'failed', { user }, { notifs, socket })
 		}
 	}, [timeLeft])
 
@@ -77,14 +76,15 @@ export default function Game({ ref }: { ref?: RefObject<HTMLDivElement | null> }
 		updateUser(
 			'score',
 			{ cursorPosition: stats.cursorPosition, netWPM: stats.netWPM, accuracy: stats.accuracy },
-			{ globalState, socket, notifs }
+			{ user },
+			{ socket, notifs }
 		)
 		setStats(stats)
 	}
 
 	function onTyperFinish() {
 		setFinished(true)
-		updateUser('state', 'complete', { globalState, socket, notifs })
+		updateUser('state', 'complete', { user }, { socket, notifs })
 	}
 
 	return (

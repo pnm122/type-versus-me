@@ -2,10 +2,11 @@ import type { Metadata } from 'next'
 import '@/scss/index.scss'
 import { SocketProvider } from '@/context/Socket'
 import { NotificationProvider } from '@/context/Notification'
-import { GlobalStateProvider } from '@/context/GlobalState'
-import LeaveRoomHandler from '@/components/shared/LeaveRoomHandler/LeaveRoomHandler'
+import { AuthProvider } from '@/context/Auth'
 import { ThemeProvider } from 'next-themes'
 import Header from '@/components/shared/Header/Header'
+import { SessionProvider } from 'next-auth/react'
+import LeaveRoomHandler from '@/components/shared/LeaveRoomHandler/LeaveRoomHandler'
 
 export const metadata: Metadata = {
 	title: 'Typing Race',
@@ -26,15 +27,17 @@ export default function RootLayout({
 					defaultTheme="system"
 					enableSystem
 				>
-					<NotificationProvider>
-						<SocketProvider>
-							<GlobalStateProvider>
-								<LeaveRoomHandler />
-								<Header />
-								{children}
-							</GlobalStateProvider>
-						</SocketProvider>
-					</NotificationProvider>
+					<SessionProvider>
+						<AuthProvider>
+							<NotificationProvider>
+								<SocketProvider>
+									<LeaveRoomHandler />
+									<Header />
+									{children}
+								</SocketProvider>
+							</NotificationProvider>
+						</AuthProvider>
+					</SessionProvider>
 				</ThemeProvider>
 			</body>
 		</html>

@@ -1,17 +1,16 @@
 import { User as UserType } from '$shared/types/User'
 import styles from './style.module.scss'
-import { useGlobalState } from '@/context/GlobalState'
 import UserState from './UserState'
 import RiVipCrownFill from '~icons/ri/vip-crown-fill'
 import UserAndCursor from '@/components/shared/UserAndCursor/UserAndCursor'
+import { useRoom } from '@/context/Room'
 
 interface Props {
 	user: UserType
 }
 
 export default function User({ user: { socketId, username, color, score, state } }: Props) {
-	const globalState = useGlobalState()
-	const { user, room } = globalState
+	const { user, room } = useRoom()
 
 	const usernameElement = (
 		<>
