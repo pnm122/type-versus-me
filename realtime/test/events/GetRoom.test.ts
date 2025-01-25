@@ -1,17 +1,17 @@
-import DoesRoomExist from '@/events/DoesRoomExist'
+import GetRoom from '@/events/GetRoom'
 import { createRoomForTesting } from '../test-utils'
 
-describe('DoesRoomExist', () => {
+describe('GetRoom', () => {
 	it('runs without failing if callback not provided', () => {
 		// @ts-expect-error missing parameters on purpose
-		DoesRoomExist(null, null)
+		GetRoom(null, null)
 		expect(true).toBe(true)
 	})
 
 	it('gives the correct error if no room ID was provided', () => {
 		const callback = jest.fn()
 		// @ts-expect-error missing parameters on purpose
-		DoesRoomExist(null, callback)
+		GetRoom(null, callback)
 
 		expect(callback).toHaveBeenCalledWith({
 			value: null,
@@ -21,26 +21,26 @@ describe('DoesRoomExist', () => {
 		})
 	})
 
-	it('gives true if the room exists', () => {
+	it('calls callback with the room if the room exists', () => {
 		const { room } = createRoomForTesting().value!
 		const callback = jest.fn()
 
-		DoesRoomExist(room.id, callback)
+		GetRoom(room.id, callback)
 
 		expect(callback).toHaveBeenCalledWith({
-			value: true,
+			value: room,
 			error: null
 		})
 	})
 
-	it('gives false if the room does not', () => {
+	it('calls callback with null if the room does not exist', () => {
 		createRoomForTesting()
 		const callback = jest.fn()
 
-		DoesRoomExist('INVALID_ID', callback)
+		GetRoom('INVALID_ID', callback)
 
 		expect(callback).toHaveBeenCalledWith({
-			value: false,
+			value: null,
 			error: null
 		})
 	})
