@@ -6,7 +6,7 @@ import { AuthProvider } from '@/context/Auth'
 import { ThemeProvider } from 'next-themes'
 import Header from '@/components/shared/Header/Header'
 import { SessionProvider } from 'next-auth/react'
-import LeaveRoomHandler from '@/components/shared/LeaveRoomHandler/LeaveRoomHandler'
+import { RoomProvider } from '@/context/Room'
 
 export const metadata: Metadata = {
 	title: 'Typing Race',
@@ -31,9 +31,10 @@ export default function RootLayout({
 						<AuthProvider>
 							<NotificationProvider>
 								<SocketProvider>
-									<LeaveRoomHandler />
-									<Header />
-									{children}
+									<RoomProvider>
+										<Header />
+										{children}
+									</RoomProvider>
 								</SocketProvider>
 							</NotificationProvider>
 						</AuthProvider>

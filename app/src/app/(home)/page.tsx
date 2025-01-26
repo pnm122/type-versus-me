@@ -11,31 +11,27 @@ import ButtonIcon from '@/components/base/Button/ButtonIcon'
 import { useState } from 'react'
 import { useSocket } from '@/context/Socket'
 import { useRouter } from 'next/navigation'
-import { isValidUsername } from '$shared/utils/validators'
-import { useNotification } from '@/context/Notification'
-import { errorNotification } from '@/utils/errorNotifications'
-import { joinRoom } from '@/utils/realtime/room'
 import { CursorColor } from '$shared/types/Cursor'
-import useAuth from '@/hooks/useAuth'
+import HomeRoomSettingsPopover from '@/components/page/home/HomeRoomSettingsPopover/HomeRoomSettingsPopover'
+import { useAuthContext } from '@/context/Auth'
+import { useRoom } from '@/context/Room'
 
 export default function Home() {
 	const [joinRoomCode, setJoinRoomCode] = useState('')
 	const [joinRoomLoading, setJoinRoomLoading] = useState(false)
+	const [settingsOpen, setSettingsOpen] = useState(false)
 
 	const socket = useSocket()
 	const router = useRouter()
-	const notifs = useNotification()
-	const { user } = useAuth()
+	const { user } = useAuthContext()
+	const { joinRoom } = useRoom()
 
 	async function onJoinRoomSubmit(e: React.FormEvent) {
 		e.preventDefault()
-		if (socket.state !== 'valid' || !user) return
-		if (!isValidUsername(user.username)) {
-			return notifs.push(errorNotification('invalid-username'))
-		}
+		if (socket.state !== 'valid') return
 
 		setJoinRoomLoading(true)
-		const res = await joinRoom(joinRoomCode, user, { socket, notifs })
+		const res = await joinRoom(joinRoomCode)
 		setJoinRoomLoading(false)
 
 		if (res.error) return
@@ -58,7 +54,7 @@ export default function Home() {
 						)}
 					</h1>
 					<div className={styles['main__group']}>
-						<Button href="/room/create" disabled={socket.state !== 'valid'}>
+						<Button onClick={() => setSettingsOpen(true)} disabled={socket.state !== 'valid'}>
 							<ButtonIcon icon={<PixelarticonsPlus />} />
 							Create a room
 						</Button>
@@ -87,6 +83,7 @@ export default function Home() {
 					</div>
 				</form>
 			</main>
+			<HomeRoomSettingsPopover open={settingsOpen} onClose={() => setSettingsOpen(false)} />
 		</>
 	)
 }

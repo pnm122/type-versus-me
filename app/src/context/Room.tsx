@@ -9,22 +9,35 @@ import { ServerLeaveRoomPayload } from '$shared/types/events/server/LeaveRoom'
 import { ChangeRoomDataPayload } from '$shared/types/events/server/ChangeRoomData'
 import { ChangeAllUserDataPayload } from '$shared/types/events/server/ChangeAllUserData'
 import { ChangeUserDataPayload } from '$shared/types/events/server/ChangeUserData'
-import { createRoom, onChangeRoomData, onJoinRoom, onLeaveRoom } from '@/utils/realtime/room'
+import {
+	createRoom,
+	joinRoom,
+	leaveRoom,
+	onChangeRoomData,
+	onJoinRoom,
+	onLeaveRoom
+} from '@/utils/realtime/room'
 import { onChangeAllUserData, onChangeUserData } from '@/utils/realtime/user'
 import { useNotification } from './Notification'
 import { useAuthContext } from './Auth'
 import { CreateRoomCallback } from '$shared/types/events/client/CreateRoom'
+import { ClientJoinRoomCallback } from '$shared/types/events/client/JoinRoom'
+import { useParams, usePathname } from 'next/navigation'
 
 export interface RoomContextType {
 	room: Room | null
 	user: User | null
 	createRoom(settings: RoomSettings): Promise<Parameters<CreateRoomCallback>[0]>
+	joinRoom(roomId: string): Promise<Parameters<ClientJoinRoomCallback>[0]>
 }
 
 const RoomContext = createContext<RoomContextType>({
 	room: null,
 	user: null,
 	async createRoom() {
+		return { value: null, error: { reason: 'missing-argument' } }
+	},
+	async joinRoom() {
 		return { value: null, error: { reason: 'missing-argument' } }
 	}
 })
@@ -35,6 +48,8 @@ export function RoomProvider({ children }: React.PropsWithChildren) {
 	const socket = useSocket()
 	const notifs = useNotification()
 	const auth = useAuthContext()
+	const pathname = usePathname()
+	const params = useParams()
 
 	const state = { room, setRoom, user, setUser }
 	const context = { socket, notifs }
@@ -67,12 +82,34 @@ export function RoomProvider({ children }: React.PropsWithChildren) {
 		}
 	}, [socket, state, context])
 
+	useEffect(() => {
+		const { roomId } = params
+
+		if (!roomId && room) {
+			leaveRoomInternal()
+		}
+	}, [pathname])
+
 	function createRoomExternal(settings: RoomSettings) {
 		return createRoom(settings, auth.user, state, context)
 	}
 
+	function joinRoomExternal(roomId: string) {
+		return joinRoom(roomId, auth.user, state, context)
+	}
+
+	async function leaveRoomInternal() {
+		const res = await leaveRoom(context)
+		if (res.error) return
+
+		setRoom(null)
+		setUser(null)
+	}
+
 	return (
-		<RoomContext.Provider value={{ user, room, createRoom: createRoomExternal }}>
+		<RoomContext.Provider
+			value={{ user, room, createRoom: createRoomExternal, joinRoom: joinRoomExternal }}
+		>
 			{children}
 		</RoomContext.Provider>
 	)

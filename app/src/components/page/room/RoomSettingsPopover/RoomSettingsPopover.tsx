@@ -4,7 +4,7 @@ import RoomSettingsForm, {
 	RoomSettingsFormProps
 } from '@/components/shared/RoomSettingsForm/RoomSettingsForm'
 
-type Props = Pick<RoomSettingsFormProps, 'settings' | 'onChange'> & {
+type Props = Pick<RoomSettingsFormProps, 'settings' | 'onChange' | 'loading'> & {
 	onSubmit: () => void
 	onClose: () => void
 	open: boolean
@@ -15,7 +15,8 @@ export default function RoomSettingsPopover({
 	onClose,
 	open,
 	settings,
-	onChange
+	onChange,
+	loading
 }: Props) {
 	const firstFocusableElement = useRef<HTMLButtonElement>(null)
 
@@ -28,6 +29,7 @@ export default function RoomSettingsPopover({
 				onSubmit={onSubmit}
 				firstFocusableElement={firstFocusableElement}
 				type="save"
+				loading={loading}
 			/>
 		</Popover>
 	)

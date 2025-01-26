@@ -75,7 +75,7 @@ export async function createRoom(
 	{ setUser, setRoom }: Pick<State, 'setUser' | 'setRoom'>,
 	{ socket, notifs }: Context
 ): Promise<Parameters<CreateRoomCallback>[0]> {
-	if (!checkSocket(socket.value, notifs) || !user) {
+	if (!checkSocket(socket.value, notifs)) {
 		return {
 			value: null,
 			error: {
@@ -86,9 +86,9 @@ export async function createRoom(
 	const res = await socket.value.emitWithAck('create-room', {
 		user: {
 			socketId: socket.value.id!,
-			userId: user.id,
-			color: user.cursorColor as CursorColor,
-			username: user.username
+			userId: user?.id,
+			username: user?.username ?? generateUsername(),
+			color: (user?.cursorColor as CursorColor) ?? 'gray'
 		},
 		settings
 	})
@@ -106,6 +106,7 @@ export async function createRoom(
 export async function joinRoom(
 	id: Room['id'],
 	user: DatabaseUser | null,
+	{ setUser, setRoom }: Pick<State, 'setUser' | 'setRoom'>,
 	{ socket, notifs }: Context
 ): Promise<Parameters<ClientJoinRoomCallback>[0]> {
 	if (!checkSocket(socket.value, notifs)) {
@@ -131,6 +132,8 @@ export async function joinRoom(
 		return res
 	}
 
+	setUser(res.value.user)
+	setRoom(res.value.room)
 	return res
 }
 
