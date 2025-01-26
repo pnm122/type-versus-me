@@ -23,7 +23,7 @@ export default function Home() {
 
 	const socket = useSocket()
 	const router = useRouter()
-	const { user } = useAuthContext()
+	const { user, state: authState } = useAuthContext()
 	const { joinRoom } = useRoom()
 
 	async function onJoinRoomSubmit(e: React.FormEvent) {
@@ -39,18 +39,20 @@ export default function Home() {
 		router.push(`/room/${res.value.room.id}`)
 	}
 
+	const loading = socket.state !== 'valid' || authState !== 'ready'
+
 	return (
 		<>
 			<main className={styles['page']}>
 				<form onSubmit={onJoinRoomSubmit} className={styles['main']}>
 					<h1 className={styles['main__title']}>
-						{socket.state === 'valid' ? (
+						{loading ? (
+							'taptaptap.live'
+						) : (
 							<TyperPreview
 								text="taptaptap.live"
 								cursorColor={user ? (user.cursorColor as CursorColor) : 'gray'}
 							/>
-						) : (
-							'taptaptap.live'
 						)}
 					</h1>
 					<div className={styles['main__group']}>
@@ -67,15 +69,10 @@ export default function Home() {
 								wrapperClassName={styles['join__input']}
 								minLength={5}
 								maxLength={5}
-								disabled={socket.state !== 'valid'}
+								disabled={loading}
 								required
 							/>
-							<Button
-								style="secondary"
-								type="submit"
-								disabled={socket.state !== 'valid'}
-								loading={joinRoomLoading}
-							>
+							<Button style="secondary" type="submit" disabled={loading} loading={joinRoomLoading}>
 								Join
 								<ButtonIcon icon={<PixelarticonsArrowRight />} />
 							</Button>
