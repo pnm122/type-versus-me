@@ -5,7 +5,6 @@ import CategoryFilter from '@/components/page/profile/Filter/CategoryFilter'
 import styles from './style.module.scss'
 import NumWordsFilter from '@/components/page/profile/Filter/NumWordsFilter'
 import Table, { TableRowsFrom } from '@/components/base/Table/Table'
-import Pill from '@/components/base/Pill/Pill'
 import { roomCategoryDisplayNames } from '@/utils/displayNameMappings'
 import Pagination from '@/components/base/Pagination/Pagination'
 import { racesTableColumns, RacesTableData } from '@/components/page/profile/Races/table'
@@ -26,6 +25,10 @@ import {
 } from './utils'
 import { RoomSettings } from '$shared/types/Room'
 import { useAuthContext } from '@/context/Auth'
+import WordsPerMinute from './Table/WordsPerMinute'
+import Accuracy from './Table/Accuracy'
+import Placement from './Table/Placement'
+import StartTime from './Table/StartTime'
 
 interface Props {
 	data: { scores: ScoreAndRace[]; totalCount: number } | null
@@ -105,19 +108,26 @@ export default function RacesContentClient({ data }: Props) {
 					rows={rows.slice(0, safeParams[ITEMS_PER_PAGE_PARAM_KEY])}
 					render={{
 						startTime(value) {
-							return Intl.DateTimeFormat('en-US').format(value)
+							return <StartTime startTime={value} />
 						},
 						netWPM(value) {
-							return (
-								<Pill
-									text={value.toString()}
-									backgroundColor="var(--primary)"
-									foregroundColor="var(--black)"
-								/>
-							)
+							return <WordsPerMinute netWPM={value} />
+						},
+						accuracy(value) {
+							return <Accuracy accuracy={value} />
+						},
+						placement(value) {
+							return <Placement placement={value} />
 						},
 						category(value) {
-							return roomCategoryDisplayNames[value as RoomSettings['category']]
+							return (
+								<span className={styles['table-data']}>
+									{roomCategoryDisplayNames[value as RoomSettings['category']]}
+								</span>
+							)
+						},
+						numWords(value) {
+							return <span className={styles['table-data']}>{value}</span>
 						}
 					}}
 					expandRender={Object.fromEntries(
