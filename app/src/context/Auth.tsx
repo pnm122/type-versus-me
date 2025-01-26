@@ -8,7 +8,9 @@ const AuthContext = createContext<Auth>({
 	session: null,
 	state: 'loading',
 	error: null,
-	async reload() {}
+	async reload() {
+		return null
+	}
 })
 
 export function AuthProvider({ children }: React.PropsWithChildren) {

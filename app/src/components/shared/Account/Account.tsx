@@ -16,10 +16,13 @@ import UserAndCursor from '../UserAndCursor/UserAndCursor'
 import { CursorColor } from '$shared/types/Cursor'
 import { useAuthContext } from '@/context/Auth'
 import Skeleton from '@/components/base/Skeleton/Skeleton'
+import UserSettingsPopover from '../UserSettingsPopover/UserSettingsPopover'
+import PixelarticonsEdit from '~icons/pixelarticons/edit'
 
 export default function Account() {
 	const path = usePathname()
 	const [expanded, setExpanded] = useState(false)
+	const [settingsOpen, setSettingsOpen] = useState(false)
 	const firstButton = useRef<HTMLButtonElement>(null)
 	const toggleButton = useRef<HTMLElement>(null)
 	const { session, user, state } = useAuthContext()
@@ -35,70 +38,87 @@ export default function Account() {
 	return state === 'loading' ? (
 		<Skeleton width="100px" height="1.5rem" />
 	) : (
-		<div className={styles['account']}>
-			{session && user ? (
-				<Button
-					className={styles['account__user']}
-					style="tertiary"
-					onClick={toggleExpanded}
-					ref={toggleButton}
-				>
-					<UserAndCursor
-						size="small"
-						username={user.username}
-						color={user.cursorColor as CursorColor}
+		<>
+			<div className={styles['account']}>
+				{session && user ? (
+					<Button
+						className={styles['account__user']}
+						style="tertiary"
+						onClick={toggleExpanded}
+						ref={toggleButton}
+					>
+						<UserAndCursor
+							size="small"
+							username={user.username}
+							color={user.cursorColor as CursorColor}
+						/>
+					</Button>
+				) : (
+					<IconButton
+						style="tertiary"
+						icon={<PixelarticonsUser />}
+						aria-label="Open profile"
+						aria-expanded={expanded}
+						aria-controls="account-dropdown"
+						onClick={toggleExpanded}
+						ref={toggleButton}
 					/>
-				</Button>
-			) : (
-				<IconButton
-					style="tertiary"
-					icon={<PixelarticonsUser />}
-					aria-label="Open profile"
-					aria-expanded={expanded}
-					aria-controls="account-dropdown"
-					onClick={toggleExpanded}
-					ref={toggleButton}
+				)}
+				<Dropdown
+					open={expanded}
+					id="account-dropdown"
+					toggleButton={toggleButton}
+					focusOnOpenRef={firstButton}
+					onClose={() => setExpanded(false)}
+					className={styles['account__dropdown']}
+				>
+					<div className={styles['links']}>
+						{session && user ? (
+							<>
+								<Button
+									ref={firstButton}
+									style="tertiary"
+									href={`/profile/${user.id}`}
+									className={styles['links__link']}
+								>
+									<ButtonIcon icon={<PixelarticonsUser />} />
+									Profile
+								</Button>
+								<Button
+									style="tertiary"
+									className={styles['links__link']}
+									onClick={() => setSettingsOpen(true)}
+								>
+									<ButtonIcon icon={<PixelarticonsEdit />} />
+									Settings
+								</Button>
+								<Button
+									style="tertiary"
+									onClick={() => signOutAction()}
+									className={styles['links__link']}
+								>
+									<ButtonIcon icon={<PixelarticonsLogout />} />
+									Logout
+								</Button>
+							</>
+						) : (
+							<Button ref={firstButton} href="/login">
+								<ButtonIcon icon={<PixelarticonsLogin />} />
+								Login
+							</Button>
+						)}
+					</div>
+					<hr></hr>
+					<ThemeSwitcher />
+				</Dropdown>
+			</div>
+			{session && user && (
+				<UserSettingsPopover
+					open={settingsOpen}
+					onClose={() => setSettingsOpen(false)}
+					user={user}
 				/>
 			)}
-			<Dropdown
-				open={expanded}
-				id="account-dropdown"
-				toggleButton={toggleButton}
-				focusOnOpenRef={firstButton}
-				onClose={() => setExpanded(false)}
-				className={styles['account__dropdown']}
-			>
-				<div className={styles['links']}>
-					{session && user ? (
-						<>
-							<Button
-								ref={firstButton}
-								style="tertiary"
-								href={`/profile/${user.id}`}
-								className={styles['links__link']}
-							>
-								<ButtonIcon icon={<PixelarticonsUser />} />
-								Profile
-							</Button>
-							<Button
-								style="tertiary"
-								onClick={() => signOutAction()}
-								className={styles['links__link']}
-							>
-								<ButtonIcon icon={<PixelarticonsLogout />} />
-								Logout
-							</Button>
-						</>
-					) : (
-						<Button ref={firstButton} href="/login">
-							<ButtonIcon icon={<PixelarticonsLogin />} />
-							Login
-						</Button>
-					)}
-				</div>
-				<hr></hr>
-				<ThemeSwitcher />
-			</Dropdown>
-		</div>
+		</>
 	)
 }

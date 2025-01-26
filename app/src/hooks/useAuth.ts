@@ -11,7 +11,7 @@ export interface Auth {
 	state: State
 	error: Prisma.PrismaClientKnownRequestError | null
 	session: Session | null
-	reload(): Promise<void>
+	reload(): Promise<User | null>
 }
 
 export default function useAuth(): Auth {
@@ -26,11 +26,12 @@ export default function useAuth(): Auth {
 		setState('ready')
 		setError(res.error)
 		setUser(res.data)
+		return res.data
 	}
 
 	async function reload() {
-		if (!session.data?.user?.id) return
-		await updateUser(session.data.user.id, true)
+		if (!session.data?.user?.id) return null
+		return await updateUser(session.data.user.id, true)
 	}
 
 	useEffect(() => {

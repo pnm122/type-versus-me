@@ -12,24 +12,28 @@ import generateUsername from '$shared/utils/generateUsername'
 import CursorSelector from '@/components/shared/CursorSelector/CursorSelector'
 import ButtonIcon from '@/components/base/Button/ButtonIcon'
 import PixelarticonsSave from '~icons/pixelarticons/save'
-import { updateUser } from '$shared/utils/database/user'
+import { updateUser as updateUserInDatabase } from '$shared/utils/database/user'
 import { User } from '@prisma/client'
 import { useNotification } from '@/context/Notification'
-import { useRouter } from 'next/navigation'
+import { useAuthContext } from '@/context/Auth'
+import { useRoom } from '@/context/Room'
+import { updateUser as updateUserInSocket } from '@/utils/realtime/user'
+import { useSocket } from '@/context/Socket'
 
 interface Props {
 	open: boolean
 	onClose: () => void
 	user: User
-	points: number
 }
 
-export default function SettingsPopover({ open, onClose, user, points }: Props) {
+export default function UserSettingsPopover({ open, onClose, user }: Props) {
 	const [username, setUsername] = useState(user.username)
 	const [color, setColor] = useState(user.cursorColor as CursorColor)
+	const { reload } = useAuthContext()
+	const { room, user: socketUser } = useRoom()
 	const inputRef = useRef<HTMLInputElement>(null)
+	const socket = useSocket()
 	const notifs = useNotification()
-	const router = useRouter()
 	const [isPending, startTransition] = useTransition()
 
 	useEffect(() => {
@@ -51,7 +55,7 @@ export default function SettingsPopover({ open, onClose, user, points }: Props) 
 				className={styles['form']}
 				action={async () => {
 					startTransition(async () => {
-						const { error } = await updateUser(user.id, { username, cursorColor: color })
+						const { error } = await updateUserInDatabase(user.id, { username, cursorColor: color })
 
 						if (error) {
 							notifs.push({
@@ -59,12 +63,31 @@ export default function SettingsPopover({ open, onClose, user, points }: Props) 
 								text: `There was an error updating your settings. Please refresh and try again. (Error code: "${error.code}")`
 							})
 						} else {
-							router.refresh()
+							// Reload user data so it's synced across the app
+							const newUser = await reload()
+							// Update settings in room if applicable
+							if (room && socketUser && newUser) {
+								if (newUser.cursorColor !== socketUser.color) {
+									await updateUserInSocket(
+										'color',
+										newUser.cursorColor as CursorColor,
+										{ user: socketUser },
+										{ socket, notifs }
+									)
+								}
+								if (newUser.username !== socketUser.username) {
+									await updateUserInSocket(
+										'username',
+										newUser.username,
+										{ user: socketUser },
+										{ socket, notifs }
+									)
+								}
+							}
 						}
 					})
 				}}
 			>
-				<input ref={inputRef} />
 				<div className={styles['username']}>
 					<Input
 						id="username"
@@ -88,7 +111,12 @@ export default function SettingsPopover({ open, onClose, user, points }: Props) 
 				</div>
 				<div className={styles['color']}>
 					<h2 className={styles['color__heading']}>Cursor style</h2>
-					<CursorSelector selected={color} onChange={setColor} points={points} isOnSurface={true} />
+					<CursorSelector
+						selected={color}
+						onChange={setColor}
+						points={user.points}
+						isOnSurface={true}
+					/>
 				</div>
 				<Button loading={isPending} type="submit">
 					<ButtonIcon icon={<PixelarticonsSave />} />
