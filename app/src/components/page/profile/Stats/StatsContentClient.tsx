@@ -43,7 +43,7 @@ export default function StatsContentClient({ stats }: { stats: UserStats | null 
 								? '-'
 								: stats[key as keyof typeof stats] < 0
 									? 0
-									: stats[key as keyof typeof stats]}
+									: Math.round(stats[key as keyof typeof stats])}
 							{['maxWPM', 'avgWPM'].includes(key) ? 'wpm' : ''}
 						</h3>
 						<h4 className={styles['stat-box__name']}>
