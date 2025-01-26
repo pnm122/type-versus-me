@@ -8,14 +8,13 @@ import {
 	transformMinWords
 } from '@/components/page/profile/utils'
 import { CATEGORY_PARAM_KEY, MAX_WORDS_PARAM_KEY, MIN_WORDS_PARAM_KEY } from './utils'
-import { User } from 'next-auth'
 
 export default async function Stats({
 	searchParams,
-	user
+	userId
 }: {
 	searchParams: Record<string, string | string[]>
-	user: User
+	userId: string
 }) {
 	const category = transformCategory(searchParams[CATEGORY_PARAM_KEY])
 	const _minWords = transformMinWords(searchParams[MIN_WORDS_PARAM_KEY])
@@ -28,7 +27,7 @@ export default async function Stats({
 
 	return (
 		<Suspense fallback={<StatsLoading />}>
-			<StatsContentServer filters={{ category, minWords, maxWords }} user={user} />
+			<StatsContentServer filters={{ category, minWords, maxWords }} userId={userId} />
 		</Suspense>
 	)
 }

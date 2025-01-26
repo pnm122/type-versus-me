@@ -3,7 +3,11 @@ import RacesLoading from '@/components/page/profile/Races/RacesLoading'
 import StatsLoading from '@/components/page/profile/Stats/StatsLoading'
 import styles from '@/components/page/profile/ProfileInner/style.module.scss'
 
-export default function Loading() {
+interface Props {
+	searchParams: Record<string, string | string[]>
+}
+
+export default function ProfileLoading({ searchParams }: Props) {
 	return (
 		<main className={styles['page']}>
 			<section className={styles['page__top']}>
@@ -15,7 +19,7 @@ export default function Loading() {
 				</div>
 				<StatsLoading />
 			</section>
-			<RacesLoading searchParams={{}} />
+			<RacesLoading searchParams={searchParams} />
 		</main>
 	)
 }

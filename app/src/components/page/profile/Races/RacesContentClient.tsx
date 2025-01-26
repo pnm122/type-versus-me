@@ -24,20 +24,20 @@ import {
 	transformItemsPerPageParam,
 	transformPageParam
 } from './utils'
-import { User } from 'next-auth'
 import { RoomSettings } from '$shared/types/Room'
+import { useAuthContext } from '@/context/Auth'
 
 interface Props {
 	scores: ScoreAndRace[] | null
-	userId: Required<User>['id']
 }
 
-export default function RacesContentClient({ scores, userId }: Props) {
+export default function RacesContentClient({ scores }: Props) {
 	interface Params {
 		[PAGE_PARAM_KEY]: number
 		[ITEMS_PER_PAGE_PARAM_KEY]: number
 	}
 
+	const { user } = useAuthContext()
 	const [isPending, startTransition] = useTransition()
 	const router = useRouter()
 	const [safeParams, searchParams] = useSafeParams<Params>({
@@ -45,12 +45,15 @@ export default function RacesContentClient({ scores, userId }: Props) {
 		[ITEMS_PER_PAGE_PARAM_KEY]: transformItemsPerPageParam
 	})
 
+	// Shouldn't ever happen but just in case
+	if (!user) return <></>
+
 	const rows: TableRowsFrom<RacesTableData> =
 		scores?.map((s) => ({
 			startTime: s.race.startTime,
 			netWPM: s.netWPM,
 			accuracy: s.accuracy,
-			placement: getPlacement(userId, s.race.scores),
+			placement: getPlacement(user.id, s.race.scores),
 			category: s.race.category,
 			numWords: s.race.numWords,
 			key: s.id

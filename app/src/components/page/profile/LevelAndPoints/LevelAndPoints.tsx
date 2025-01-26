@@ -1,14 +1,15 @@
-import { useProfile } from '@/context/Profile'
 import styles from './style.module.scss'
 import { getLevel, getMinPointsForCurrentLevel, getMinPointsForNextLevel } from '@/utils/level'
 import LevelIndicator from '@/components/page/profile/LevelIndicator/LevelIndicator'
 import formatNumber from '@/utils/formatNumber'
+import { User } from '@prisma/client'
+
+interface Props {
+	user: User
+}
 
 // TODO: Improve a11y of progress
-export default function LevelAndPoints() {
-	const { user } = useProfile()
-
-	const { points } = user
+export default function LevelAndPoints({ user: { points } }: Props) {
 	const level = getLevel(points)
 	const minPointsForCurrentLevel = getMinPointsForCurrentLevel(points)
 	const minPointsForNextLevel = getMinPointsForNextLevel(points)

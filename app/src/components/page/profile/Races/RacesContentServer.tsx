@@ -15,14 +15,13 @@ import {
 	transformItemsPerPageParam,
 	transformPageParam
 } from './utils'
-import { User } from 'next-auth'
 
 export default async function RacesContentServer({
 	searchParams,
-	user
+	userId
 }: {
 	searchParams: Record<string, string | string[]>
-	user: User
+	userId: string
 }) {
 	const category = transformCategory(searchParams[CATEGORY_PARAM_KEY])
 	const _minWords = transformMinWords(searchParams[MIN_WORDS_PARAM_KEY])
@@ -35,11 +34,11 @@ export default async function RacesContentServer({
 	const page = transformPageParam(searchParams[PAGE_PARAM_KEY])
 	const itemsPerPage = transformItemsPerPageParam(searchParams[ITEMS_PER_PAGE_PARAM_KEY])
 
-	const { data: scores } = await getUserScores(user.id!, page, itemsPerPage, {
+	const { data: scores } = await getUserScores(userId, page, itemsPerPage, {
 		category,
 		minWords,
 		maxWords
 	})
 
-	return <RacesContentClient scores={scores} userId={user.id!} />
+	return <RacesContentClient scores={scores} />
 }

@@ -74,7 +74,7 @@ export default function Account() {
 							<Button
 								ref={firstButton}
 								style="tertiary"
-								href="/profile"
+								href={`/profile/${user.id}`}
 								className={styles['links__link']}
 							>
 								<ButtonIcon icon={<PixelarticonsUser />} />

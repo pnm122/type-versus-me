@@ -1,5 +1,4 @@
 @use '@/scss/mixins' as *;
-@use '@/scss/fonts' as *;
 @use '@/scss/breakpoints' as *;
 
 .page {
@@ -17,28 +16,6 @@
 		@media screen and (width > $screen-md) {
 			flex-direction: row;
 			align-items: flex-end;
-		}
-	}
-
-	.user {
-		display: flex;
-		flex-direction: column;
-		gap: 12px;
-
-		&__preview-and-edit {
-			display: flex;
-			align-items: center;
-			gap: 8px;
-
-			.preview {
-				display: flex;
-				align-items: center;
-				gap: 5px;
-
-				&__username {
-					@include font-heading(24);
-				}
-			}
 		}
 	}
 }

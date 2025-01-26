@@ -44,12 +44,7 @@ export const authConfig = {
 		},
 		authorized({ auth, request: { nextUrl } }) {
 			const isLoggedIn = !!auth?.user
-			const isOnProfile = nextUrl.pathname.startsWith('/profile')
 			const isOnLogin = nextUrl.pathname.startsWith('/login')
-			if (isOnProfile) {
-				if (isLoggedIn) return true
-				return false // Redirect unauthenticated users to login page
-			}
 
 			// Redirect logged in users trying to access the login page
 			if (isOnLogin && isLoggedIn) {

@@ -1,66 +1,33 @@
-'use client'
-
-import { User } from '@prisma/client'
+import { getUser } from '$shared/utils/database/user'
+import ProfileError from '@/components/page/profile/ProfileError/ProfileError'
+import Races from '@/components/page/profile/Races/Races'
+import Stats from '@/components/page/profile/Stats/Stats'
+import UserInfo from '@/components/page/profile/UserInfo/UserInfo'
 import styles from './style.module.scss'
-import IconButton from '@/components/base/Button/IconButton'
-import PixelarticonsEdit from '~icons/pixelarticons/edit'
-import SettingsPopover from '@/components/page/profile/SettingsPopover/SettingsPopover'
-import { useState } from 'react'
-import { ProfileContext, useProfile } from '@/context/Profile'
-import LevelAndPoints from '@/components/page/profile/LevelAndPoints/LevelAndPoints'
-import { CursorColor } from '$shared/types/Cursor'
-import UserAndCursor from '@/components/shared/UserAndCursor/UserAndCursor'
 
 interface Props {
-	user: User
-	stats: React.ReactNode
-	races: React.ReactNode
+	userId: string
+	searchParams: Record<string, string | string[]>
 }
 
-export default function ProfileInner({ user, ...serverComponents }: Props) {
-	// Can't put context in a server component so it has to go here :(
-	return (
-		<ProfileContext.Provider value={{ user }}>
-			<Profile {...serverComponents} />
-		</ProfileContext.Provider>
-	)
-}
+export default async function ProfileInner({ userId, searchParams }: Props) {
+	const { data: user, error } = await getUser(userId)
 
-function Profile({ stats, races }: Omit<Props, 'user'>) {
-	const [settingsOpen, setSettingsOpen] = useState(false)
-	const { user } = useProfile()
+	if (error) {
+		return <ProfileError error={error} />
+	}
+
+	if (!user) {
+		return <p>No user.</p>
+	}
 
 	return (
-		<>
-			<main className={styles['page']}>
-				<section className={styles['page__top']}>
-					<div className={styles['user']}>
-						<div className={styles['user__preview-and-edit']}>
-							<UserAndCursor
-								size="large"
-								username={user.username}
-								color={user.cursorColor as CursorColor}
-							/>
-							<IconButton
-								style="tertiary"
-								icon={<PixelarticonsEdit />}
-								aria-label="Edit username and color"
-								className={styles['edit']}
-								onClick={() => setSettingsOpen(true)}
-							/>
-						</div>
-						<LevelAndPoints />
-					</div>
-					{stats}
-				</section>
-				{races}
-			</main>
-			<SettingsPopover
-				user={user}
-				open={settingsOpen}
-				onClose={() => setSettingsOpen(false)}
-				points={user.points}
-			/>
-		</>
+		<main className={styles['page']}>
+			<section className={styles['page__top']}>
+				<UserInfo user={user} />
+				<Stats searchParams={searchParams} userId={userId} />
+			</section>
+			<Races searchParams={searchParams} userId={userId} />
+		</main>
 	)
 }
