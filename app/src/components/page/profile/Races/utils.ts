@@ -1,14 +1,8 @@
-import { Prisma } from '@prisma/client'
+import { getUserScores } from '$shared/utils/database/user'
 
-export type ScoreAndRace = Prisma.ScoreGetPayload<{
-	include: {
-		race: {
-			include: {
-				scores: true
-			}
-		}
-	}
-}>
+export type ScoreAndRace = NonNullable<
+	Awaited<ReturnType<typeof getUserScores>>['data']
+>['scores'][number]
 
 export const MIN_ITEMS_PER_PAGE = 5
 export const MAX_ITEMS_PER_PAGE = 25

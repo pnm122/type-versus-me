@@ -1,11 +1,6 @@
 @use '@/scss/fonts' as *;
 @use '@/scss/breakpoints' as *;
 
-@mixin font-leaderboard($size) {
-	@include font-heading($size);
-	line-height: 0.75;
-}
-
 .leaderboard {
 	.divider {
 		margin-block: 16px;
@@ -31,14 +26,6 @@
 		}
 	}
 
-	&__results {
-		display: flex;
-		flex-direction: column;
-		gap: 12px;
-		margin: 0;
-		padding: 16px 0 0 0;
-	}
-
 	&--open {
 		.expand {
 			scale: 1.5;
@@ -46,88 +33,7 @@
 	}
 }
 
-.user {
-	display: flex;
-	align-items: center;
-	height: 40px;
-
-	.username,
-	.wpm {
-		color: var(--heading);
-	}
-
-	.username {
-		@include font-leaderboard(12);
-		padding-block: 0.2em;
-		overflow: hidden;
-		text-overflow: ellipsis;
-
-		&__text {
-			display: inline;
-		}
-
-		&__you {
-			@include font-leaderboard(10);
-			color: var(--placeholder);
-			display: inline;
-		}
-
-		@container (width > 250px) {
-			@include font-leaderboard(14);
-
-			&__you {
-				@include font-leaderboard(12);
-			}
-		}
-
-		@container (width > 325px) {
-			@include font-leaderboard(16);
-
-			&__you {
-				@include font-leaderboard(14);
-			}
-		}
-	}
-
-	.wpm {
-		@include font-heading(10);
-
-		@container (width > 250px) {
-			@include font-leaderboard(14);
-		}
-
-		@container (width > 325px) {
-			@include font-leaderboard(16);
-		}
-	}
-
-	&__bar {
-		height: 100%;
-		padding-inline: 12px;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		container-type: inline-size;
-		width: var(--leaderboard-user-width);
-		background: var(--leaderboard-user-background);
-
-		&--failed {
-			padding-inline: 0;
-		}
-
-		.username,
-		.username__you,
-		.wpm {
-			color: var(--background);
-		}
-	}
-
-	&__outside {
-		height: 100%;
-		display: flex;
-		align-items: center;
-		gap: 8px;
-		padding-left: 8px;
-		container-type: inline-size;
-	}
+.leaderboard-results-spacer {
+	height: 16px;
+	width: 100%;
 }

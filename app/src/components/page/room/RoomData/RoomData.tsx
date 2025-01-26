@@ -19,6 +19,7 @@ import PixelarticonsEdit from '~icons/pixelarticons/edit'
 import RoomSettingsPopover from '@/components/page/room/RoomSettingsPopover/RoomSettingsPopover'
 import { RoomSettings } from '$shared/types/Room'
 import { useRoom } from '@/context/Room'
+import getTimeLimitText from '@/utils/getTimeLimitText'
 
 export default function RoomData() {
 	type Settings = RoomSettings & { open: boolean }
@@ -95,24 +96,6 @@ export default function RoomData() {
 		}
 	}
 
-	function getTimeLimitText() {
-		if (!room) return ''
-
-		const { timeLimit } = room.settings
-		if (timeLimit < 60) {
-			return `${timeLimit}s`
-		}
-
-		const minutes = Math.floor(timeLimit / 60)
-		const seconds = timeLimit % 60
-
-		if (seconds === 0) {
-			return `${minutes}min`
-		}
-
-		return `${minutes}min ${seconds}s`
-	}
-
 	async function onSubmitRoomSettings() {
 		// eslint-disable-next-line
 		const { open, ...newSettings } = settings
@@ -155,7 +138,8 @@ export default function RoomData() {
 				<hr></hr>
 				<p className={styles['room-settings']}>
 					<span className={styles['room-settings__text']}>
-						{getCategoryText()} | {room.settings.numWords} words | {getTimeLimitText()} time limit
+						{getCategoryText()} | {room.settings.numWords} words |{' '}
+						{getTimeLimitText(room.settings.timeLimit)}
 					</span>
 					{room.admin === user.socketId && (
 						<IconButton

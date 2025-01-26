@@ -1,21 +1,19 @@
 import styles from './style.module.scss'
-import LeaderboardUser from './LeaderboardUser'
-import sortUsersByScore from '@/utils/sortUsersByScore'
 import { useState } from 'react'
 import createClasses from '@/utils/createClasses'
 import PixelarticonsChevronUp from '~icons/pixelarticons/chevron-up'
 import Collapsible from '@/components/base/Collapsible/Collapsible'
 import { useRoom } from '@/context/Room'
+import RaceLeaderboard from '@/components/shared/RaceLeaderboard/RaceLeaderboard'
 
 export default function Leaderboard() {
-	const { room } = useRoom()
+	const { room, user } = useRoom()
 	const [open, setOpen] = useState(true)
-
-	const sortedScores = sortUsersByScore(room?.users ?? [])
 
 	if (!room) return <></>
 
-	const isLeaderboardVisible = room.state !== 'in-progress' && sortedScores.length !== 0
+	const usersWithLastScore = room.users.filter((u) => u.lastScore)
+	const isLeaderboardVisible = room.state !== 'in-progress' && usersWithLastScore.length !== 0
 
 	return (
 		<Collapsible open={isLeaderboardVisible} openDirection="down">
@@ -37,11 +35,18 @@ export default function Leaderboard() {
 					<PixelarticonsChevronUp className={styles['expand__icon']} />
 				</button>
 				<Collapsible open={open} openDirection="down" id="leaderboard-results">
-					<ol className={styles['leaderboard__results']}>
-						{sortedScores.map((u) => (
-							<LeaderboardUser key={u.socketId} user={u} />
-						))}
-					</ol>
+					<div className={styles['leaderboard-results-spacer']} />
+					<RaceLeaderboard
+						scores={usersWithLastScore.map((u) => ({
+							user: {
+								id: u.socketId,
+								username: u.username,
+								color: u.color
+							},
+							...u.lastScore!
+						}))}
+						currentUserId={user!.socketId}
+					/>
 				</Collapsible>
 			</div>
 		</Collapsible>

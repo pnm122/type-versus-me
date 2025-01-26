@@ -111,7 +111,16 @@ export async function getUserScores(
 			include: {
 				race: {
 					include: {
-						scores: true
+						scores: {
+							include: {
+								user: {
+									select: {
+										username: true
+										cursorColor: true
+									}
+								}
+							}
+						}
 					}
 				}
 			}
@@ -147,7 +156,16 @@ export async function getUserScores(
 				include: {
 					race: {
 						include: {
-							scores: true
+							scores: {
+								include: {
+									user: {
+										select: {
+											username: true,
+											cursorColor: true
+										}
+									}
+								}
+							}
 						}
 					}
 				}

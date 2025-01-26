@@ -38,3 +38,17 @@
 .table-data {
 	@include font-heading(14);
 }
+
+.room-info {
+	max-width: 600px;
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+
+	&__text {
+		@include font-body(14);
+		display: flex;
+		gap: 20px;
+		color: var(--placeholder);
+	}
+}

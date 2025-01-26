@@ -29,6 +29,9 @@ import WordsPerMinute from './Table/WordsPerMinute'
 import Accuracy from './Table/Accuracy'
 import Placement from './Table/Placement'
 import StartTime from './Table/StartTime'
+import RaceLeaderboard from '@/components/shared/RaceLeaderboard/RaceLeaderboard'
+import { CursorColor } from '$shared/types/Cursor'
+import getTimeLimitText from '@/utils/getTimeLimitText'
 
 interface Props {
 	data: { scores: ScoreAndRace[]; totalCount: number } | null
@@ -48,15 +51,12 @@ export default function RacesContentClient({ data }: Props) {
 		[ITEMS_PER_PAGE_PARAM_KEY]: transformItemsPerPageParam
 	})
 
-	// Shouldn't ever happen but just in case
-	if (!user) return <></>
-
 	const rows: TableRowsFrom<RacesTableData> =
 		data?.scores.map((s) => ({
 			startTime: s.race.startTime,
 			netWPM: s.netWPM,
 			accuracy: s.accuracy,
-			placement: getPlacement(user.id, s.race.scores),
+			placement: getPlacement(s.userId, s.race.scores),
 			category: s.race.category,
 			numWords: s.race.numWords,
 			key: s.id
@@ -131,7 +131,45 @@ export default function RacesContentClient({ data }: Props) {
 						}
 					}}
 					expandRender={Object.fromEntries(
-						data?.scores.map((s) => [s.id, () => `Expanded content`]) ?? []
+						data?.scores.map((s) => [
+							s.id,
+							() => (
+								<div className={styles['room-info']}>
+									<RaceLeaderboard
+										scores={s.race.scores.map((raceScore) => ({
+											netWPM: raceScore.netWPM,
+											accuracy: raceScore.accuracy,
+											failed: raceScore.netWPM < 0,
+											user: {
+												id: raceScore.userId,
+												// Use current user from auth if matching here, so that updates will be reflected in the leaderboard
+												username:
+													raceScore.userId === user?.id ? user.username : raceScore.user.username,
+												color: (raceScore.userId === user?.id
+													? user?.cursorColor
+													: raceScore.user.cursorColor) as CursorColor
+											}
+										}))}
+										currentUserId={user?.id}
+									/>
+									<div className={styles['room-info__text']}>
+										<span>
+											{Intl.DateTimeFormat(undefined, {
+												month: 'numeric',
+												day: 'numeric',
+												year: 'numeric',
+												hour: 'numeric',
+												minute: 'numeric'
+											}).format(s.race.startTime)}
+										</span>
+										<span>
+											{s.race.scores.length} player{s.race.scores.length > 1 ? 's' : ''}
+										</span>
+										<span>{getTimeLimitText(s.race.timeLimit)}</span>
+									</div>
+								</div>
+							)
+						]) ?? []
 					)}
 					noData="You haven't played any races yet."
 				/>
