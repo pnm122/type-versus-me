@@ -106,17 +106,18 @@ export async function getUserScores(
 	itemsPerPage: number,
 	filter: { category?: RoomSettings['category'][]; minWords?: number; maxWords?: number }
 ): Promise<{
-	data:
-		| Prisma.ScoreGetPayload<{
-				include: {
-					race: {
-						include: {
-							scores: true
-						}
+	data: {
+		scores: Prisma.ScoreGetPayload<{
+			include: {
+				race: {
+					include: {
+						scores: true
 					}
 				}
-		  }>[]
-		| null
+			}
+		}>[]
+		totalCount: number
+	} | null
 	error: Prisma.PrismaClientKnownRequestError | null
 }> {
 	// Empty array should be no filter
@@ -133,26 +134,29 @@ export async function getUserScores(
 	}
 
 	try {
-		const data = await prisma.score.findMany({
-			where,
-			skip: page * itemsPerPage,
-			take: itemsPerPage,
-			orderBy: {
-				race: {
-					startTime: 'desc'
-				}
-			},
-			include: {
-				race: {
-					include: {
-						scores: true
+		const [scores, totalCount] = await prisma.$transaction([
+			prisma.score.findMany({
+				where,
+				skip: page * itemsPerPage,
+				take: itemsPerPage,
+				orderBy: {
+					race: {
+						startTime: 'desc'
+					}
+				},
+				include: {
+					race: {
+						include: {
+							scores: true
+						}
 					}
 				}
-			}
-		})
+			}),
+			prisma.score.count({ where })
+		])
 
 		return {
-			data,
+			data: { scores, totalCount },
 			error: null
 		}
 	} catch (e) {

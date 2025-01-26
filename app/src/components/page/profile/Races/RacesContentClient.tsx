@@ -28,10 +28,10 @@ import { RoomSettings } from '$shared/types/Room'
 import { useAuthContext } from '@/context/Auth'
 
 interface Props {
-	scores: ScoreAndRace[] | null
+	data: { scores: ScoreAndRace[]; totalCount: number } | null
 }
 
-export default function RacesContentClient({ scores }: Props) {
+export default function RacesContentClient({ data }: Props) {
 	interface Params {
 		[PAGE_PARAM_KEY]: number
 		[ITEMS_PER_PAGE_PARAM_KEY]: number
@@ -49,7 +49,7 @@ export default function RacesContentClient({ scores }: Props) {
 	if (!user) return <></>
 
 	const rows: TableRowsFrom<RacesTableData> =
-		scores?.map((s) => ({
+		data?.scores.map((s) => ({
 			startTime: s.race.startTime,
 			netWPM: s.netWPM,
 			accuracy: s.accuracy,
@@ -85,7 +85,7 @@ export default function RacesContentClient({ scores }: Props) {
 					</div>
 				</div>
 				<Pagination
-					numItems={rows.length}
+					numItems={data?.totalCount ?? 0}
 					itemsPerPage={safeParams[ITEMS_PER_PAGE_PARAM_KEY]}
 					page={safeParams[PAGE_PARAM_KEY]}
 					onChange={onPaginationChange}
@@ -121,12 +121,12 @@ export default function RacesContentClient({ scores }: Props) {
 						}
 					}}
 					expandRender={Object.fromEntries(
-						scores?.map((s) => [s.id, () => `Expanded content`]) ?? []
+						data?.scores.map((s) => [s.id, () => `Expanded content`]) ?? []
 					)}
 					noData="You haven't played any races yet."
 				/>
 				<Pagination
-					numItems={rows.length}
+					numItems={data?.totalCount ?? 0}
 					itemsPerPage={safeParams[ITEMS_PER_PAGE_PARAM_KEY]}
 					page={safeParams[PAGE_PARAM_KEY]}
 					onChange={onPaginationChange}
