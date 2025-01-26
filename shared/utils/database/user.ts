@@ -35,10 +35,12 @@ export async function getUserStats(
 	id: string,
 	filter: { category?: RoomSettings['category'][]; minWords?: number; maxWords?: number }
 ): Promise<{ data: UserStats | null; error: Prisma.PrismaClientKnownRequestError | null }> {
+	// Empty array should be no filter
+	const category = filter.category && filter.category.length > 0 ? filter.category : undefined
 	const where = {
 		userId: id,
 		race: {
-			category: { in: filter.category },
+			category: { in: category },
 			numWords: {
 				gte: filter.minWords,
 				lte: filter.maxWords
@@ -117,10 +119,12 @@ export async function getUserScores(
 		| null
 	error: Prisma.PrismaClientKnownRequestError | null
 }> {
+	// Empty array should be no filter
+	const category = filter.category && filter.category.length > 0 ? filter.category : undefined
 	const where = {
 		userId: id,
 		race: {
-			category: { in: filter.category },
+			category: { in: category },
 			numWords: {
 				gte: filter.minWords,
 				lte: filter.maxWords
