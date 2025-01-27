@@ -57,11 +57,8 @@ export default function Collapsible({
 	useLayoutEffect(() => {
 		if (!container.current || !content.current) return
 
-		// Don't show the animation on first render, but initialize its height when closed
+		// Don't show the animation on first render
 		if (!rendered) {
-			if (!open) {
-				setSize(0)
-			}
 			return
 		}
 
@@ -119,7 +116,7 @@ export default function Collapsible({
 					'--collapsible-ease': ease,
 					'--collapsible-duration': `${duration}ms`,
 					'--collapsible-delay': `${delay}ms`,
-					[transitioningProperty]: `${size}px`
+					...(size === null ? {} : { [transitioningProperty]: `${size}px` })
 				} as React.CSSProperties
 			}
 		>
