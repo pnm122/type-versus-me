@@ -3,10 +3,12 @@ import styles from './style.module.scss'
 import Pill from '@/components/base/Pill/Pill'
 import PixelarticonsClose from '~icons/pixelarticons/close'
 import createClasses from '@/utils/createClasses'
+import Link from 'next/link'
 
 interface Props {
 	score: LastTestScore & {
 		user: Pick<User, 'username' | 'color'> & { id: string }
+		href?: string
 	}
 	isCurrentUser: boolean
 	winnerWPM: number
@@ -35,7 +37,7 @@ export default function RaceLeaderboardUser({ score, isCurrentUser, winnerWPM }:
 		<div className={styles['wpm']}>{Math.round(score.netWPM)}wpm</div>
 	)
 
-	return (
+	const user = (
 		<li className={styles['user']}>
 			<div
 				style={
@@ -64,5 +66,13 @@ export default function RaceLeaderboardUser({ score, isCurrentUser, winnerWPM }:
 				</div>
 			)}
 		</li>
+	)
+
+	return score.href ? (
+		<Link href={score.href} className={styles['link']}>
+			{user}
+		</Link>
+	) : (
+		user
 	)
 }

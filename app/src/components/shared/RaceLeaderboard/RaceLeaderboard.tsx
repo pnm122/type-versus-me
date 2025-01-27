@@ -5,6 +5,7 @@ import styles from './style.module.scss'
 interface Props {
 	scores: (LastTestScore & {
 		user: Pick<User, 'username' | 'color'> & { id: string }
+		href?: string
 	})[]
 	currentUserId?: string
 }

@@ -98,3 +98,11 @@
 		container-type: inline-size;
 	}
 }
+
+.link {
+	width: 100%;
+
+	&:hover .username {
+		text-decoration: underline;
+	}
+}

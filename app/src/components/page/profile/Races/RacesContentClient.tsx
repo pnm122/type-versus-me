@@ -140,6 +140,7 @@ export default function RacesContentClient({ data }: Props) {
 											netWPM: raceScore.netWPM,
 											accuracy: raceScore.accuracy,
 											failed: raceScore.netWPM < 0,
+											href: `/profile/${raceScore.userId}`,
 											user: {
 												id: raceScore.userId,
 												// Use current user from auth if matching here, so that updates will be reflected in the leaderboard
