@@ -15,9 +15,11 @@ export default function getPointsFromScore({
 	// Higher wpm is weighted disproportionately higher
 	const wpmPoints = (Math.pow(netWPM, 2) / 1000 + netWPM / 6) * numWordsScale
 	// Bonus for winning the race
-	const winnerPoints = isWinner ? numUsers - 1 : 0
+	const winnerPoints = isWinner ? 2 * (numUsers - 1) : 0
 	// 2x bonus for 100% accuracy, small bonus for accuracy > 0.95
 	const accuracyPoints =
-		accuracy >= 1 ? numWordsScale * 3 : 30 * Math.max(accuracy - 0.95, 0) * numWordsScale
+		accuracy >= 1
+			? Math.max(numWordsScale * 3, 1)
+			: 30 * Math.max(accuracy - 0.95, 0) * numWordsScale
 	return Math.floor(wpmPoints + winnerPoints + accuracyPoints)
 }
