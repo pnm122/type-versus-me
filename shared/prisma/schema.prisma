@@ -86,7 +86,8 @@ model Score {
   accuracy      Float
   raceId        Int
   userId        String
-  isWinner      Boolean         @default(false)
+  failed        Boolean
+  isWinner      Boolean
   race          Race            @relation(fields: [raceId], references: [id])
   user          User            @relation(fields: [userId], references: [id])
 

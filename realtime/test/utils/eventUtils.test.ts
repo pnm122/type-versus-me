@@ -196,7 +196,7 @@ describe('saveScoresToDatabase', () => {
 		return { room, spy }
 	}
 
-	it('creates scores with -1 accuracy and WPM and false isWinner for users that failed the test', async () => {
+	it('creates scores with -1 accuracy and WPM, false isWinner, and failed=true for users that failed the test', async () => {
 		const { room, spy } = init()
 		await saveScoresToDatabase(room.id)
 
@@ -205,6 +205,7 @@ describe('saveScoresToDatabase', () => {
 				expect.objectContaining({
 					accuracy: -1,
 					netWPM: -1,
+					failed: true,
 					isWinner: false,
 					raceId,
 					userId: 'user1'
@@ -222,12 +223,14 @@ describe('saveScoresToDatabase', () => {
 				expect.objectContaining({
 					accuracy: user2Score.accuracy,
 					netWPM: user2Score.netWPM,
+					failed: false,
 					raceId,
 					userId: 'user2'
 				}),
 				expect.objectContaining({
 					accuracy: user3Score.accuracy,
 					netWPM: user3Score.netWPM,
+					failed: false,
 					raceId,
 					userId: 'user3'
 				})
@@ -257,6 +260,31 @@ describe('saveScoresToDatabase', () => {
 				expect.objectContaining({
 					isWinner: true,
 					userId: 'user2'
+				})
+			])
+		)
+	})
+
+	it('sets isWinner to false if the user fails and is the only use in the room', async () => {
+		const spy = jest.spyOn(databaseScoreUtils, 'createScores').mockImplementation()
+		const { room } = createRoomForTesting(
+			mockUser({ userId: 'user1', socketId: 'userA' }),
+			mockSocket('userA')
+		).value!
+
+		state.updateRoom(room.id, { raceId })
+		state.updateUser('userA', {
+			lastScore: user1Score
+		})
+
+		await saveScoresToDatabase(room.id)
+
+		expect(spy).toHaveBeenCalledWith(
+			expect.arrayContaining([
+				expect.objectContaining({
+					isWinner: false,
+					failed: true,
+					userId: 'user1'
 				})
 			])
 		)

@@ -104,6 +104,7 @@ export async function saveScoresToDatabase(roomId: Room['id']) {
 		.map(({ lastScore, userId }, _, users) => ({
 			accuracy: lastScore!.failed ? -1 : lastScore!.accuracy,
 			netWPM: lastScore!.failed ? -1 : lastScore!.netWPM,
+			failed: lastScore!.failed,
 			isWinner: lastScore!.failed
 				? false
 				: users
