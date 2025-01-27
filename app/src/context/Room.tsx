@@ -17,12 +17,13 @@ import {
 	onJoinRoom,
 	onLeaveRoom
 } from '@/utils/realtime/room'
-import { onChangeAllUserData, onChangeUserData } from '@/utils/realtime/user'
+import { onChangeAllUserData, onChangeUserData, onDatabaseUpdate } from '@/utils/realtime/user'
 import { useNotification } from './Notification'
 import { useAuthContext } from './Auth'
 import { CreateRoomCallback } from '$shared/types/events/client/CreateRoom'
 import { ClientJoinRoomCallback } from '$shared/types/events/client/JoinRoom'
 import { useParams, usePathname } from 'next/navigation'
+import { DatabaseUpdatePayload } from '$shared/types/events/server/DatabaseUpdate'
 
 export interface RoomContextType {
 	room: Room | null
@@ -52,7 +53,7 @@ export function RoomProvider({ children }: React.PropsWithChildren) {
 	const params = useParams()
 
 	const state = { room, setRoom, user, setUser }
-	const context = { socket, notifs }
+	const context = { socket, notifs, auth }
 
 	useEffect(() => {
 		if (socket.state !== 'valid') return
@@ -63,6 +64,7 @@ export function RoomProvider({ children }: React.PropsWithChildren) {
 		const handleChangeAllUserData = (res: ChangeAllUserDataPayload) =>
 			onChangeAllUserData(res, state)
 		const handleChangeUserData = (res: ChangeUserDataPayload) => onChangeUserData(res, state)
+		const handleDatabaseUpdate = (res: DatabaseUpdatePayload) => onDatabaseUpdate(res, context)
 		const handleDisconnect = () => setRoom(null)
 
 		socket.value.on('join-room', handleJoinRoom)
@@ -70,6 +72,7 @@ export function RoomProvider({ children }: React.PropsWithChildren) {
 		socket.value.on('change-room-data', handleChangeRoomData)
 		socket.value.on('change-all-user-data', handleChangeAllUserData)
 		socket.value.on('change-user-data', handleChangeUserData)
+		socket.value.on('database-update', handleDatabaseUpdate)
 		socket.value.on('disconnect', handleDisconnect)
 
 		return () => {
@@ -78,6 +81,7 @@ export function RoomProvider({ children }: React.PropsWithChildren) {
 			socket.value.off('change-room-data', handleChangeRoomData)
 			socket.value.off('change-all-user-data', handleChangeAllUserData)
 			socket.value.off('change-user-data', handleChangeUserData)
+			socket.value.off('database-update', handleDatabaseUpdate)
 			socket.value.off('disconnect', handleDisconnect)
 		}
 	}, [socket, state, context])

@@ -10,10 +10,13 @@ import { errorNotification } from '../errorNotifications'
 import { ChangeAllUserDataPayload } from '$shared/types/events/server/ChangeAllUserData'
 import { ChangeUserDataPayload } from '$shared/types/events/server/ChangeUserData'
 import { Room } from '$shared/types/Room'
+import { DatabaseUpdatePayload } from '$shared/types/events/server/DatabaseUpdate'
+import { Auth } from '@/context/Auth'
 
 interface Context {
 	notifs: NotificationContextType
 	socket: SocketContextType
+	auth: Auth
 }
 
 interface State {
@@ -129,4 +132,11 @@ export async function onChangeUserData(
 				: null
 		)
 	}
+}
+
+export async function onDatabaseUpdate(
+	data: DatabaseUpdatePayload,
+	{ auth }: Pick<Context, 'auth'>
+) {
+	auth.reload(data)
 }

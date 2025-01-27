@@ -125,5 +125,22 @@ export async function saveScoresToDatabase(roomId: Room['id']) {
 			})
 		}))
 
-	await createScores(newScores)
+	const res = await createScores(newScores)
+
+	if (res.error)
+		debug(`${DEBUG_COLORS.RED}ERROR UPDATING DATABASE:${DEBUG_COLORS.WHITE}`, res.error)
+
+	if (res.data) {
+		// eslint-disable-next-line
+		const [_, ...newUsers] = res.data
+
+		newUsers.forEach((u) => {
+			const { socketId } = state
+				.getRoom(roomId)!
+				.users.find((roomUser) => roomUser.userId === u.id)!
+			io.in(socketId).emit('database-update', u)
+		})
+	}
+
+	return res
 }

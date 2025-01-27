@@ -161,7 +161,9 @@ describe('saveScoresToDatabase', () => {
 	const raceId = 1
 
 	function init() {
-		const spy = jest.spyOn(databaseScoreUtils, 'createScores').mockImplementation()
+		const spy = jest
+			.spyOn(databaseScoreUtils, 'createScores')
+			.mockReturnValue(Promise.resolve({ data: null, error: null }))
 		const { room } = createRoomForTesting(
 			mockUser({ userId: 'user1', socketId: 'userA' }),
 			mockSocket('userA')
@@ -266,7 +268,9 @@ describe('saveScoresToDatabase', () => {
 	})
 
 	it('sets isWinner to false if the user fails and is the only use in the room', async () => {
-		const spy = jest.spyOn(databaseScoreUtils, 'createScores').mockImplementation()
+		const spy = jest
+			.spyOn(databaseScoreUtils, 'createScores')
+			.mockReturnValue(Promise.resolve({ data: null, error: null }))
 		const { room } = createRoomForTesting(
 			mockUser({ userId: 'user1', socketId: 'userA' }),
 			mockSocket('userA')
@@ -288,5 +292,73 @@ describe('saveScoresToDatabase', () => {
 				})
 			])
 		)
+	})
+
+	it('emits a database-update event to every logged-in user with their new data', async () => {
+		const createScoresReturn = {
+			data: [
+				{ count: 2 },
+				{
+					id: 'user1',
+					username: 'user1',
+					cursorColor: 'gray',
+					points: 100,
+					image: null,
+					email: '',
+					emailVerified: null,
+					name: null,
+					createdAt: new Date(),
+					updatedAt: new Date()
+				},
+				{
+					id: 'user2',
+					username: 'user2',
+					cursorColor: 'gray',
+					points: 100,
+					image: null,
+					email: '',
+					emailVerified: null,
+					name: null,
+					createdAt: new Date(),
+					updatedAt: new Date()
+				}
+			] as NonNullable<Awaited<ReturnType<typeof databaseScoreUtils.createScores>>['data']>,
+			error: null
+		}
+
+		jest
+			.spyOn(databaseScoreUtils, 'createScores')
+			.mockReturnValue(Promise.resolve(createScoresReturn))
+		const { inSpy, emitSpy } = ioSpies()
+
+		const user1 = mockUser({
+			socketId: 'user1',
+			userId: createScoresReturn.data[1]!.id,
+			lastScore: {
+				failed: false,
+				netWPM: 100,
+				accuracy: 1
+			}
+		})
+		const user2 = mockUser({
+			socketId: 'user2',
+			userId: createScoresReturn.data[2]!.id,
+			lastScore: {
+				failed: false,
+				netWPM: 100,
+				accuracy: 1
+			}
+		})
+		const { room } = createRoomForTesting(user1, mockSocket(user1.socketId)).value!
+		state.updateUser(user1.socketId, user1)
+		state.addUserToRoom(room!.id, user2)
+
+		await saveScoresToDatabase(room!.id)
+
+		// technically not testing that the in and emit go together but this is better than nothing
+		expect(inSpy).toHaveBeenCalledWith('user1')
+		expect(inSpy).toHaveBeenCalledWith('user2')
+		expect(emitSpy).toHaveBeenCalledWith('database-update', createScoresReturn.data[1])
+		expect(emitSpy).toHaveBeenCalledWith('database-update', createScoresReturn.data[2])
 	})
 })

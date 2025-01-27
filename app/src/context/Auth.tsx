@@ -6,6 +6,18 @@ import { signOut, useSession } from 'next-auth/react'
 import { Prisma, User } from '@prisma/client'
 import { Session } from 'next-auth'
 
+type State = 'loading' | 'ready' | 'reloading' | 'error'
+
+export interface Auth {
+	user: User | null
+	state: State
+	error: Prisma.PrismaClientKnownRequestError | null
+	session: Session | null
+	/** Reload user. If data is provided, use this data directly instead of fetching from the database. */
+	reload(data?: User): Promise<User | null>
+	signOut(): Promise<any>
+}
+
 const AuthContext = createContext<Auth>({
 	user: null,
 	session: null,
@@ -16,17 +28,6 @@ const AuthContext = createContext<Auth>({
 	},
 	async signOut() {}
 })
-
-type State = 'loading' | 'ready' | 'reloading' | 'error'
-
-export interface Auth {
-	user: User | null
-	state: State
-	error: Prisma.PrismaClientKnownRequestError | null
-	session: Session | null
-	reload(): Promise<User | null>
-	signOut(): Promise<any>
-}
 
 export function AuthProvider({ children }: React.PropsWithChildren) {
 	const [user, setUser] = useState<User | null>(null)
@@ -43,8 +44,10 @@ export function AuthProvider({ children }: React.PropsWithChildren) {
 		return res.data
 	}
 
-	async function reload() {
+	async function reload(data?: User) {
 		if (!session.data?.user?.id) return null
+		if (data) setUser(data)
+
 		return await updateUser(session.data.user.id, true)
 	}
 
