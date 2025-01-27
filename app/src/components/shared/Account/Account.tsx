@@ -5,7 +5,6 @@ import Button from '@/components/base/Button/Button'
 import IconButton from '@/components/base/Button/IconButton'
 import { useEffect, useRef, useState } from 'react'
 import PixelarticonsUser from '~icons/pixelarticons/user'
-import { signOutAction } from '@/actions/auth'
 import ThemeSwitcher from '@/components/shared/ThemeSwitcher/ThemeSwitcher'
 import Dropdown from '@/components/base/Dropdown/Dropdown'
 import PixelarticonsLogout from '~icons/pixelarticons/logout'
@@ -25,7 +24,7 @@ export default function Account() {
 	const [settingsOpen, setSettingsOpen] = useState(false)
 	const firstButton = useRef<HTMLButtonElement>(null)
 	const toggleButton = useRef<HTMLElement>(null)
-	const { session, user, state } = useAuthContext()
+	const { session, user, state, signOut } = useAuthContext()
 
 	useEffect(() => {
 		setExpanded(false)
@@ -94,7 +93,7 @@ export default function Account() {
 								</Button>
 								<Button
 									style="tertiary"
-									onClick={() => signOutAction()}
+									onClick={() => signOut()}
 									className={styles['links__link']}
 								>
 									<ButtonIcon icon={<PixelarticonsLogout />} />
