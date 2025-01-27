@@ -1,3 +1,5 @@
+'use client'
+
 import { PropsWithChildren, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import styles from './style.module.scss'
 import createClasses from '@/utils/createClasses'
@@ -47,6 +49,7 @@ export default function Collapsible({
 	const content = useRef<HTMLDivElement>(null)
 	const revertTimeout = useRef<NodeJS.Timeout | null>(null)
 	const [rendered, setRendered] = useState(false)
+	const [size, setSize] = useState(open ? null : 0)
 
 	const transitioningProperty =
 		openDirection === 'left' || openDirection === 'right' ? 'width' : 'height'
@@ -57,7 +60,7 @@ export default function Collapsible({
 		// Don't show the animation on first render, but initialize its height when closed
 		if (!rendered) {
 			if (!open) {
-				container.current!.style[transitioningProperty] = '0px'
+				setSize(0)
 			}
 			return
 		}
@@ -70,19 +73,17 @@ export default function Collapsible({
 		}
 
 		if (open) {
-			container.current!.style[transitioningProperty] = '0px'
+			setSize(0)
 			// Was able to get this working without requestAnimationFrame, but I don't understand why
 			// Leaving this here since this makes more sense to me
 			requestAnimationFrame(() => {
-				container.current!.style[transitioningProperty] =
-					`${content.current!.getBoundingClientRect()[transitioningProperty]}px`
+				setSize(content.current!.getBoundingClientRect()[transitioningProperty])
 				revertChanges()
 			})
 		} else {
-			container.current.style[transitioningProperty] =
-				`${content.current.getBoundingClientRect()[transitioningProperty]}px`
+			setSize(content.current.getBoundingClientRect()[transitioningProperty])
 			requestAnimationFrame(() => {
-				container.current!.style[transitioningProperty] = '0px'
+				setSize(0)
 			})
 		}
 	}, [open])
@@ -97,7 +98,7 @@ export default function Collapsible({
 
 	function revertChanges() {
 		revertTimeout.current = setTimeout(() => {
-			container.current!.style[transitioningProperty] = ''
+			setSize(null)
 			revertTimeout.current = null
 		}, duration + delay)
 	}
@@ -117,7 +118,8 @@ export default function Collapsible({
 				{
 					'--collapsible-ease': ease,
 					'--collapsible-duration': `${duration}ms`,
-					'--collapsible-delay': `${delay}ms`
+					'--collapsible-delay': `${delay}ms`,
+					[transitioningProperty]: `${size}px`
 				} as React.CSSProperties
 			}
 		>
