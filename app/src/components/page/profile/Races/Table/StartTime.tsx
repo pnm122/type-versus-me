@@ -25,5 +25,10 @@ export default function StartTime({ startTime }: { startTime: Date }) {
 						? `${daysAgo} day${daysAgo > 1 ? 's' : ''} ago`
 						: Intl.DateTimeFormat().format(startTime)
 
-	return <span className={styles['time']}>{displayText}</span>
+	// Suppress hydration warnings because dates can be different from server to client
+	return (
+		<span suppressHydrationWarning className={styles['time']}>
+			{displayText}
+		</span>
+	)
 }
