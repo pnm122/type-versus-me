@@ -89,3 +89,13 @@
 	grid-column: 1 / -1;
 	color: var(--placeholder);
 }
+
+.row-with-expand-tbody {
+	&:not(:last-of-type) {
+		border-bottom: 1px solid var(--border);
+	}
+
+	.table__row {
+		border: none;
+	}
+}

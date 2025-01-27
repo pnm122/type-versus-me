@@ -75,7 +75,7 @@ export default function TableRow<T extends TableData>({
 		)
 	}
 
-	return (
+	const rowRender = (
 		<tr
 			className={createClasses({
 				[styles['table__row']]: true,
@@ -114,15 +114,27 @@ export default function TableRow<T extends TableData>({
 									: row[columnKey].toString()}
 							</td>
 						))}
-					{row && hasExpandContent && (
+				</>
+			)}
+		</tr>
+	)
+
+	if (anyRowIsExpandable) {
+		return (
+			<tbody className={styles['row-with-expand-tbody']}>
+				{rowRender}
+				{row && hasExpandContent && (
+					<tr className={styles['table__row']}>
 						<td className={styles['expand']} id={id}>
 							<Collapsible open={expanded}>
 								<div className={styles['expand__content']}>{expandRender[row.key](row)}</div>
 							</Collapsible>
 						</td>
-					)}
-				</>
-			)}
-		</tr>
-	)
+					</tr>
+				)}
+			</tbody>
+		)
+	}
+
+	return rowRender
 }

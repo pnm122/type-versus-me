@@ -99,6 +99,25 @@ export default function Table<T extends Record<string, any>>({
 			.join(' ')
 	}
 
+	const tableBody =
+		typeof loading === 'number' ? (
+			Array(loading)
+				.fill(null)
+				.map((_, index) => (
+					<TableRow key={index} hasNoData={false} {...{ render, expandRender, loading, columns }} />
+				))
+		) : rows.length === 0 ? (
+			<TableRow hasNoData={true} noData={noData} />
+		) : (
+			rows.map((row) => (
+				<TableRow
+					key={row.key.toString()}
+					hasNoData={false}
+					{...{ row, render, expandRender, loading, columns }}
+				/>
+			))
+		)
+
 	return (
 		<table
 			style={{
@@ -123,29 +142,33 @@ export default function Table<T extends Record<string, any>>({
 					))}
 				</tr>
 			</thead>
-			<tbody>
-				{typeof loading === 'number' ? (
-					Array(loading)
-						.fill(null)
-						.map((_, index) => (
+			{/* Rows have tbody if any row is expandable */}
+			{anyRowIsExpandable && tableBody}
+			{!anyRowIsExpandable && (
+				<tbody>
+					{typeof loading === 'number' ? (
+						Array(loading)
+							.fill(null)
+							.map((_, index) => (
+								<TableRow
+									key={index}
+									hasNoData={false}
+									{...{ render, expandRender, loading, columns }}
+								/>
+							))
+					) : rows.length === 0 ? (
+						<TableRow hasNoData={true} noData={noData} />
+					) : (
+						rows.map((row) => (
 							<TableRow
-								key={index}
+								key={row.key.toString()}
 								hasNoData={false}
-								{...{ render, expandRender, loading, columns }}
+								{...{ row, render, expandRender, loading, columns }}
 							/>
 						))
-				) : rows.length === 0 ? (
-					<TableRow hasNoData={true} noData={noData} />
-				) : (
-					rows.map((row) => (
-						<TableRow
-							key={row.key.toString()}
-							hasNoData={false}
-							{...{ row, render, expandRender, loading, columns }}
-						/>
-					))
-				)}
-			</tbody>
+					)}
+				</tbody>
+			)}
 		</table>
 	)
 }
