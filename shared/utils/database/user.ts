@@ -49,7 +49,8 @@ export async function getUserStats(
 	}
 
 	try {
-		const { _avg, _max, _count } = await prisma.score.aggregate({
+		const res = await prisma.score.groupBy({
+			by: ['isWinner', 'failed'],
 			where,
 			_avg: {
 				netWPM: true
@@ -58,14 +59,38 @@ export async function getUserStats(
 				netWPM: true
 			},
 			_count: {
-				raceId: true,
-				isWinner: true
+				raceId: true
 			}
 		})
 
+		// eslint-disable-next-line
+		const { racesCountingForAverage, ...stats } = res.reduce(
+			(acc, curr) => {
+				const racesCountingForAverage =
+					acc.racesCountingForAverage + (curr.failed ? 0 : curr._count.raceId)
+				return {
+					maxWPM: (curr._max.netWPM ?? 0) > acc.maxWPM ? (curr._max.netWPM ?? 0) : acc.maxWPM,
+					avgWPM: curr.failed
+						? acc.avgWPM
+						: acc.avgWPM * (acc.racesPlayed / racesCountingForAverage) +
+							(curr._avg.netWPM ?? 0) * (curr._count.raceId / racesCountingForAverage),
+					racesPlayed: acc.racesPlayed + curr._count.raceId,
+					racesWon: curr.isWinner ? curr._count.raceId : acc.racesWon,
+					racesCountingForAverage
+				}
+			},
+			{ maxWPM: 0, avgWPM: 0, racesPlayed: 0, racesWon: 0, racesCountingForAverage: 0 }
+		)
+
 		const wordsTyped = (
 			await prisma.score.findMany({
-				where,
+				where: {
+					...where,
+					// only count words for scores where the user did not fail
+					netWPM: {
+						gte: 0
+					}
+				},
 				select: {
 					race: {
 						select: {
@@ -79,10 +104,7 @@ export async function getUserStats(
 		return {
 			data: {
 				wordsTyped,
-				maxWPM: _max.netWPM ?? -1,
-				avgWPM: _avg.netWPM ?? -1,
-				racesPlayed: _count.raceId ?? -1,
-				racesWon: _count.isWinner ?? -1
+				...stats
 			},
 			error: null
 		}
