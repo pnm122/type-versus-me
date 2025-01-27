@@ -19,7 +19,7 @@ export default function StatsContentClient({ stats }: { stats: UserStats | null 
 
 	return (
 		<div className={styles['stats']}>
-			<h2 className={styles['stats__heading']}>Your stats</h2>
+			<h2 className={styles['stats__heading']}>Stats</h2>
 			<div className={styles['stats__filters']}>
 				<CategoryFilter paramKey={CATEGORY_PARAM_KEY} transition={[isPending, startTransition]} />
 				<NumWordsFilter

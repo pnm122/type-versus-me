@@ -77,7 +77,7 @@ export default function RacesContentClient({ data }: Props) {
 		<section className={styles['races']}>
 			<div className={styles['header']}>
 				<div className={styles['header__main']}>
-					<h2 className={styles['heading']}>Your races</h2>
+					<h2 className={styles['heading']}>Races</h2>
 					<div className={styles['filters']}>
 						<CategoryFilter paramKey="races-category" transition={[isPending, startTransition]} />
 						<NumWordsFilter
