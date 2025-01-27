@@ -9,7 +9,6 @@
 	height: 36px;
 	display: grid;
 	place-items: center;
-	cursor: default;
 	user-select: none;
 
 	&::before {
@@ -17,7 +16,7 @@
 		position: absolute;
 		z-index: var(--z-below);
 		inset: 0;
-		border: 2px solid var(--surface);
+		outline: 3px solid var(--surface);
 		// scale keeps the square actually the size of the container after rotation
 		transform: scale(math.div(1, math.sqrt(2))) rotate(45deg);
 	}
@@ -77,5 +76,23 @@
 		&::after {
 			background-color: var(--primary);
 		}
+	}
+
+	&--small {
+		width: 30px;
+		height: 30px;
+		@include font-heading(12);
+
+		&.indicator--small-text {
+			@include font-heading(10);
+		}
+
+		&.indicator--extra-small-text {
+			@include font-heading(7);
+		}
+	}
+
+	&--hide-outline::after {
+		outline: none;
 	}
 }

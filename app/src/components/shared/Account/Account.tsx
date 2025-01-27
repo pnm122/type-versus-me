@@ -17,6 +17,8 @@ import { useAuthContext } from '@/context/Auth'
 import Skeleton from '@/components/base/Skeleton/Skeleton'
 import UserSettingsPopover from '../UserSettingsPopover/UserSettingsPopover'
 import PixelarticonsEdit from '~icons/pixelarticons/edit'
+import LevelIndicator from '../LevelIndicator/LevelIndicator'
+import { getLevel } from '@/utils/level'
 
 export default function Account() {
 	const path = usePathname()
@@ -50,6 +52,13 @@ export default function Account() {
 							size="small"
 							username={user.username}
 							color={user.cursorColor as CursorColor}
+						/>
+						<LevelIndicator
+							level={getLevel(user.points)}
+							size="small"
+							hideOutline
+							unlocked
+							hideItem
 						/>
 					</Button>
 				) : (

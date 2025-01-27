@@ -1,6 +1,6 @@
 import styles from './style.module.scss'
 import { getLevel, getMinPointsForCurrentLevel, getMinPointsForNextLevel } from '@/utils/level'
-import LevelIndicator from '@/components/page/profile/LevelIndicator/LevelIndicator'
+import LevelIndicator from '@/components/shared/LevelIndicator/LevelIndicator'
 import formatNumber from '@/utils/formatNumber'
 import { User } from '@prisma/client'
 
