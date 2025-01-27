@@ -13,6 +13,7 @@ import {
 	MAX_WORDS_PARAM_KEY,
 	MIN_WORDS_PARAM_KEY
 } from '@/components/page/profile/Stats/utils'
+import formatNumber from '@/utils/formatNumber'
 
 export default function StatsContentClient({ stats }: { stats: UserStats | null }) {
 	const [isPending, startTransition] = useTransition()
@@ -43,7 +44,7 @@ export default function StatsContentClient({ stats }: { stats: UserStats | null 
 								? '-'
 								: stats[key as keyof typeof stats] < 0
 									? 0
-									: Math.round(stats[key as keyof typeof stats])}
+									: formatNumber(Math.round(stats[key as keyof typeof stats]))}
 							{['maxWPM', 'avgWPM'].includes(key) ? 'wpm' : ''}
 						</h3>
 						<h4 className={styles['stat-box__name']}>

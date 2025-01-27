@@ -4,7 +4,8 @@ import PixelarticonsBullseyeArrow from '~icons/pixelarticons/bullseye-arrow'
 import Pill from '@/components/base/Pill/Pill'
 
 export default function Accuracy({ accuracy }: { accuracy: number }) {
-	const displayAccuracy = accuracy < 0 ? '-' : `${(accuracy * 100).toFixed(2)}%`
+	const displayAccuracy =
+		accuracy < 0 ? '-' : accuracy >= 1 ? '100%' : `${(accuracy * 100).toFixed(2)}%`
 
 	return (
 		<Pill
