@@ -49,7 +49,7 @@
 
 .placement {
 	&:not(.placement--podium) {
-		--pill-foreground: var(--heading);
+		--pill-foreground: var(--placeholder);
 		padding-inline: 0;
 	}
 

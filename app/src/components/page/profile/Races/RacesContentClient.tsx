@@ -116,8 +116,8 @@ export default function RacesContentClient({ data }: Props) {
 						accuracy(value) {
 							return <Accuracy accuracy={value} />
 						},
-						placement(value) {
-							return <Placement placement={value} />
+						placement(value, { key }) {
+							return <Placement placement={value} score={data!.scores.find((s) => s.id === key)!} />
 						},
 						category(value) {
 							return (
@@ -166,6 +166,7 @@ export default function RacesContentClient({ data }: Props) {
 											{s.race.scores.length} player{s.race.scores.length > 1 ? 's' : ''}
 										</span>
 										<span>{getTimeLimitText(s.race.timeLimit)}</span>
+										<span>{s.points} points earned</span>
 									</div>
 								</div>
 							)
