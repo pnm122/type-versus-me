@@ -6,8 +6,6 @@ import ClientEvents from '$shared/types/events/client/_Events'
 import Data from '@/types/Data'
 import { LOADING } from '@/utils/constants'
 import { useNotification } from './Notification'
-import Loader from '@/components/base/Loader/Loader'
-import createClasses from '@/utils/createClasses'
 
 export type CustomSocket = Socket<ServerEvents, ClientEvents>
 
@@ -94,19 +92,7 @@ export function SocketProvider({ children }: React.PropsWithChildren) {
 		}, 2000)
 	}, [])
 
-	return (
-		<SocketContext.Provider value={data}>
-			<div
-				className={createClasses({
-					'page-loading-indicator': true,
-					'page-loading-indicator--active': showLoader
-				})}
-			>
-				<Loader size={48} />
-			</div>
-			{children}
-		</SocketContext.Provider>
-	)
+	return <SocketContext.Provider value={data}>{children}</SocketContext.Provider>
 }
 
 export const useSocket = () => useContext(SocketContext)
