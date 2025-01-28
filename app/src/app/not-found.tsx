@@ -18,7 +18,7 @@ export default function Custom404() {
 				</h2>
 				<Button href="/">
 					<ButtonIcon icon={<PixelarticonsHome />} />
-					Take me back
+					Go back home
 				</Button>
 			</div>
 		</main>

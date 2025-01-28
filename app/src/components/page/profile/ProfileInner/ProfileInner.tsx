@@ -4,6 +4,7 @@ import Races from '@/components/page/profile/Races/Races'
 import Stats from '@/components/page/profile/Stats/Stats'
 import UserInfo from '@/components/page/profile/UserInfo/UserInfo'
 import styles from './style.module.scss'
+import NoProfile from '@/components/page/profile/NoProfile/NoProfile'
 
 interface Props {
 	userId: string
@@ -18,7 +19,7 @@ export default async function ProfileInner({ userId, searchParams }: Props) {
 	}
 
 	if (!user) {
-		return <p>No user.</p>
+		return <NoProfile />
 	}
 
 	return (
