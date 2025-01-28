@@ -3,6 +3,7 @@
 import createClasses from '@/utils/createClasses'
 import styles from './style.module.scss'
 import { useEffect } from 'react'
+import { createPortal } from 'react-dom'
 
 type Props = React.PropsWithChildren<{
 	/**
@@ -41,7 +42,7 @@ export default function Popover({
 		}
 	}, [open])
 
-	return (
+	return createPortal(
 		<div
 			className={createClasses({
 				[styles['popover']]: true,
@@ -63,6 +64,7 @@ export default function Popover({
 			>
 				{children}
 			</div>
-		</div>
+		</div>,
+		document.body
 	)
 }
