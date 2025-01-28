@@ -14,6 +14,7 @@ import {
 	MIN_WORDS_PARAM_KEY
 } from '@/components/page/profile/Stats/utils'
 import formatNumber from '@/utils/formatNumber'
+import CountUp from 'react-countup'
 
 export default function StatsContentClient({ stats }: { stats: UserStats | null }) {
 	const [isPending, startTransition] = useTransition()
@@ -40,12 +41,20 @@ export default function StatsContentClient({ stats }: { stats: UserStats | null 
 					>
 						{isPending && <IndeterminateProgress />}
 						<h3 className={styles['stat-box__stat']}>
-							{stats === null
-								? '-'
-								: stats[key as keyof typeof stats] < 0
-									? 0
-									: formatNumber(Math.round(stats[key as keyof typeof stats]))}
-							{['maxWPM', 'avgWPM'].includes(key) ? 'wpm' : ''}
+							{stats === null ? (
+								'-'
+							) : stats[key as keyof typeof stats] < 0 ? (
+								0
+							) : (
+								<CountUp
+									start={0}
+									end={Math.round(stats[key as keyof typeof stats])}
+									suffix={['maxWPM', 'avgWPM'].includes(key) ? 'wpm' : ''}
+									duration={1}
+									formattingFn={formatNumber}
+									key={stats.toString()}
+								/>
+							)}
 						</h3>
 						<h4 className={styles['stat-box__name']}>
 							{userStatsDisplayNames[key as keyof typeof userStatsDisplayNames]}
