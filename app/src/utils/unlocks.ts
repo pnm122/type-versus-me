@@ -4,9 +4,9 @@ export type Unlocks = {
 	'cursor-color': CursorColor
 }
 
-export type UnlockType = keyof Unlocks
+export type UnlockTypes = keyof Unlocks
 
-type Unlock<T extends UnlockType = UnlockType> = {
+export type Unlock<T extends UnlockTypes = UnlockTypes> = {
 	type: T
 	value: Unlocks[T]
 }
@@ -87,7 +87,7 @@ export const UNLOCKS: Record<number, Unlock | undefined> = {
 } as const
 
 // Enforce type and value match
-function u<T extends UnlockType>(unlock: Unlock<T>): Unlock<T> {
+function u<T extends UnlockTypes>(unlock: Unlock<T>): Unlock<T> {
 	return unlock
 }
 

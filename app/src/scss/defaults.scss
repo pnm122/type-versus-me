@@ -15,11 +15,15 @@
 	--z-notification: 7;
 	--z-max: 999;
 
+	--page-max-width: 1040px;
+	--page-side-padding: 24px;
+
 	@include font-body;
 	background-color: var(--background);
 	color: var(--text);
 	// Experimental but YESSSSSSSSSSS
 	interpolate-size: allow-keywords;
+	scrollbar-gutter: stable;
 }
 
 h1,

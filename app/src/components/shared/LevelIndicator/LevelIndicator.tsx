@@ -9,6 +9,7 @@ interface Props {
 	hideItem?: boolean
 	hideOutline?: boolean
 	size?: 'small' | 'medium'
+	className?: string
 }
 
 export default function LevelIndicator({
@@ -16,7 +17,8 @@ export default function LevelIndicator({
 	unlocked,
 	hideItem = false,
 	hideOutline = false,
-	size = 'medium'
+	size = 'medium',
+	className
 }: Props) {
 	const unlock = UNLOCKS[level]
 
@@ -29,7 +31,8 @@ export default function LevelIndicator({
 				[styles['indicator--small-text']]: level >= 100 && level < 1000,
 				[styles['indicator--extra-small-text']]: level >= 1000,
 				[styles['indicator--hide-outline']]: hideOutline,
-				[styles[`indicator--${size}`]]: true
+				[styles[`indicator--${size}`]]: true,
+				...(className ? { [className]: true } : {})
 			})}
 		>
 			{formatNumber(level)}

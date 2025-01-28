@@ -1,11 +1,24 @@
+@use '@/scss/mixins' as *;
+
 .stack {
 	position: fixed;
 	z-index: var(--z-notification);
-	left: 50%;
-	transform: translateX(-50%);
-	padding-top: 12px;
 	display: flex;
 	flex-direction: column;
 	gap: 12px;
 	width: fit-content;
+
+	&--top-center {
+		padding-top: 12px;
+		top: 0;
+		left: 50%;
+		transform: translateX(-50%);
+	}
+
+	&--bottom-right {
+		bottom: 0;
+		// doesn't always exactly align because of scrollbar, but it's close enough
+		right: max(var(--page-side-padding), (100vw - var(--page-max-width)) / 2);
+		padding-bottom: 12px;
+	}
 }
