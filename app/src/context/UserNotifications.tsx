@@ -9,7 +9,7 @@ import transition from '@/utils/transition'
 import { UNLOCKS } from '@/utils/unlocks'
 import { createContext, useContext, useRef, useState } from 'react'
 
-interface UserNotificationsContextType {
+export interface UserNotificationsContextType {
 	pushPointsUpdateNotification(prevPoints: number, nextPoints: number): void
 }
 
@@ -73,4 +73,4 @@ export function UserNotificationsProvider({ children }: React.PropsWithChildren)
 	)
 }
 
-export const useNotification = () => useContext(UserNotificationsContext)
+export const useUserNotifications = () => useContext(UserNotificationsContext)

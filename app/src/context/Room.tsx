@@ -24,6 +24,7 @@ import { CreateRoomCallback } from '$shared/types/events/client/CreateRoom'
 import { ClientJoinRoomCallback } from '$shared/types/events/client/JoinRoom'
 import { useParams, usePathname } from 'next/navigation'
 import { DatabaseUpdatePayload } from '$shared/types/events/server/DatabaseUpdate'
+import { useUserNotifications } from './UserNotifications'
 
 export interface RoomContextType {
 	room: Room | null
@@ -51,9 +52,10 @@ export function RoomProvider({ children }: React.PropsWithChildren) {
 	const auth = useAuthContext()
 	const pathname = usePathname()
 	const params = useParams()
+	const userNotifs = useUserNotifications()
 
 	const state = { room, setRoom, user, setUser }
-	const context = { socket, notifs, auth }
+	const context = { socket, notifs, auth, userNotifs }
 
 	useEffect(() => {
 		if (socket.state !== 'valid') return

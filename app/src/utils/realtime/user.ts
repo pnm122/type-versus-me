@@ -12,11 +12,13 @@ import { ChangeUserDataPayload } from '$shared/types/events/server/ChangeUserDat
 import { Room } from '$shared/types/Room'
 import { DatabaseUpdatePayload } from '$shared/types/events/server/DatabaseUpdate'
 import { Auth } from '@/context/Auth'
+import { UserNotificationsContextType } from '@/context/UserNotifications'
 
 interface Context {
 	notifs: NotificationContextType
 	socket: SocketContextType
 	auth: Auth
+	userNotifs: UserNotificationsContextType
 }
 
 interface State {
@@ -136,7 +138,8 @@ export async function onChangeUserData(
 
 export async function onDatabaseUpdate(
 	data: DatabaseUpdatePayload,
-	{ auth }: Pick<Context, 'auth'>
+	{ auth, userNotifs }: Pick<Context, 'auth' | 'userNotifs'>
 ) {
+	userNotifs.pushPointsUpdateNotification(auth.user!.points, data.points)
 	auth.reload(data)
 }
