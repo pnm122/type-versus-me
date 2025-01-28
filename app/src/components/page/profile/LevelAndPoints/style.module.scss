@@ -6,18 +6,18 @@
 	padding: 12px;
 	display: flex;
 	flex-direction: column;
-	gap: 2px;
+	gap: 4px;
 
 	@media screen and (width > $screen-md) {
 		min-width: 350px;
 	}
 
 	&__points {
-		@include font-heading(14);
+		@include font-heading(18);
 	}
 
 	&__points-to-next-level {
-		@include font-heading(12);
+		@include font-heading(14);
 		color: var(--placeholder);
 	}
 }

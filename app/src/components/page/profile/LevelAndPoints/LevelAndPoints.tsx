@@ -24,7 +24,8 @@ export default function LevelAndPoints({ user: { points } }: Props) {
 		<div className={styles['container']}>
 			<h2 className={styles['container__points']}>{formatNumber(points)} points</h2>
 			<h3 className={styles['container__points-to-next-level']}>
-				{formatNumber(minPointsForNextLevel - points)} points to level {formatNumber(level + 1)}
+				{formatNumber(minPointsForNextLevel - points)} point
+				{minPointsForNextLevel - points > 1 ? 's' : ''} to level {formatNumber(level + 1)}
 			</h3>
 			<div className={styles['levels']}>
 				<div className={styles['progress']}>

@@ -66,7 +66,9 @@ export default function PointsUpdateNotificationContent({ prevPoints, nextPoints
 					end={minPointsForNextLevel - nextPoints}
 					duration={animationDuration}
 					delay={animationDelay}
-					formattingFn={(n) => `${formatNumber(n)} points to level ${nextLevel + 1}`}
+					formattingFn={(n) =>
+						`${formatNumber(n)} point${n > 1 ? 's' : ''} to level ${nextLevel + 1}`
+					}
 					className={styles['points-to-next-level']}
 				/>
 			</div>
