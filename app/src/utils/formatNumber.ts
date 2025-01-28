@@ -1,3 +1,3 @@
-export default function formatNumber(n: number) {
-	return Intl.NumberFormat('en-US').format(n)
+export default function formatNumber(n: number, compact = false) {
+	return Intl.NumberFormat('en-US', { notation: compact ? 'compact' : undefined }).format(n)
 }

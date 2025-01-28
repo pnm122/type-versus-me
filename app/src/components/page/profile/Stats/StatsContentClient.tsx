@@ -49,9 +49,11 @@ export default function StatsContentClient({ stats }: { stats: UserStats | null 
 								<CountUp
 									start={0}
 									end={Math.round(stats[key as keyof typeof stats])}
-									suffix={['maxWPM', 'avgWPM'].includes(key) ? 'wpm' : ''}
 									duration={1}
-									formattingFn={formatNumber}
+									formattingFn={(n) =>
+										`${formatNumber(n, true)}${['maxWPM', 'avgWPM'].includes(key) ? 'wpm' : ''}`
+									}
+									// Force all items to recount when any stat changes
 									key={stats.toString()}
 								/>
 							)}

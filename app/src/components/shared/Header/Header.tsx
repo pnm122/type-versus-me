@@ -9,6 +9,7 @@ import { useActiveUserCount } from '@/hooks/useActiveUserCount'
 import { useTimeout } from '@/hooks/useTimeout'
 import Loader from '@/components/base/Loader/Loader'
 import { useSocket } from '@/context/Socket'
+import formatNumber from '@/utils/formatNumber'
 
 export default function Header() {
 	const [mounted, setMounted] = useState(false)
@@ -41,7 +42,7 @@ export default function Header() {
 					taptaptap.live
 				</Link>
 				<Pill
-					text={`${mounted ? activeUserCount : 1} online`}
+					text={`${mounted ? formatNumber(activeUserCount, true) : 1} online`}
 					backgroundColor="var(--positive-light)"
 					foregroundColor="var(--positive)"
 					icon={<div className={styles['dot']} />}
