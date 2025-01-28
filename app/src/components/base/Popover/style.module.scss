@@ -1,6 +1,9 @@
 @use '@/scss/mixins' as *;
 
 .popover {
+	--_popover-closed-y-offset: var(--popover-closed-y-offset, -8px);
+	--_popover-open-y-offset: var(--popover-open-y-offset, 0px);
+
 	position: fixed;
 	inset: 0;
 	z-index: var(--z-overlay);
@@ -30,7 +33,7 @@
 		width: min(400px, calc(100% - 48px));
 		background-color: var(--surface);
 		padding: 12px;
-		@include hidden;
+		@include hidden(var(--_popover-closed-y-offset));
 	}
 
 	&--open {
@@ -42,7 +45,7 @@
 		}
 
 		.popover__content {
-			@include visible;
+			@include visible(var(--_popover-open-y-offset));
 		}
 	}
 }

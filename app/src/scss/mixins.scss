@@ -7,7 +7,7 @@
 	margin-inline: auto;
 }
 
-@mixin hidden($translateY: -8px, $translateX: none) {
+@mixin hidden($translateY: -8px, $translateX: 0) {
 	visibility: hidden;
 	opacity: 0;
 	transform: translate($translateX, $translateY);
@@ -17,7 +17,7 @@
 		transform 0.25s var(--timing);
 }
 
-@mixin visible($translateY: 0, $translateX: none) {
+@mixin visible($translateY: 0, $translateX: 0) {
 	visibility: visible;
 	opacity: 1;
 	transform: translate($translateX, $translateY);
