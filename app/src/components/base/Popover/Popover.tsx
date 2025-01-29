@@ -2,7 +2,7 @@
 
 import createClasses from '@/utils/createClasses'
 import styles from './style.module.scss'
-import { useEffect } from 'react'
+import { useEffect, useLayoutEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 
 type Props = React.PropsWithChildren<{
@@ -35,6 +35,12 @@ export default function Popover({
 	focusOnOpenRef,
 	children
 }: Props) {
+	const [rendered, setRendered] = useState(false)
+
+	useLayoutEffect(() => {
+		setRendered(true)
+	}, [])
+
 	useEffect(() => {
 		if (open) {
 			// Need a small delay presumably because the element is technically not visible yet
@@ -42,29 +48,32 @@ export default function Popover({
 		}
 	}, [open])
 
-	return createPortal(
-		<div
-			className={createClasses({
-				[styles['popover']]: true,
-				[styles['popover--open']]: open,
-				[styles['popover--no-scroll']]: !bodyScrollableWhenOpen
-			})}
-		>
-			{hasBackdrop && (
-				<button
-					className={styles['popover__backdrop']}
-					onClick={() => onBackdropClicked && onBackdropClicked()}
-				/>
-			)}
+	return (
+		rendered &&
+		createPortal(
 			<div
 				className={createClasses({
-					[styles['popover__content']]: true,
-					...(className ? { [className]: true } : {})
+					[styles['popover']]: true,
+					[styles['popover--open']]: open,
+					[styles['popover--no-scroll']]: !bodyScrollableWhenOpen
 				})}
 			>
-				{children}
-			</div>
-		</div>,
-		document.body
+				{hasBackdrop && (
+					<button
+						className={styles['popover__backdrop']}
+						onClick={() => onBackdropClicked && onBackdropClicked()}
+					/>
+				)}
+				<div
+					className={createClasses({
+						[styles['popover__content']]: true,
+						...(className ? { [className]: true } : {})
+					})}
+				>
+					{children}
+				</div>
+			</div>,
+			document.body
+		)
 	)
 }
