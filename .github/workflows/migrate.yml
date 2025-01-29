@@ -7,20 +7,20 @@ on:
 jobs:
   create-env:
     runs-on: ubuntu-latest
+    name: Create .env
     steps:
-    - name: Create .env
-    - run: |
+      - run: |
           touch .env
           echo DATABASE_URL=${{ secrets.DATABASE_URL }} >> .env
   migrate:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Run production migration
-      uses: actions/setup-node@v4
-      with:
-        node-version: 20.x
-        cache: 'npm'
-    - run: npm ci
-    - run: npm run prisma:migrate:deploy
+      - uses: actions/checkout@v4
+      - name: Run production migration
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run prisma:migrate:deploy
