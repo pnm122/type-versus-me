@@ -37,7 +37,7 @@ export async function updateUser<T extends keyof Omit<User, 'id'>>(
 	key: T,
 	value: Required<User>[T],
 	{ user }: Pick<State, 'user'>,
-	{ socket, notifs }: Context
+	{ socket, notifs }: Pick<Context, 'socket' | 'notifs'>
 ): Promise<
 	T extends 'username'
 		? Parameters<ChangeUsernameCallback>[0]
