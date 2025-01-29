@@ -1,0 +1,44 @@
+.selector {
+	width: 100%;
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: 4px;
+
+	@container (width > 310px) {
+		grid-template-columns: repeat(6, minmax(0, 1fr));
+	}
+
+	&__item {
+		aspect-ratio: 1;
+		flex: 1;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: var(--selector-background);
+		// When the border color is a gradient, this will be used
+		border-image: var(--selector-border) 1;
+		// When the border color is not a gradient, this will be used
+		border-color: var(--selector-border);
+		border-width: 2px;
+		border-style: solid;
+		position: relative;
+
+		.lock {
+			width: 24px;
+			height: 24px;
+			color: var(--on-disabled);
+		}
+
+		.tooltip {
+			visibility: hidden;
+		}
+
+		&:hover .tooltip {
+			visibility: visible;
+		}
+	}
+}
+
+*:has(> .selector) {
+	container-type: inline-size;
+}

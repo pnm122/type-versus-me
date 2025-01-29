@@ -1,0 +1,90 @@
+@use '@/scss/fonts' as *;
+
+.content {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.points {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.points-top {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+
+	&__total {
+		@include font-heading(18);
+	}
+
+	&__add {
+		@include font-heading(14);
+		color: var(--placeholder);
+		animation: 0.25s var(--timing) calc(var(--animation-duration) + var(--animation-delay) - 0.5s)
+			forwards fadeOut;
+
+		@keyframes fadeOut {
+			to {
+				opacity: 0;
+				transform: translateY(8px);
+			}
+		}
+	}
+}
+
+.points-to-next-level {
+	@include font-heading(14);
+	color: var(--placeholder);
+}
+
+.progress {
+	overflow: hidden;
+	position: relative;
+	display: flex;
+	align-items: center;
+	height: 44px;
+
+	&__bar {
+		width: 100%;
+		height: 2px;
+		background: linear-gradient(
+			to right,
+			var(--primary),
+			var(--primary) 50%,
+			var(--border) 50%,
+			var(--border)
+		);
+	}
+}
+
+.level-indicators {
+	position: absolute;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	gap: var(--item-gap);
+	padding-left: 50%;
+	top: 50%;
+	transform: translateY(-50%);
+	left: var(--start-offset);
+	animation: var(--animation-duration) var(--timing) var(--animation-delay) forwards slide;
+
+	@keyframes slide {
+		to {
+			left: var(--end-offset);
+		}
+	}
+
+	&__item {
+		display: block;
+		width: 0;
+
+		.indicator {
+			transform: translateX(-50%);
+		}
+	}
+}

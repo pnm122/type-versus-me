@@ -6,7 +6,7 @@ import { RequestColorPayload, RequestColorCallback } from './RequestColor'
 import { ChangeUserStatePayload, ChangeUserStateCallback } from './ChangeUserState'
 import { ChangeUserScorePayload, ChangeUserScoreCallback } from './ChangeUserScore'
 import { LeaveRoomCallback } from './LeaveRoom'
-import { DoesRoomExistPayload, DoesRoomExistCallback } from './DoesRoomExist'
+import { GetRoomPayload, GetRoomCallback } from './GetRoom'
 import { ChangeRoomSettingsCallback, ChangeRoomSettingsPayload } from './ChangeRoomSettings'
 
 interface ClientEvents {
@@ -41,11 +41,8 @@ interface ClientEvents {
 	) => Promise<void> | void
 	/** Request to leave a room */
 	'leave-room': (_: any, callback: LeaveRoomCallback) => Promise<void> | void
-	/** Check if a room exists */
-	'does-room-exist': (
-		value: DoesRoomExistPayload,
-		callback: DoesRoomExistCallback
-	) => Promise<void> | void
+	/** Get a room if it exists */
+	'get-room': (value: GetRoomPayload, callback: GetRoomCallback) => Promise<void> | void
 	'change-room-settings': (
 		value: ChangeRoomSettingsPayload,
 		callback: ChangeRoomSettingsCallback

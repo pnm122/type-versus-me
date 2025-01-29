@@ -1,0 +1,18 @@
+@use '@/scss/mixins' as *;
+
+.dropdown {
+	--_dropdown-x-offset: var(--dropdown-x-offset, 0px);
+	--_dropdown-closed-y-offset: var(--dropdown-closed-y-offset, -8px);
+	--_dropdown-open-y-offset: var(--dropdown-open-y-offset, 0px);
+
+	@include hidden(var(--_dropdown-closed-y-offset), var(--_dropdown-x-offset));
+	padding: 12px;
+	background-color: var(--surface);
+	box-shadow: var(--shadow);
+	position: absolute;
+	z-index: var(--z-overlay);
+
+	&--open {
+		@include visible(var(--_dropdown-open-y-offset), var(--_dropdown-x-offset));
+	}
+}

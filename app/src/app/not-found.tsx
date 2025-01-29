@@ -1,10 +1,10 @@
 'use client'
 
-import TyperPreview from '@/components/TyperPreview/TyperPreview'
+import TyperPreview from '@/components/shared/TyperPreview/TyperPreview'
 import styles from './error.module.scss'
-import Button from '@/components/Button/Button'
+import Button from '@/components/base/Button/Button'
 import PixelarticonsHome from '~icons/pixelarticons/home'
-import ButtonIcon from '@/components/Button/ButtonIcon'
+import ButtonIcon from '@/components/base/Button/ButtonIcon'
 
 export const dynamic = 'force-static'
 
@@ -18,7 +18,7 @@ export default function Custom404() {
 				</h2>
 				<Button href="/">
 					<ButtonIcon icon={<PixelarticonsHome />} />
-					Take me back
+					Go back home
 				</Button>
 			</div>
 		</main>

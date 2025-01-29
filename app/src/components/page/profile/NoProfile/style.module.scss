@@ -1,0 +1,52 @@
+@use '@/scss/mixins' as *;
+@use '@/scss/fonts' as *;
+
+.page {
+	height: calc(100vh - var(--header-size));
+	max-height: calc(-webkit-fill-available - var(--header-size));
+	display: grid;
+	place-items: center;
+}
+
+.main {
+	@include max-width(400px, 24px);
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	align-items: center;
+	text-align: center;
+
+	&__icon {
+		width: 128px;
+		height: 128px;
+	}
+
+	&__text {
+		@include font-heading(20);
+	}
+}
+
+.buttons {
+	display: flex;
+	gap: 8px;
+	padding-top: 12px;
+	flex-wrap: wrap;
+
+	> * {
+		flex-grow: 1;
+	}
+}
+
+.profile {
+	position: relative;
+
+	&__tooltip {
+		visibility: hidden;
+		width: 250px;
+		white-space: normal !important;
+	}
+
+	&:hover .profile__tooltip {
+		visibility: visible;
+	}
+}

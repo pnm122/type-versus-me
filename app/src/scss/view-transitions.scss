@@ -18,20 +18,28 @@
 }
 
 // ENTRANCE ANIMATION: view-transition-new is the only child only when an element is appearing
-::view-transition-new(.notification):only-child {
-	animation: 0.25s var(--timing) enter forwards;
+::view-transition-new(.notification-up):only-child {
+	animation: 0.25s var(--timing) enter-downwards forwards;
 }
 
 // EXIT ANIMATION: view-transition-old is the only child only when an element is appearing
-::view-transition-old(.notification-first):only-child {
-	animation: 0.25s var(--timing) first-exit forwards;
+::view-transition-old(.notification-up-first):only-child {
+	animation: 0.25s var(--timing) exit-upwards forwards;
+}
+
+::view-transition-new(.notification-down):only-child {
+	animation: 0.25s var(--timing) enter-upwards forwards;
+}
+
+::view-transition-old(.notification-down-first):only-child {
+	animation: 0.25s var(--timing) exit-downwards forwards;
 }
 
 ::view-transition-old(.notification-not-first):only-child {
 	animation: 0.25s var(--timing) not-first-exit forwards;
 }
 
-@keyframes enter {
+@keyframes enter-downwards {
 	from {
 		transform: translateY(calc(-100% - 12px));
 	}
@@ -40,12 +48,30 @@
 	}
 }
 
-@keyframes first-exit {
+@keyframes exit-upwards {
 	from {
 		transform: none;
 	}
 	to {
 		transform: translateY(calc(-100% - 12px));
+	}
+}
+
+@keyframes enter-upwards {
+	from {
+		transform: translateY(calc(100% + 12px));
+	}
+	to {
+		transform: none;
+	}
+}
+
+@keyframes exit-downwards {
+	from {
+		transform: none;
+	}
+	to {
+		transform: translateY(calc(100% + 12px));
 	}
 }
 

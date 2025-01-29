@@ -1,0 +1,51 @@
+@use '@/scss/fonts' as *;
+
+.stats {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	flex: 1;
+
+	&__heading {
+		@include font-heading(14);
+		text-transform: uppercase;
+		color: var(--placeholder);
+	}
+
+	&__filters {
+		position: relative;
+		display: flex;
+		gap: 12px;
+	}
+
+	.stat-boxes {
+		display: flex;
+		flex-direction: row;
+		gap: 12px;
+		flex-wrap: wrap;
+
+		.stat-box {
+			padding: 8px;
+			background-color: var(--surface);
+			display: flex;
+			flex-direction: column;
+			gap: 4px;
+			flex-grow: 1;
+			position: relative;
+
+			&__stat {
+				@include font-heading(24);
+				transition: opacity 0.175s var(--timing);
+			}
+
+			&__name {
+				@include font-heading(14);
+				color: var(--placeholder);
+			}
+
+			&--pending .stat-box__stat {
+				opacity: 0.5;
+			}
+		}
+	}
+}

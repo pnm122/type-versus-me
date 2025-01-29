@@ -1,0 +1,74 @@
+@use '@/scss/fonts' as *;
+
+.wpm {
+	&:not(.wpm--hot) {
+		padding-inline: 0;
+	}
+
+	&--hot {
+		--pill-foreground: var(--background);
+	}
+
+	&--hot-1 {
+		--pill-background: var(--cursor-orange);
+	}
+
+	&--hot-2 {
+		--pill-background: var(--cursor-red);
+	}
+
+	&--hot-3 {
+		--pill-background: var(--cursor-pink);
+	}
+
+	&--hot-4 {
+		--pill-background: var(--cursor-purple);
+	}
+
+	&--failed {
+		--pill-foreground: var(--negative);
+	}
+}
+
+.accuracy {
+	--pill-foreground: var(--heading);
+
+	&:not(.accuracy--perfect) {
+		padding-inline: 0;
+	}
+
+	&--perfect {
+		--pill-background: var(--positive);
+		--pill-foreground: var(--background);
+	}
+
+	&--low {
+		--pill-foreground: var(--placeholder);
+	}
+}
+
+.placement {
+	&:not(.placement--podium) {
+		--pill-foreground: var(--placeholder);
+		padding-inline: 0;
+	}
+
+	&--first {
+		--pill-foreground: var(--black);
+		--pill-background: var(--primary);
+	}
+
+	&--second {
+		--pill-foreground: var(--background);
+		--pill-background: var(--silver);
+	}
+
+	&--third {
+		--pill-foreground: var(--background);
+		--pill-background: var(--bronze);
+	}
+}
+
+.time {
+	@include font-heading(14);
+}

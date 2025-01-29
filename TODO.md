@@ -44,6 +44,7 @@
 [x] Return to homepage button on join room page
 [x] Fix room setting popover overflowing screen
 [x] Fix popover background not closing on key press
+[ ] Typing count/stats are inaccurate (at least in production?)
 [ ] Create a favicon
 [ ] Domain name?
 [ ] Figure out hosting

@@ -1,0 +1,68 @@
+.collapsible {
+	visibility: hidden;
+	overflow: hidden;
+	display: grid;
+
+	&--show-animations {
+		&.collapsible--left,
+		&.collapsible--right {
+			transition:
+				width var(--collapsible-duration) var(--collapsible-ease) var(--collapsible-delay),
+				visibility var(--collapsible-duration) var(--collapsible-ease) var(--collapsible-delay);
+		}
+
+		&.collapsible--up,
+		&.collapsible--down {
+			transition:
+				height var(--collapsible-duration) var(--collapsible-ease) var(--collapsible-delay),
+				visibility var(--collapsible-duration) var(--collapsible-ease) var(--collapsible-delay);
+		}
+	}
+
+	&--left,
+	&--right {
+		&.collapsible--open {
+			width: fit-content;
+		}
+
+		&.collapsible--fit-content {
+			height: fit-content;
+		}
+
+		// Try to account for squishing text
+		.collapsible__content {
+			width: max-content;
+		}
+	}
+
+	&--up,
+	&--down {
+		&.collapsible--open {
+			height: fit-content;
+		}
+
+		&.collapsible--fit-content {
+			width: fit-content;
+		}
+	}
+
+	&--up {
+		align-items: flex-end;
+	}
+
+	&--down {
+		align-items: flex-start;
+	}
+
+	&--left {
+		justify-content: flex-end;
+	}
+
+	&--right {
+		justify-content: flex-start;
+	}
+
+	&--open {
+		visibility: visible;
+	}
+}

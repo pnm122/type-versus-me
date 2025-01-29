@@ -1,0 +1,50 @@
+@use '@/scss/fonts' as *;
+@use '@/scss/breakpoints' as *;
+
+.container {
+	background-color: var(--surface);
+	padding: 12px;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+
+	@media screen and (width > $screen-md) {
+		min-width: 350px;
+	}
+
+	&__points {
+		@include font-heading(18);
+	}
+
+	&__points-to-next-level {
+		@include font-heading(14);
+		color: var(--placeholder);
+	}
+}
+
+.levels {
+	padding-block: 12px;
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
+	position: relative;
+
+	.progress {
+		position: absolute;
+		z-index: var(--z-base);
+		top: 50%;
+		left: 0;
+		right: 0;
+		transform: translateY(-50%);
+		height: 2px;
+		background-color: var(--border);
+
+		&__current {
+			position: absolute;
+			inset: 0;
+			right: unset;
+			z-index: var(--z-above);
+			background-color: var(--primary);
+		}
+	}
+}

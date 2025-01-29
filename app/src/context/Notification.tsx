@@ -1,7 +1,7 @@
 'use client'
 
-import { NotificationProps } from '@/components/Notification/Notification'
-import NotificationStack from '@/components/NotificationStack/NotificationStack'
+import { NotificationProps } from '@/components/base/Notification/Notification'
+import NotificationStack from '@/components/base/NotificationStack/NotificationStack'
 import transition from '@/utils/transition'
 import { createContext, useContext, useRef, useState } from 'react'
 
@@ -35,7 +35,7 @@ export function NotificationProvider({ children }: React.PropsWithChildren) {
 		updateNotifs((n) =>
 			[
 				{
-					id: `notif-${counter.current++}`,
+					id: `main-notif-${counter.current++}`,
 					onClose,
 					style: data.style,
 					children: data.text,
@@ -48,7 +48,7 @@ export function NotificationProvider({ children }: React.PropsWithChildren) {
 
 	return (
 		<NotificationContext.Provider value={{ push }}>
-			<NotificationStack stack={notifs} />
+			<NotificationStack stack={notifs} position="top-center" />
 			{children}
 		</NotificationContext.Provider>
 	)

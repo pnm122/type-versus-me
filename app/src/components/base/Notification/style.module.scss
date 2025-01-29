@@ -1,0 +1,57 @@
+.notification {
+	width: 350px;
+	max-width: min(350px, calc(100vw - (2 * 24px)));
+	display: grid;
+	grid-template-columns: 40px 1fr;
+	box-shadow: var(--shadow);
+
+	&--default {
+		background-color: var(--gray-10);
+
+		.notification__close {
+			color: var(--heading);
+		}
+	}
+
+	&--error {
+		background-color: var(--negative);
+		color: var(--background);
+
+		.notification__close {
+			color: var(--background);
+		}
+	}
+
+	&--success {
+		background-color: var(--positive);
+		color: var(--background);
+
+		.notification__close {
+			color: var(--background);
+		}
+	}
+
+	&__icon {
+		justify-self: center;
+		padding-top: 10px;
+	}
+
+	&__content {
+		flex: 1;
+		padding-block: 12px;
+		padding-right: 12px;
+	}
+
+	&__close {
+		margin-top: 4px;
+
+		* {
+			color: inherit;
+		}
+	}
+
+	&--closeable {
+		grid-template-columns: 40px 1fr 40px;
+		padding-right: 0;
+	}
+}

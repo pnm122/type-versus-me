@@ -1,0 +1,26 @@
+@use '@/scss/fonts' as *;
+
+.page {
+	height: calc(100vh - var(--header-size));
+	max-height: calc(-webkit-fill-available - var(--header-size));
+	display: grid;
+	place-items: center;
+}
+
+.form {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	width: 100%;
+	max-width: 325px;
+
+	&__text {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+
+		.heading {
+			@include font-heading(24);
+		}
+	}
+}

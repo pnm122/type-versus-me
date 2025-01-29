@@ -4,6 +4,7 @@ import { ChangeAllUserDataPayload } from './ChangeAllUserData'
 import { ChangeRoomDataPayload } from './ChangeRoomData'
 import { ServerLeaveRoomPayload } from './LeaveRoom'
 import { ChangeUserCountPayload } from './ChangeUserCount'
+import { DatabaseUpdatePayload } from './DatabaseUpdate'
 
 interface ServerEvents {
 	/** A user has joined the room */
@@ -18,6 +19,8 @@ interface ServerEvents {
 	'leave-room': (value: ServerLeaveRoomPayload) => void
 	/** A user connected/disconnected, so the number of active users has changed */
 	'change-user-count': (value: ChangeUserCountPayload) => void
+	/** The server updated the database, and is informing clients of the change. */
+	'database-update': (value: DatabaseUpdatePayload) => void
 }
 
 export default ServerEvents

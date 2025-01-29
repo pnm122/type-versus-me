@@ -1,0 +1,85 @@
+@use '@/scss/fonts' as *;
+
+.input {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+
+	&--error {
+		.input__label {
+			color: var(--negative);
+		}
+
+		.main-control {
+			border-color: var(--negative);
+		}
+	}
+
+	&:not(.input--error) {
+		.main-control:has(.main-control__input:focus-visible) {
+			border-color: var(--gray-70);
+		}
+	}
+
+	&__label {
+		@include font-body(14);
+
+		.input__required-star {
+			color: red;
+			display: inline;
+		}
+	}
+
+	.main-control {
+		height: 40px;
+		border: 2px solid var(--border);
+		outline: none;
+		display: flex;
+		align-items: center;
+
+		&:has(.main-control__input:disabled) {
+			background-color: var(--disabled);
+			color: var(--on-disabled);
+			border-color: var(--disabled);
+
+			.main-control__units {
+				color: var(--on-disabled);
+			}
+		}
+
+		&__input {
+			border: none;
+			outline: none;
+			padding-left: 12px;
+			// Less padding on the right so number change UI fits better
+			padding-right: 4px;
+			height: 100%;
+			flex: 1;
+			min-width: 0;
+
+			&::placeholder {
+				color: var(--placeholder);
+			}
+		}
+
+		&__units {
+			padding-inline: 12px;
+			border-left: 2px solid var(--border);
+			height: 24px;
+			color: var(--placeholder);
+		}
+	}
+
+	&__error {
+		@include font-body(14);
+		color: var(--negative);
+		display: flex;
+		gap: 2px;
+
+		svg {
+			margin-top: 0.1em;
+			min-width: 1.2em;
+			min-height: 1.2em;
+		}
+	}
+}

@@ -1,0 +1,101 @@
+@use '@/scss/fonts' as *;
+
+.table {
+	--table-cell-padding: 8px;
+	--table-expand-cell-width: 32px;
+	display: grid;
+
+	thead,
+	tbody,
+	&__row,
+	&__heading {
+		display: grid;
+		// Span all columns
+		grid-column: 1 / -1;
+		// Inherit columns from parent
+		grid-template-columns: subgrid;
+	}
+
+	&__heading {
+		background-color: var(--gray-20);
+		height: 32px;
+		border-bottom: 1px solid var(--surface);
+		position: relative;
+
+		.cell {
+			@include font-heading(14);
+			color: var(--heading);
+			white-space: nowrap;
+		}
+	}
+
+	&__row {
+		background-color: var(--surface);
+
+		&:not(:last-of-type) {
+			border-bottom: 1px solid var(--border);
+		}
+
+		.cell {
+			min-height: 44px;
+		}
+
+		&--has-expand-content {
+			cursor: pointer;
+			transition: background-color 0.175s var(--timing);
+
+			&:hover,
+			&:focus-visible {
+				outline: none;
+				background-color: var(--gray-20);
+			}
+
+			&[aria-expanded='true'] .expand-arrow {
+				rotate: 180deg;
+			}
+		}
+	}
+
+	.cell {
+		padding-inline: var(--table-cell-padding);
+		display: flex;
+		justify-content: var(--table-cell-alignment);
+		align-items: center;
+	}
+
+	.expand {
+		grid-column: 1 / -1;
+		display: block;
+		padding: 0;
+
+		&__content {
+			padding: var(--table-cell-padding);
+			padding-left: calc(var(--table-expand-cell-width) + var(--table-cell-padding));
+		}
+	}
+
+	.expand-arrow {
+		transition: rotate 0.25s var(--timing);
+	}
+}
+
+.loader {
+	position: absolute;
+	inset: 0;
+	bottom: unset;
+}
+
+.no-data {
+	grid-column: 1 / -1;
+	color: var(--placeholder);
+}
+
+.row-with-expand-tbody {
+	&:not(:last-of-type) {
+		border-bottom: 1px solid var(--border);
+	}
+
+	.table__row {
+		border: none;
+	}
+}

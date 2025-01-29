@@ -1,0 +1,83 @@
+@use '@/scss/fonts' as *;
+
+.tooltip {
+	--_tooltip-arrow-size: var(--tooltip-arrow-size, 6px);
+	--_tooltip-arrow-offset: var(--tooltip-arrow-size, 4px);
+	--_tooltip-offset: var(--tooltip-arrow-size, 2px);
+	--_tooltip-background: var(--tooltip-background, var(--surface));
+	// Position of the tooltip on the main axis
+	--_tooltip-position: var(
+		--tooltip-position,
+		calc(100% + var(--_tooltip-offset) + var(--_tooltip-arrow-size))
+	);
+
+	@include font-heading(14);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	background-color: var(--_tooltip-background);
+	color: var(--heading);
+	min-height: 20px;
+	padding-inline: 4px;
+	padding-block: 4px;
+	pointer-events: none;
+	white-space: nowrap;
+	position: absolute;
+	z-index: var(--z-above);
+	left: var(--tooltip-left, var(--_tooltip-left, unset));
+	top: var(--tooltip-top, var(--_tooltip-top, unset));
+	right: var(--tooltip-right, var(--_tooltip-right, unset));
+	bottom: var(--tooltip-bottom, var(--_tooltip-bottom, unset));
+	transform: translate(
+		var(--tooltip-translate-x, var(--_tooltip-translate-x, 0)),
+		var(--tooltip-translate-y, var(--_tooltip-translate-y, 0))
+	);
+
+	&--top-left,
+	&--top-center,
+	&--top-right {
+		--_tooltip-bottom: var(--_tooltip-position);
+		--_tooltip-arrow-border-color: var(--_tooltip-background) transparent transparent transparent;
+		--_tooltip-arrow-top: 100%;
+	}
+
+	&--bottom-left,
+	&--bottom-center,
+	&--bottom-right {
+		--_tooltip-top: var(--_tooltip-position);
+		--_tooltip-arrow-border-color: transparent transparent var(--_tooltip-background) transparent;
+		--_tooltip-arrow-bottom: 100%;
+	}
+
+	&--top-left,
+	&--bottom-left {
+		--_tooltip-right: calc(50% - var(--_tooltip-arrow-offset) - var(--_tooltip-arrow-size));
+		--_tooltip-arrow-right: var(--_tooltip-arrow-offset);
+	}
+
+	&--top-center,
+	&--bottom-center {
+		--_tooltip-left: 50%;
+		--_tooltip-arrow-left: calc(50% - var(--_tooltip-arrow-size));
+		--_tooltip-translate-x: -50%;
+	}
+
+	&--top-right,
+	&--bottom-right {
+		--_tooltip-left: calc(50% - var(--_tooltip-arrow-offset) - var(--_tooltip-arrow-size));
+		--_tooltip-arrow-left: var(--_tooltip-arrow-offset);
+	}
+
+	&::before {
+		content: '';
+		border-width: var(--_tooltip-arrow-size);
+		border-style: solid;
+		border-color: var(--tooltip-arrow-border-color, var(--_tooltip-arrow-border-color));
+		position: absolute;
+		left: var(--tooltip-arrow-left, var(--_tooltip-arrow-left, unset));
+		top: var(--tooltip-arrow-top, var(--_tooltip-arrow-top, unset));
+		right: var(--tooltip-arrow-right, var(--_tooltip-arrow-right, unset));
+		bottom: var(--tooltip-arrow-bottom, var(--_tooltip-arrow-bottom, unset));
+	}
+}

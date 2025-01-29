@@ -6,7 +6,12 @@ import { RoomState } from '$shared/types/Room'
 import { UserState } from '$shared/types/User'
 import state from '@/global/state'
 import CustomSocket from '@/types/CustomSocket'
-import { check, isValidEventAndPayload, setRoomToInProgress } from '@/utils/eventUtils'
+import {
+	check,
+	isValidEventAndPayload,
+	saveScoresToDatabase,
+	setRoomToInProgress
+} from '@/utils/eventUtils'
 import io from '@/global/server'
 import { INITIAL_USER_SCORE } from '$shared/constants'
 
@@ -15,11 +20,11 @@ export default async function ChangeUserState(
 	value: ChangeUserStatePayload,
 	callback: ChangeUserStateCallback
 ) {
-	if (!isValidEventAndPayload(socket, callback, value?.id, value?.state)) {
+	if (!isValidEventAndPayload(socket, callback, value?.socketId, value?.state)) {
 		return
 	}
 
-	const room = state.getRoomFromUser(value.id)
+	const room = state.getRoomFromUser(value.socketId)
 	if (check(!room, 'user-not-in-room', callback)) {
 		return
 	}
@@ -44,31 +49,50 @@ export default async function ChangeUserState(
 	const lastScore =
 		value.state === 'complete' || value.state === 'failed'
 			? {
-					netWPM: state.getUserInRoom(room!.id, value.id)!.score!.netWPM,
+					netWPM: state.getUserInRoom(room!.id, value.socketId)!.score!.netWPM,
+					accuracy: state.getUserInRoom(room!.id, value.socketId)!.score!.accuracy,
 					failed: value.state === 'failed'
 				}
 			: undefined
 
-	state.updateUser(value.id, { state: value.state, lastScore })
-	io.in(room!.id).emit('change-user-data', { id: value.id, state: value.state, lastScore })
+	state.updateUser(value.socketId, { state: value.state, lastScore })
+	io.in(room!.id).emit('change-user-data', {
+		socketId: value.socketId,
+		state: value.state,
+		lastScore
+	})
 
 	const allUsersReady =
-		room!.users.every((u) => u.id === value.id || u.state === 'ready') && value.state === 'ready'
+		room!.users.every((u) => u.socketId === value.socketId || u.state === 'ready') &&
+		value.state === 'ready'
 	if (allUsersReady) {
-		await setRoomToInProgress(room!)
+		const error = await setRoomToInProgress(room!)
+		if (error) {
+			return callback({
+				value: null,
+				error: {
+					reason: 'database-error',
+					details: error
+				}
+			})
+		}
 	}
 
 	const allUsersDone =
-		room!.users.every((u) => u.id === value.id || u.state === 'complete' || u.state === 'failed') &&
+		room!.users.every(
+			(u) => u.socketId === value.socketId || u.state === 'complete' || u.state === 'failed'
+		) &&
 		(value.state === 'complete' || value.state === 'failed')
 	if (allUsersDone) {
 		state.updateRoom(room!.id, { state: 'complete' })
 		io.in(room!.id).emit('change-room-data', { state: 'complete' })
 
 		state.getRoom(room!.id)!.users.forEach((u) => {
-			state.updateUser(u.id, { score: INITIAL_USER_SCORE, state: 'not-ready' })
+			state.updateUser(u.socketId, { score: INITIAL_USER_SCORE, state: 'not-ready' })
 		})
 		io.in(room!.id).emit('change-all-user-data', { score: INITIAL_USER_SCORE, state: 'not-ready' })
+
+		await saveScoresToDatabase(room!.id)
 
 		return callback({
 			value: { state: 'not-ready' },

@@ -1,0 +1,39 @@
+@use '@/scss/fonts' as *;
+@use '@/scss/breakpoints' as *;
+
+.leaderboard {
+	.divider {
+		margin-block: 16px;
+		height: 2px;
+		background-color: var(--border);
+	}
+
+	.expand {
+		@include font-heading(16);
+		color: var(--heading);
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		transform-origin: left center;
+		transition: scale 0.25s var(--timing);
+
+		&__icon {
+			transition: rotate 0.25s var(--timing);
+		}
+
+		&[aria-expanded='true'] .expand__icon {
+			rotate: 180deg;
+		}
+	}
+
+	&--open {
+		.expand {
+			scale: 1.5;
+		}
+	}
+}
+
+.leaderboard-results-spacer {
+	height: 16px;
+	width: 100%;
+}

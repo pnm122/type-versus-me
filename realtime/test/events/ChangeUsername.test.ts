@@ -14,7 +14,7 @@ describe('ChangeUsername', () => {
 	describe('errors', () => {
 		it('gives the correct error if the user ID does not match the session ID', () => {
 			const callback = jest.fn()
-			ChangeUsername(mockSocket('userA'), mockUser({ id: 'userB' }), callback)
+			ChangeUsername(mockSocket('userA'), mockUser({ socketId: 'userB' }), callback)
 
 			expect(callback).toHaveBeenCalledWith({
 				value: null,
@@ -62,9 +62,9 @@ describe('ChangeUsername', () => {
 		})
 
 		it('gives the correct error if a user in the same room has the same username', () => {
-			const userA = mockUser({ id: 'userA', username: 'Pierce' })
+			const userA = mockUser({ socketId: 'userA', username: 'Pierce' })
 			const socketA = mockSocket('userA')
-			const userB = mockUser({ id: 'userB', username: 'John' })
+			const userB = mockUser({ socketId: 'userB', username: 'John' })
 			const socketB = mockSocket('userB')
 
 			const {
@@ -103,7 +103,11 @@ describe('ChangeUsername', () => {
 		} = createRoomForTesting(user).value!
 		const userAfterChange = { ...userAfterCreateRoom, username: 'Pierce' }
 
-		ChangeUsername(socket, { id: user.id, username: userAfterChange.username }, () => {})
+		ChangeUsername(
+			socket,
+			{ socketId: user.socketId, username: userAfterChange.username },
+			() => {}
+		)
 
 		expect(inSpy).toHaveBeenCalledWith(roomId)
 		expect(emitSpy).toHaveBeenCalledWith('change-user-data', userAfterChange)

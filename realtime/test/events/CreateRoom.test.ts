@@ -25,7 +25,7 @@ describe('CreateRoom', () => {
 	describe('errors', () => {
 		it('gives the correct error if the user ID does not match the session ID', () => {
 			const callback = jest.fn()
-			CreateRoom(mockSocket('userA'), mockPayload({ id: 'userB' }), callback)
+			CreateRoom(mockSocket('userA'), mockPayload({ socketId: 'userB' }), callback)
 
 			expect(callback).toHaveBeenCalledWith({
 				value: null,
@@ -123,10 +123,10 @@ describe('CreateRoom', () => {
 			const callback = jest.fn()
 
 			new Array(MAX_ROOMS).fill(null).forEach((_, index) => {
-				state.createRoom(mockPayload({ id: `user${index}` }).user, mockPayload().settings)
+				state.createRoom(mockPayload({ socketId: `user${index}` }).user, mockPayload().settings)
 			})
 
-			CreateRoom(mockSocket('newUser'), mockPayload({ id: 'newUser' }), callback)
+			CreateRoom(mockSocket('newUser'), mockPayload({ socketId: 'newUser' }), callback)
 
 			expect(callback).toHaveBeenCalledWith({
 				value: null,
@@ -178,7 +178,7 @@ describe('CreateRoom', () => {
 
 			CreateRoom(mockSocket(), payload, () => {})
 
-			expect(state.getRooms()[0]?.admin).toBe(payload.user.id)
+			expect(state.getRooms()[0]?.admin).toBe(payload.user.socketId)
 		})
 	})
 })

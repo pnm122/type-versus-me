@@ -1,0 +1,33 @@
+@use '@/scss/fonts' as *;
+
+.pill {
+	--__pill-background: var(--pill-background, var(--_pill-background));
+	--__pill-foreground: var(--pill-foreground, var(--_pill-foreground));
+
+	display: flex;
+	align-items: center;
+	text-transform: uppercase;
+	line-height: 1;
+	width: fit-content;
+	white-space: nowrap;
+	background-color: var(--__pill-background);
+	color: var(--__pill-foreground);
+
+	&--lowercase {
+		text-transform: none;
+	}
+
+	&--medium {
+		@include font-heading(12);
+		gap: 4px;
+		height: 18px;
+		padding-inline: 4px;
+	}
+
+	&--large {
+		@include font-heading(14);
+		gap: 6px;
+		height: 24px;
+		padding-inline: 6px;
+	}
+}

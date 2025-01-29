@@ -1,0 +1,15 @@
+.box {
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: var(--z-base);
+	background-color: var(--primary);
+
+	&--transition {
+		// Only start showing transitions after the first position has been rendered
+		transition:
+			transform 0.25s var(--timing),
+			height 0.25s var(--timing),
+			width 0.25s var(--timing);
+	}
+}

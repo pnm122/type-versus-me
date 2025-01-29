@@ -9,7 +9,7 @@ describe('Disconnect', () => {
 		// Not initialized when used here, but we just want to make sure that the event is emitted so it's fine
 		io.engine = { clientsCount: 0 } as any
 		const { user } = createRoomForTesting().value!
-		Disconnect(mockSocket(user.id))
+		Disconnect(mockSocket(user.socketId))
 
 		expect(spy).toHaveBeenCalledWith('change-user-count', 0)
 	})
@@ -17,7 +17,7 @@ describe('Disconnect', () => {
 	it('calls LeaveRoom if the user was in a room', () => {
 		const spy = jest.spyOn(LeaveRoom, 'default')
 		const { user } = createRoomForTesting().value!
-		Disconnect(mockSocket(user.id))
+		Disconnect(mockSocket(user.socketId))
 
 		expect(spy).toHaveBeenCalled()
 	})

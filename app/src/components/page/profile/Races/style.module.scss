@@ -1,0 +1,54 @@
+@use '@/scss/fonts' as *;
+@use '@/scss/breakpoints' as *;
+
+.races {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.header {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+
+	@media screen and (width > $screen-md) {
+		flex-direction: row;
+		align-items: flex-end;
+		justify-content: space-between;
+	}
+
+	&__main {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+
+		.heading {
+			@include font-heading(24);
+		}
+
+		.filters {
+			display: flex;
+			gap: 12px;
+			position: relative;
+		}
+	}
+}
+
+.table-data {
+	@include font-heading(14);
+}
+
+.room-info {
+	max-width: 600px;
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+
+	&__text {
+		@include font-body(14);
+		display: flex;
+		gap: 20px;
+		color: var(--placeholder);
+	}
+}

@@ -2,7 +2,7 @@ import { LeaveRoomCallback } from '$shared/types/events/client/LeaveRoom'
 import io from '@/global/server'
 import state from '@/global/state'
 import CustomSocket from '@/types/CustomSocket'
-import { check, setRoomToInProgress } from '@/utils/eventUtils'
+import { check, saveScoresToDatabase, setRoomToInProgress } from '@/utils/eventUtils'
 
 export default async function LeaveRoom(socket: CustomSocket, callback: LeaveRoomCallback) {
 	if (typeof callback !== 'function') return
@@ -14,7 +14,7 @@ export default async function LeaveRoom(socket: CustomSocket, callback: LeaveRoo
 
 	state.removeUserFromRoom(room!.id, socket.id)
 	socket.leave(room!.id)
-	io.in(room!.id).emit('leave-room', { userId: socket.id, room: room! })
+	io.in(room!.id).emit('leave-room', { userSocketId: socket.id, room: room! })
 
 	if (state.getRoom(room!.id)!.users.length === 0) {
 		state.removeRoom(room!.id)
@@ -35,11 +35,13 @@ export default async function LeaveRoom(socket: CustomSocket, callback: LeaveRoo
 	if (allUsersDone) {
 		state.updateRoom(room!.id, { state: 'complete' })
 		io.in(room!.id).emit('change-room-data', { state: 'complete' })
+
+		await saveScoresToDatabase(room!.id)
 	}
 
 	if (state.getRoom(room!.id)!.admin === socket.id) {
 		// relies on (A) the user making this request was already removed and (B) we already checked if the room was empty
-		const newAdmin = state.getRoom(room!.id)!.users[0]!.id
+		const newAdmin = state.getRoom(room!.id)!.users[0]!.socketId
 		state.updateRoom(room!.id, { admin: newAdmin })
 		io.in(room!.id).emit('change-room-data', { admin: newAdmin })
 	}

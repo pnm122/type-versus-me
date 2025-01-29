@@ -1,4 +1,8 @@
 {
+  "workspaces": [
+    "app",
+    "realtime"
+  ],
   "scripts": {
     "prepare": "husky && husky install",
     "test:realtime": "cd realtime && npm run test:related",
@@ -6,7 +10,9 @@
     "lint:realtime": "cd realtime && npm run lint",
     "lint": "npm run lint:app && npm run lint:realtime",
     "format": "prettier --write .",
-    "check": "prettier -c ."
+    "check": "prettier -c .",
+    "prisma:generate": "prisma generate --schema ./shared/prisma/schema.prisma",
+    "prisma:migrate": "prisma migrate dev --schema ./shared/prisma/schema.prisma"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
@@ -15,11 +21,15 @@
     "husky": "^9.1.7",
     "lint-staged": "^15.2.11",
     "prettier": "^3.4.2",
+    "prisma": "^6.2.1",
     "typescript-eslint": "^8.18.1"
   },
   "lint-staged": {
-		"*.{js,ts,jsx,tsx}": "npm run lint",
+    "*.{js,ts,jsx,tsx}": "npm run lint",
     "*.{js,ts,jsx,tsx,css,scss,md}": "npm run format",
     "realtime/**/*.{js,ts}": "npm run test:realtime --"
-	}
+  },
+  "dependencies": {
+    "@prisma/client": "^6.2.1"
+  }
 }

@@ -12,7 +12,9 @@ export default function JoinRoom(
 	value: ClientJoinRoomPayload,
 	callback: ClientJoinRoomCallback
 ) {
-	if (!isValidEventAndPayload(socket, callback, value?.user?.id, value?.roomId, value?.user)) {
+	if (
+		!isValidEventAndPayload(socket, callback, value?.user?.socketId, value?.roomId, value?.user)
+	) {
 		return
 	}
 
@@ -20,7 +22,7 @@ export default function JoinRoom(
 	// Casing doesn't matter, since all room codes are uppercase
 	const roomId = tempRoomId.toUpperCase()
 
-	if (check(state.getRoomFromUser(user.id), 'user-in-room-already', callback)) {
+	if (check(state.getRoomFromUser(user.socketId), 'user-in-room-already', callback)) {
 		return
 	}
 

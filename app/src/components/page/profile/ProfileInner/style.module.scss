@@ -1,0 +1,27 @@
+@use '@/scss/mixins' as *;
+@use '@/scss/breakpoints' as *;
+
+.page {
+	@include container;
+	padding-block: 32px;
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+
+	&__top {
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+
+		@media screen and (width > $screen-md) {
+			flex-direction: row;
+			align-items: flex-end;
+		}
+	}
+}
+
+.level-and-points-skeleton {
+	@media screen and (width > $screen-md) {
+		min-width: 350px;
+	}
+}

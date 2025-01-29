@@ -1,0 +1,44 @@
+.unlocks {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	color: var(--background);
+
+	&__items {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+	}
+}
+
+.cursor {
+	position: relative;
+	background: var(--cursor-background);
+	width: 64px;
+	height: 64px;
+	display: grid;
+	place-items: center;
+	// When the border color is a gradient, this will be used
+	border-image: var(--cursor-border) 1;
+	// When the border color is not a gradient, this will be used
+	border-color: var(--cursor-border);
+	border-width: 2px;
+	border-style: solid;
+
+	&::before {
+		content: '';
+		position: absolute;
+		scale: 1.25;
+		z-index: -1;
+		inset: 0;
+		background: var(--cursor-background);
+	}
+}
+
+[data-theme='light'] .cursor::before {
+	filter: saturate(2) blur(15px);
+}
+
+[data-theme='dark'] .cursor::before {
+	filter: blur(12px);
+}

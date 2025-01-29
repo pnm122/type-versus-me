@@ -3,7 +3,7 @@ import { Room, RoomSettings } from '../../Room'
 import { User } from '../../User'
 
 type Payload = {
-	userId: User['id']
+	userSocketId: User['socketId']
 	roomId: Room['id']
 	settings: Partial<RoomSettings>
 }

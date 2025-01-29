@@ -1,9 +1,16 @@
 import CustomSocket from '@/types/CustomSocket'
-import { check, isValidEventAndPayload, setRoomToInProgress } from '@/utils/eventUtils'
-import { createRoomForTesting, ioSpies, mockUser } from '../test-utils'
+import {
+	check,
+	isValidEventAndPayload,
+	saveScoresToDatabase,
+	setRoomToInProgress
+} from '@/utils/eventUtils'
+import { createRoomForTesting, ioSpies, mockSocket, mockUser } from '../test-utils'
 import state from '@/global/state'
 import { INITIAL_USER_SCORE } from '$shared/constants'
 import io from '@/global/server'
+import { createRace } from '$shared/utils/database/race'
+import * as databaseScoreUtils from '$shared/utils/database/score'
 
 const socket = {
 	id: 'TEST_ID'
@@ -60,7 +67,7 @@ describe('check', () => {
 describe('setRoomToInProgress', () => {
 	function init() {
 		const { room } = createRoomForTesting().value!
-		state.addUserToRoom(room.id, mockUser({ id: 'userB' }))
+		state.addUserToRoom(room.id, mockUser({ socketId: 'userB' }))
 
 		return { room }
 	}
@@ -73,7 +80,7 @@ describe('setRoomToInProgress', () => {
 		expect(state.getRoom(room.id)!.state).toBe('in-progress')
 	})
 
-	it('emits a change room event with the in-progress state and new test to all users in the room', async () => {
+	it('emits a change room event with the in-progress state, new test, and race ID to all users in the room', async () => {
 		const { room } = init()
 		const { inSpy, emitSpy } = ioSpies()
 
@@ -82,7 +89,9 @@ describe('setRoomToInProgress', () => {
 		expect(inSpy).toHaveBeenCalledWith(room.id)
 		expect(emitSpy).toHaveBeenCalledWith('change-room-data', {
 			state: 'in-progress',
-			test: expect.any(String)
+			test: expect.any(String),
+			// @ts-expect-error doesn't need an argument since this is mocked
+			raceId: (await createRace()).data.id
 		})
 	})
 
@@ -115,5 +124,241 @@ describe('setRoomToInProgress', () => {
 			state: 'in-progress',
 			score: INITIAL_USER_SCORE
 		})
+	})
+
+	it('creates a race in the database', async () => {
+		const { room } = init()
+		await setRoomToInProgress(room)
+		expect(createRace).toHaveBeenCalledWith(
+			expect.objectContaining({
+				...room.settings
+			})
+		)
+	})
+})
+
+describe('saveScoresToDatabase', () => {
+	const user1Score = {
+		netWPM: 150,
+		accuracy: 1,
+		failed: true
+	}
+	const user2Score = {
+		netWPM: 120,
+		accuracy: 0.95,
+		failed: false
+	}
+	const user3Score = {
+		netWPM: 100,
+		accuracy: 0.97,
+		failed: false
+	}
+	const user4Score = {
+		netWPM: 90,
+		accuracy: 0.99,
+		failed: false
+	}
+	const raceId = 1
+
+	function init() {
+		const spy = jest
+			.spyOn(databaseScoreUtils, 'createScores')
+			.mockReturnValue(Promise.resolve({ data: null, error: null }))
+		const { room } = createRoomForTesting(
+			mockUser({ userId: 'user1', socketId: 'userA' }),
+			mockSocket('userA')
+		).value!
+		state.updateRoom(room.id, { raceId })
+		state.updateUser('userA', {
+			lastScore: user1Score
+		})
+		state.addUserToRoom(
+			room.id,
+			mockUser({
+				userId: 'user2',
+				socketId: 'userB',
+				lastScore: user2Score
+			})
+		)
+		state.addUserToRoom(
+			room.id,
+			mockUser({
+				userId: 'user3',
+				socketId: 'userC',
+				lastScore: user3Score
+			})
+		)
+		state.addUserToRoom(
+			room.id,
+			mockUser({
+				socketId: 'userD',
+				lastScore: user4Score
+			})
+		)
+		return { room, spy }
+	}
+
+	it('creates scores with -1 accuracy and WPM, false isWinner, and failed=true for users that failed the test', async () => {
+		const { room, spy } = init()
+		await saveScoresToDatabase(room.id)
+
+		expect(spy).toHaveBeenCalledWith(
+			expect.arrayContaining([
+				expect.objectContaining({
+					accuracy: -1,
+					netWPM: -1,
+					failed: true,
+					isWinner: false,
+					raceId,
+					userId: 'user1'
+				})
+			])
+		)
+	})
+
+	it('creates scores with the correct data when not failed', async () => {
+		const { room, spy } = init()
+		await saveScoresToDatabase(room.id)
+
+		expect(spy).toHaveBeenCalledWith(
+			expect.arrayContaining([
+				expect.objectContaining({
+					accuracy: user2Score.accuracy,
+					netWPM: user2Score.netWPM,
+					failed: false,
+					raceId,
+					userId: 'user2'
+				}),
+				expect.objectContaining({
+					accuracy: user3Score.accuracy,
+					netWPM: user3Score.netWPM,
+					failed: false,
+					raceId,
+					userId: 'user3'
+				})
+			])
+		)
+	})
+
+	it('does not create scores for users that do not have a userId', async () => {
+		const { room, spy } = init()
+		await saveScoresToDatabase(room.id)
+
+		expect(spy).not.toHaveBeenCalledWith(
+			expect.arrayContaining([
+				expect.objectContaining({
+					userId: 'user4'
+				})
+			])
+		)
+	})
+
+	it('sets the correct winner', async () => {
+		const { room, spy } = init()
+		await saveScoresToDatabase(room.id)
+
+		expect(spy).toHaveBeenCalledWith(
+			expect.arrayContaining([
+				expect.objectContaining({
+					isWinner: true,
+					userId: 'user2'
+				})
+			])
+		)
+	})
+
+	it('sets isWinner to false if the user fails and is the only use in the room', async () => {
+		const spy = jest
+			.spyOn(databaseScoreUtils, 'createScores')
+			.mockReturnValue(Promise.resolve({ data: null, error: null }))
+		const { room } = createRoomForTesting(
+			mockUser({ userId: 'user1', socketId: 'userA' }),
+			mockSocket('userA')
+		).value!
+
+		state.updateRoom(room.id, { raceId })
+		state.updateUser('userA', {
+			lastScore: user1Score
+		})
+
+		await saveScoresToDatabase(room.id)
+
+		expect(spy).toHaveBeenCalledWith(
+			expect.arrayContaining([
+				expect.objectContaining({
+					isWinner: false,
+					failed: true,
+					userId: 'user1'
+				})
+			])
+		)
+	})
+
+	it('emits a database-update event to every logged-in user with their new data', async () => {
+		const createScoresReturn = {
+			data: [
+				{ count: 2 },
+				{
+					id: 'user1',
+					username: 'user1',
+					cursorColor: 'gray',
+					points: 100,
+					image: null,
+					email: '',
+					emailVerified: null,
+					name: null,
+					createdAt: new Date(),
+					updatedAt: new Date()
+				},
+				{
+					id: 'user2',
+					username: 'user2',
+					cursorColor: 'gray',
+					points: 100,
+					image: null,
+					email: '',
+					emailVerified: null,
+					name: null,
+					createdAt: new Date(),
+					updatedAt: new Date()
+				}
+			] as NonNullable<Awaited<ReturnType<typeof databaseScoreUtils.createScores>>['data']>,
+			error: null
+		}
+
+		jest
+			.spyOn(databaseScoreUtils, 'createScores')
+			.mockReturnValue(Promise.resolve(createScoresReturn))
+		const { inSpy, emitSpy } = ioSpies()
+
+		const user1 = mockUser({
+			socketId: 'user1',
+			userId: createScoresReturn.data[1]!.id,
+			lastScore: {
+				failed: false,
+				netWPM: 100,
+				accuracy: 1
+			}
+		})
+		const user2 = mockUser({
+			socketId: 'user2',
+			userId: createScoresReturn.data[2]!.id,
+			lastScore: {
+				failed: false,
+				netWPM: 100,
+				accuracy: 1
+			}
+		})
+		const { room } = createRoomForTesting(user1, mockSocket(user1.socketId)).value!
+		state.updateUser(user1.socketId, user1)
+		state.addUserToRoom(room!.id, user2)
+
+		await saveScoresToDatabase(room!.id)
+
+		// technically not testing that the in and emit go together but this is better than nothing
+		expect(inSpy).toHaveBeenCalledWith('user1')
+		expect(inSpy).toHaveBeenCalledWith('user2')
+		expect(emitSpy).toHaveBeenCalledWith('database-update', createScoresReturn.data[1])
+		expect(emitSpy).toHaveBeenCalledWith('database-update', createScoresReturn.data[2])
 	})
 })
