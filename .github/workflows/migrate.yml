@@ -1,14 +1,11 @@
-# On merged pull requests to main, run prisma migration
+# On pushes to main (includes pull request merges), run prisma migration
 on:
+  # Allow manually running
   workflow_dispatch:
-  pull_request:
-    branches: [ "main" ]
-    types:
-      - closed
+  push:
 
 jobs:
-  build:
-    if: github.event.pull_request.merged == true
+  migrate:
     runs-on: ubuntu-latest
 
     steps:
