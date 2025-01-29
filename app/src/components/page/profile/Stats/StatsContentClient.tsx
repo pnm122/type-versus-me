@@ -50,7 +50,7 @@ const StatsContentClient = memo(
 									<CountUp
 										start={0}
 										end={Math.round(stats[key as keyof typeof stats])}
-										duration={1}
+										duration={2}
 										formattingFn={(n) =>
 											`${formatNumber(n, true)}${['maxWPM', 'avgWPM'].includes(key) ? 'wpm' : ''}`
 										}
