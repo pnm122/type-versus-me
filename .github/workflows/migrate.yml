@@ -5,6 +5,13 @@ on:
   push:
 
 jobs:
+  create-env:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Create .env
+    - run: |
+          touch .env
+          echo DATABASE_URL=${{ secrets.DATABASE_URL }} >> .env
   migrate:
     runs-on: ubuntu-latest
 
