@@ -4,7 +4,6 @@ import { INITIAL_USER_SCORE, INITIAL_USER_STATE, MAX_USERS_PER_ROOM } from '$sha
 import state from '@/global/state'
 import CustomSocket from '@/types/CustomSocket'
 import { check, isValidEventAndPayload } from '@/utils/eventUtils'
-import { generateColorFromPreference } from '$shared/utils/generateColor'
 import io from '@/global/server'
 
 export default function JoinRoom(
@@ -48,11 +47,8 @@ export default function JoinRoom(
 		return
 	}
 
-	const takenColors = state.getRoom(roomId)!.users.map((u) => u.color)
-
 	const userToAdd: User = {
 		...user,
-		color: generateColorFromPreference(user.color, takenColors),
 		score: INITIAL_USER_SCORE,
 		state: INITIAL_USER_STATE
 	}
