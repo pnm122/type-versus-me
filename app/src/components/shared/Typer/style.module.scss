@@ -2,7 +2,7 @@
 
 .typer {
 	--_typer-correct-letter-color: var(--typer-correct-letter-color, var(--correct));
-	--_typer-wrong-letter-color: var(--typer-wrong-letter-color, var(--negative));
+	--_typer-wrong-color: var(--typer-wrong-color, var(--negative));
 	--_typer-extra-letter-color: var(--typer-extra-letter-color, var(--extra));
 	--_typer-untyped-letter-color: var(--typer-untyped-letter-color, var(--untyped));
 	--_typer-cursor-color: var(--typer-cursor-color, var(--cursor-blue));
@@ -43,7 +43,9 @@
 		word-wrap: break-word;
 
 		&--incorrect {
-			text-decoration: var(--_typer-wrong-word-decoration);
+			// Styles must be separated or they get compiled to a format that doesn't work on Safari
+			text-decoration-line: underline;
+			text-decoration-color: var(--_typer-wrong-color);
 		}
 
 		.untyped {
