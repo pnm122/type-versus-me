@@ -251,26 +251,15 @@ describe('JoinRoom', () => {
 		})
 	})
 
-	it('gives the user a color that is not taken', () => {
-		const { room, user } = initRoom('userA')
+	it('allows two users to have the same color', () => {
+		const { room } = createRoomForTesting(mockUser({ color: 'red' })).value!
 
-		const callback = jest.fn()
+		JoinRoom(
+			mockSocket('user2'),
+			{ roomId: room.id, user: mockUser({ socketId: 'user2', color: 'red' }) },
+			() => {}
+		)
 
-		JoinRoom(secondUserSocket(), { roomId: room.id, user: secondUser() }, callback)
-
-		expect(callback.mock.lastCall[0]).toMatchObject({
-			value: {
-				user: {
-					socketId: 'userB'
-				}
-			}
-		})
-		expect(callback.mock.lastCall[0]).not.toMatchObject({
-			value: {
-				user: {
-					color: user.color
-				}
-			}
-		})
+		expect(state.getRoom(room.id)?.users.every((u) => u.color === 'red')).toBeTruthy()
 	})
 })

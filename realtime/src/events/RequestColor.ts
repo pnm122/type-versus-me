@@ -25,11 +25,6 @@ export default function RequestColor(
 		return
 	}
 
-	const colorTaken = !!room!.users.find((u) => u.color === color)
-	if (check(colorTaken, 'color-taken', callback)) {
-		return
-	}
-
 	state.updateUser(socketId, { color })
 	io.in(room!.id).emit('change-user-data', { socketId, color })
 

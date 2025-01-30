@@ -6,12 +6,7 @@ type Payload = Pick<User, 'socketId' | 'color'>
 type Callback = (
 	value: Return<
 		Pick<User, 'color'>,
-		| 'missing-argument'
-		| 'invalid-user-id'
-		| 'invalid-color'
-		| 'invalid-color'
-		| 'color-taken'
-		| 'user-not-in-room'
+		'missing-argument' | 'invalid-user-id' | 'invalid-color' | 'user-not-in-room'
 	>
 ) => void
 
