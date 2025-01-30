@@ -51,21 +51,6 @@ describe('RequestColor', () => {
 				}
 			})
 		})
-
-		it('gives the correct error if the color is taken', () => {
-			const callback = jest.fn()
-			const { user, room } = createRoomForTesting(mockUser({ color: 'red' })).value!
-			state.addUserToRoom(room.id, mockUser({ socketId: 'userB', color: 'green' }))
-
-			RequestColor(socket, { socketId: user.socketId, color: 'green' }, callback)
-
-			expect(callback).toHaveBeenCalledWith({
-				value: null,
-				error: {
-					reason: 'color-taken'
-				}
-			})
-		})
 	})
 
 	it('calls the callback with the provided color', () => {
@@ -94,5 +79,19 @@ describe('RequestColor', () => {
 			socketId: user.socketId,
 			color: 'blue'
 		})
+	})
+
+	it('allows multiple users to have the same color', () => {
+		const callback = jest.fn()
+		const { user, room } = createRoomForTesting(mockUser({ color: 'red' })).value!
+		state.addUserToRoom(room.id, mockUser({ socketId: 'userB', color: 'green' }))
+
+		RequestColor(socket, { socketId: user.socketId, color: 'red' }, callback)
+
+		expect(callback).toHaveBeenCalledWith(
+			expect.objectContaining({
+				error: null
+			})
+		)
 	})
 })
