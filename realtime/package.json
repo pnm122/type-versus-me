@@ -10,7 +10,8 @@
     "test:watch": "jest --watch",
     "coverage": "jest --coverage",
     "lint": "eslint .",
-    "generate": "cd .. && npm run prisma:generate"
+    "generate": "cd .. && npm run prisma:generate",
+    "setup": "cd .. && npm ci"
   },
   "author": "Pierce Martin <pnmartin02@gmail.com> (https://github.com/pnm122)",
   "license": "MIT",
