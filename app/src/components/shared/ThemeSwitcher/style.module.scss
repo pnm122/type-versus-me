@@ -1,25 +1,49 @@
 @use '@/scss/fonts' as *;
 
 .switcher {
-	display: flex;
-	height: 32px;
+	padding: 0;
+	margin: 0;
+	border: none;
+	width: 100%;
+}
+
+.themes {
 	position: relative;
+	// Flexbox doesn't work on fieldset as of January 2025, so I need an extra div here :(
+	display: flex;
+
+	&:has(.theme__radio:focus-visible) &__selected-box {
+		outline: 2px solid var(--primary);
+		outline-offset: 2px;
+	}
 
 	.theme {
-		@include font-heading(14);
 		position: relative;
-		display: flex;
-		align-items: center;
-		gap: 6px;
-		height: 100%;
+		height: 40px;
+		flex: 1;
+		display: grid;
+		place-items: center;
 		padding-inline: 8px;
 		line-height: 1;
 		z-index: var(--z-surface);
 		color: var(--placeholder);
+		cursor: pointer;
+		transition: color 0.25s var(--timing);
 
-		&--selected {
+		&:has(.theme__radio:checked) {
 			// Only show selected state when the background has been set
 			color: var(--black);
+		}
+
+		&__radio {
+			display: block;
+			clip: rect(0 0 0 0);
+			clip-path: inset(50%);
+			height: 1px;
+			width: 1px;
+			overflow: hidden;
+			position: absolute;
+			white-space: nowrap;
 		}
 	}
 }
