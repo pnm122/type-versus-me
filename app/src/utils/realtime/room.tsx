@@ -172,7 +172,7 @@ export async function getRoom(
 export async function changeRoomSettings(
 	settings: ChangeRoomSettingsPayload['settings'],
 	{ user, room }: Pick<State, 'user' | 'room'>,
-	{ socket, notifs }: Context
+	{ socket, notifs }: Pick<Context, 'socket' | 'notifs'>
 ) {
 	if (!checkSocket(socket.value, notifs) || !user || !room) {
 		return {
