@@ -2,7 +2,7 @@
 
 import { Room, RoomSettings } from '$shared/types/Room'
 import { User } from '$shared/types/User'
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useRef, useState } from 'react'
 import { useSocket } from './Socket'
 import { ServerJoinRoomPayload } from '$shared/types/events/server/JoinRoom'
 import { ServerLeaveRoomPayload } from '$shared/types/events/server/LeaveRoom'
@@ -24,7 +24,13 @@ import { CreateRoomCallback } from '$shared/types/events/client/CreateRoom'
 import { ClientJoinRoomCallback } from '$shared/types/events/client/JoinRoom'
 import { useParams, usePathname } from 'next/navigation'
 import { DatabaseUpdatePayload } from '$shared/types/events/server/DatabaseUpdate'
-import { useUserNotifications } from './UserNotifications'
+import { NotificationProps } from '@/components/base/Notification/Notification'
+import NewUnlocksNotificationContent from '@/components/shared/NewUnlocksNotificationContent/NewUnlocksNotificationContent'
+import { UNLOCKS } from '@/utils/unlocks'
+import transition from '@/utils/transition'
+import { getLevel } from '@/utils/level'
+import PointsUpdateNotificationContent from '@/components/shared/PointsUpdateNotificationContent/PointsUpdateNotificationContent'
+import NotificationStack from '@/components/base/NotificationStack/NotificationStack'
 
 export interface RoomContextType {
 	room: Room | null
@@ -45,17 +51,20 @@ const RoomContext = createContext<RoomContextType>({
 })
 
 export function RoomProvider({ children }: React.PropsWithChildren) {
+	const MAX_NOTIFICATIONS = 4 as const
+
 	const [room, setRoom] = useState<Room | null>(null)
 	const [user, setUser] = useState<User | null>(null)
+	const [userNotifs, setUserNotifs] = useState<NotificationProps[]>([])
 	const socket = useSocket()
 	const notifs = useNotification()
 	const auth = useAuthContext()
 	const pathname = usePathname()
 	const params = useParams()
-	const userNotifs = useUserNotifications()
+	const counter = useRef(0)
 
 	const state = { room, setRoom, user, setUser }
-	const context = { socket, notifs, auth, userNotifs }
+	const context = { socket, notifs, auth }
 
 	useEffect(() => {
 		if (socket.state !== 'valid') return
@@ -66,7 +75,8 @@ export function RoomProvider({ children }: React.PropsWithChildren) {
 		const handleChangeAllUserData = (res: ChangeAllUserDataPayload) =>
 			onChangeAllUserData(res, state)
 		const handleChangeUserData = (res: ChangeUserDataPayload) => onChangeUserData(res, state)
-		const handleDatabaseUpdate = (res: DatabaseUpdatePayload) => onDatabaseUpdate(res, context)
+		const handleDatabaseUpdate = (res: DatabaseUpdatePayload) =>
+			onDatabaseUpdate(res, pushPointsUpdateNotification, context)
 		const handleDisconnect = () => setRoom(null)
 
 		socket.value.on('join-room', handleJoinRoom)
@@ -96,6 +106,48 @@ export function RoomProvider({ children }: React.PropsWithChildren) {
 		}
 	}, [pathname])
 
+	function updateNotifs(x: React.SetStateAction<NotificationProps[]>) {
+		transition(() => setUserNotifs(x))
+	}
+
+	function onClose(id: string) {
+		updateNotifs((n) => n.filter((notif) => notif.id !== id))
+	}
+
+	function pushPointsUpdateNotification(prevPoints: number, nextPoints: number) {
+		const prevLevel = getLevel(prevPoints)
+		const nextLevel = getLevel(nextPoints)
+		const earnedUnlocks = Object.entries(UNLOCKS).filter((u) => {
+			const levelToUnlock = parseInt(u[0])
+			return levelToUnlock <= nextLevel && levelToUnlock > prevLevel
+		})
+
+		updateNotifs((n) =>
+			[
+				{
+					id: `user-notif-${counter.current++}`,
+					onClose,
+					children: <PointsUpdateNotificationContent {...{ prevPoints, nextPoints }} />,
+					closeDelay: 15000,
+					closeDirection: 'down'
+				} as const,
+				...(earnedUnlocks.length === 0
+					? []
+					: ([
+							{
+								id: `user-notif-${counter.current++}`,
+								onClose,
+								children: <NewUnlocksNotificationContent unlocks={earnedUnlocks} />,
+								closeDelay: 14750,
+								closeDirection: 'down',
+								icon: 'alert'
+							}
+						] as const)),
+				...n
+			].slice(0, MAX_NOTIFICATIONS)
+		)
+	}
+
 	function createRoomExternal(settings: RoomSettings) {
 		return createRoom(settings, auth.user, state, context)
 	}
@@ -116,6 +168,7 @@ export function RoomProvider({ children }: React.PropsWithChildren) {
 		<RoomContext.Provider
 			value={{ user, room, createRoom: createRoomExternal, joinRoom: joinRoomExternal }}
 		>
+			<NotificationStack position="bottom-right" stack={userNotifs} />
 			{children}
 		</RoomContext.Provider>
 	)

@@ -12,25 +12,22 @@ import generateUsername from '$shared/utils/generateUsername'
 import CursorSelector from '@/components/shared/CursorSelector/CursorSelector'
 import ButtonIcon from '@/components/base/Button/ButtonIcon'
 import PixelarticonsSave from '~icons/pixelarticons/save'
-import { updateUser as updateUserInDatabase } from '$shared/utils/database/user'
-import { User } from '@prisma/client'
 import { useNotification } from '@/context/Notification'
 import { useAuthContext } from '@/context/Auth'
 import { useRoom } from '@/context/Room'
-import { updateUser as updateUserInSocket } from '@/utils/realtime/user'
 import { useSocket } from '@/context/Socket'
+import setUserSettings from '@/utils/setUserSettings'
 
 interface Props {
 	open: boolean
 	onClose: () => void
-	user: User
 }
 
-export default function UserSettingsPopover({ open, onClose, user }: Props) {
-	const [username, setUsername] = useState(user.username)
-	const [color, setColor] = useState(user.cursorColor as CursorColor)
-	const { reload } = useAuthContext()
-	const { room, user: socketUser } = useRoom()
+export default function UserSettingsPopover({ open, onClose }: Props) {
+	const auth = useAuthContext()
+	const [username, setUsername] = useState(auth.user?.username ?? '')
+	const [color, setColor] = useState((auth.user?.cursorColor as CursorColor) ?? 'gray')
+	const room = useRoom()
 	const inputRef = useRef<HTMLInputElement>(null)
 	const socket = useSocket()
 	const notifs = useNotification()
@@ -38,8 +35,8 @@ export default function UserSettingsPopover({ open, onClose, user }: Props) {
 
 	useEffect(() => {
 		if (open) {
-			setUsername(user.username)
-			setColor(user.cursorColor as CursorColor)
+			setUsername(auth.user?.username ?? '')
+			setColor((auth.user?.cursorColor as CursorColor) ?? 'gray')
 		}
 	}, [open])
 
@@ -55,36 +52,7 @@ export default function UserSettingsPopover({ open, onClose, user }: Props) {
 				className={styles['form']}
 				action={async () => {
 					startTransition(async () => {
-						const { error } = await updateUserInDatabase(user.id, { username, cursorColor: color })
-
-						if (error) {
-							notifs.push({
-								style: 'error',
-								text: `There was an error updating your settings. Please refresh and try again. (Error code: "${error.code}")`
-							})
-						} else {
-							// Reload user data so it's synced across the app
-							const newUser = await reload()
-							// Update settings in room if applicable
-							if (room && socketUser && newUser) {
-								if (newUser.cursorColor !== socketUser.color) {
-									await updateUserInSocket(
-										'color',
-										newUser.cursorColor as CursorColor,
-										{ user: socketUser },
-										{ socket, notifs }
-									)
-								}
-								if (newUser.username !== socketUser.username) {
-									await updateUserInSocket(
-										'username',
-										newUser.username,
-										{ user: socketUser },
-										{ socket, notifs }
-									)
-								}
-							}
-						}
+						await setUserSettings({ color, username }, { auth, room, socket, notifs })
 					})
 				}}
 			>
@@ -114,7 +82,7 @@ export default function UserSettingsPopover({ open, onClose, user }: Props) {
 					<CursorSelector
 						selected={color}
 						onChange={setColor}
-						points={user.points}
+						points={auth.user?.points ?? 0}
 						isOnSurface={true}
 					/>
 				</div>

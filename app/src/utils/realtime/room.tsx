@@ -1,7 +1,6 @@
 import { CreateRoomCallback } from '$shared/types/events/client/CreateRoom'
 import { ServerJoinRoomPayload } from '$shared/types/events/server/JoinRoom'
 import { ServerLeaveRoomPayload } from '$shared/types/events/server/LeaveRoom'
-import { NotificationContextType } from '@/context/Notification'
 import checkSocket from '../checkSocket'
 import { errorNotification } from '../errorNotifications'
 import { Room, RoomSettings } from '$shared/types/Room'
@@ -12,16 +11,11 @@ import { LeaveRoomCallback } from '$shared/types/events/client/LeaveRoom'
 import { ChangeRoomDataPayload } from '$shared/types/events/server/ChangeRoomData'
 import { GetRoomCallback } from '$shared/types/events/client/GetRoom'
 import { ChangeRoomSettingsPayload } from '$shared/types/events/client/ChangeRoomSettings'
-import { SocketContextType } from '@/context/Socket'
 import { User } from '$shared/types/User'
 import { User as DatabaseUser } from '@prisma/client'
 import { CursorColor } from '$shared/types/Cursor'
 import generateUsername from '$shared/utils/generateUsername'
-
-interface Context {
-	notifs: NotificationContextType
-	socket: SocketContextType
-}
+import { Context } from '@/types/Context'
 
 interface State {
 	room: Room | null
@@ -73,7 +67,7 @@ export async function createRoom(
 	settings: RoomSettings,
 	user: DatabaseUser | null,
 	{ setUser, setRoom }: Pick<State, 'setUser' | 'setRoom'>,
-	{ socket, notifs }: Context
+	{ socket, notifs }: Pick<Context, 'socket' | 'notifs'>
 ): Promise<Parameters<CreateRoomCallback>[0]> {
 	if (!checkSocket(socket.value, notifs)) {
 		return {
@@ -107,7 +101,7 @@ export async function joinRoom(
 	id: Room['id'],
 	user: DatabaseUser | null,
 	{ setUser, setRoom }: Pick<State, 'setUser' | 'setRoom'>,
-	{ socket, notifs }: Context
+	{ socket, notifs }: Pick<Context, 'socket' | 'notifs'>
 ): Promise<Parameters<ClientJoinRoomCallback>[0]> {
 	if (!checkSocket(socket.value, notifs)) {
 		return {
@@ -140,7 +134,9 @@ export async function joinRoom(
 export async function leaveRoom({
 	socket,
 	notifs
-}: Context): Promise<Return<null, ErrorsOf<LeaveRoomCallback> | 'missing-argument'>> {
+}: Pick<Context, 'socket' | 'notifs'>): Promise<
+	Return<null, ErrorsOf<LeaveRoomCallback> | 'missing-argument'>
+> {
 	if (!checkSocket(socket.value, notifs)) {
 		return {
 			value: null,
