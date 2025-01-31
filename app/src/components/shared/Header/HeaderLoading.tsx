@@ -7,7 +7,7 @@ export default function HeaderLoading() {
 		<header className={styles['header']}>
 			<div className={styles['header__left']}>
 				<Link href="/" className={styles['home']}>
-					taptaptap.live
+					typevs.me
 				</Link>
 				<Skeleton width="72px" height="18px" />
 			</div>

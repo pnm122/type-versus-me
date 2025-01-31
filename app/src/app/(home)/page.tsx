@@ -47,10 +47,10 @@ export default function Home() {
 				<form onSubmit={onJoinRoomSubmit} className={styles['main']}>
 					<h1 className={styles['main__title']}>
 						{loading ? (
-							'taptaptap.live'
+							'typevs.me'
 						) : (
 							<TyperPreview
-								text="taptaptap.live"
+								text="typevs.me"
 								cursorColor={user ? (user.cursorColor as CursorColor) : 'gray'}
 							/>
 						)}
