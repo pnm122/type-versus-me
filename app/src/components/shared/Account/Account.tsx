@@ -121,11 +121,7 @@ export default function Account() {
 				</Dropdown>
 			</div>
 			{session && user && (
-				<UserSettingsPopover
-					open={settingsOpen}
-					onClose={() => setSettingsOpen(false)}
-					user={user}
-				/>
+				<UserSettingsPopover open={settingsOpen} onClose={() => setSettingsOpen(false)} />
 			)}
 		</>
 	)

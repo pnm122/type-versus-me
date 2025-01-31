@@ -4,22 +4,12 @@ import { ChangeUserStateCallback } from '$shared/types/events/client/ChangeUserS
 import { RequestColorCallback } from '$shared/types/events/client/RequestColor'
 import { User } from '$shared/types/User'
 import checkSocket from '../checkSocket'
-import { SocketContextType } from '@/context/Socket'
-import { NotificationContextType } from '@/context/Notification'
 import { errorNotification } from '../errorNotifications'
 import { ChangeAllUserDataPayload } from '$shared/types/events/server/ChangeAllUserData'
 import { ChangeUserDataPayload } from '$shared/types/events/server/ChangeUserData'
 import { Room } from '$shared/types/Room'
 import { DatabaseUpdatePayload } from '$shared/types/events/server/DatabaseUpdate'
-import { Auth } from '@/context/Auth'
-import { UserNotificationsContextType } from '@/context/UserNotifications'
-
-interface Context {
-	notifs: NotificationContextType
-	socket: SocketContextType
-	auth: Auth
-	userNotifs: UserNotificationsContextType
-}
+import { Context } from '@/types/Context'
 
 interface State {
 	room: Room | null
@@ -138,8 +128,9 @@ export async function onChangeUserData(
 
 export async function onDatabaseUpdate(
 	data: DatabaseUpdatePayload,
-	{ auth, userNotifs }: Pick<Context, 'auth' | 'userNotifs'>
+	pushPointsUpdateNotification: (prevPoints: number, nextPoints: number) => void,
+	{ auth }: Pick<Context, 'auth'>
 ) {
-	userNotifs.pushPointsUpdateNotification(auth.user!.points, data.points)
+	pushPointsUpdateNotification(auth.user!.points, data.points)
 	auth.reload(data)
 }

@@ -1,8 +1,15 @@
+@use '@/scss/fonts' as *;
+
 .unlocks {
 	display: flex;
 	flex-direction: column;
-	gap: 8px;
-	color: var(--background);
+	gap: 12px;
+
+	&__text {
+		.text {
+			@include font-body(14);
+		}
+	}
 
 	&__items {
 		display: flex;
@@ -16,8 +23,6 @@
 	background: var(--cursor-background);
 	width: 64px;
 	height: 64px;
-	display: grid;
-	place-items: center;
 	// When the border color is a gradient, this will be used
 	border-image: var(--cursor-border) 1;
 	// When the border color is not a gradient, this will be used
@@ -32,6 +37,45 @@
 		z-index: -1;
 		inset: 0;
 		background: var(--cursor-background);
+	}
+
+	&__button {
+		width: 100% !important;
+		height: 100% !important;
+		display: grid !important;
+		place-items: center !important;
+		position: relative;
+
+		.try {
+			@include font-heading(14);
+			background: var(--cursor-background);
+			color: var(--heading);
+			position: absolute;
+			z-index: var(--z-base);
+			inset: 0;
+			display: grid;
+			place-items: center;
+			visibility: hidden;
+		}
+
+		&:not(:disabled):hover .try {
+			visibility: visible;
+		}
+
+		.selected {
+			position: absolute;
+			z-index: var(--z-above);
+			inset: 0;
+			display: grid;
+			place-items: center;
+			background: var(--cursor-border);
+
+			&__check {
+				color: var(--background);
+				width: 48px;
+				height: 48px;
+			}
+		}
 	}
 }
 
