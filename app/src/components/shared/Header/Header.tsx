@@ -39,7 +39,7 @@ export default function Header() {
 		<header className={styles['header']}>
 			<div className={styles['header__left']}>
 				<Link href="/" className={styles['home']}>
-					taptaptap.live
+					typevs.me
 				</Link>
 				<Pill
 					text={`${mounted ? formatNumber(activeUserCount, true) : 1} online`}
