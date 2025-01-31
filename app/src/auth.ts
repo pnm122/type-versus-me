@@ -10,7 +10,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 		...PrismaAdapter(prisma),
 		// Override creating a user to initialize the username field to a random username
 		createUser(user) {
-			return prisma.user.create({ data: { ...user, username: generateUsername() } })
+			try {
+				return prisma.user.create({ data: { ...user, username: generateUsername() } })
+			} catch {
+				// Possible that the readable generated username already exists, generate a very random name
+				return prisma.user.create({ data: { ...user, username: generateUsername(true) } })
+			}
 		}
 	}
 })

@@ -151,6 +151,11 @@ const NOUNS = [
 	'Zebra'
 ] as const
 
-export default function generateUsername() {
+export default function generateUsername(fullRandom = false) {
+	if (fullRandom) {
+		const chars = '_0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+		return Array.from(Array(16), () => chars[Math.floor(Math.random() * chars.length)]).join('')
+	}
+
 	return `${ADJECTIVES[Math.round(Math.random() * (ADJECTIVES.length - 1))]}${NOUNS[Math.round(Math.random() * (NOUNS.length - 1))]}`
 }
