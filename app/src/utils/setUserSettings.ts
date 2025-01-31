@@ -20,10 +20,21 @@ export default async function setUserSettings(
 		})
 
 		if (error) {
-			notifs.push({
-				style: 'error',
-				text: `There was an error updating your settings. Please refresh and try again. (Error code: "${error.code}")`
-			})
+			// Prisma isn't throwing an error code for some reason, but it gives a message
+			// Could also find() before, but I don't want to do additional queries
+			if (error.message.match(/[Uu]nique/)) {
+				notifs.push({
+					style: 'error',
+					text: `The username "${username}" is already taken. Please choose a different name.`
+				})
+			} else {
+				notifs.push({
+					style: 'error',
+					text: `There was an error updating your settings. Please refresh and try again. (Error code: "${error.code}")`
+				})
+			}
+
+			return error
 		}
 	}
 
@@ -32,20 +43,24 @@ export default async function setUserSettings(
 	// Update settings in room if applicable
 	if (room && socketUser && newUser) {
 		if (newUser.cursorColor !== socketUser.color) {
-			await updateUserInSocket(
+			const { error } = await updateUserInSocket(
 				'color',
 				newUser.cursorColor as CursorColor,
 				{ user: socketUser },
 				{ socket, notifs }
 			)
+
+			if (error) return error
 		}
 		if (newUser.username !== socketUser.username) {
-			await updateUserInSocket(
+			const error = await updateUserInSocket(
 				'username',
 				newUser.username,
 				{ user: socketUser },
 				{ socket, notifs }
 			)
+
+			if (error) return error
 		}
 	}
 }

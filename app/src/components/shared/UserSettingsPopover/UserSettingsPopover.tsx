@@ -40,19 +40,16 @@ export default function UserSettingsPopover({ open, onClose }: Props) {
 		}
 	}, [open])
 
-	useEffect(() => {
-		if (!isPending) {
-			onClose()
-		}
-	}, [isPending])
-
 	return (
 		<Popover open={open} focusOnOpenRef={inputRef} onBackdropClicked={onClose}>
 			<form
 				className={styles['form']}
 				action={async () => {
 					startTransition(async () => {
-						await setUserSettings({ color, username }, { auth, room, socket, notifs })
+						const error = await setUserSettings({ color, username }, { auth, room, socket, notifs })
+						if (error) return
+
+						onClose()
 					})
 				}}
 			>
