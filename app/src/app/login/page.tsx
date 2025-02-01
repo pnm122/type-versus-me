@@ -1,5 +1,6 @@
 import Login from '@/components/page/login/Login/Login'
 import { Metadata } from 'next'
+import { Suspense } from 'react'
 
 export const metadata: Metadata = {
 	title: 'Login',
@@ -7,5 +8,10 @@ export const metadata: Metadata = {
 }
 
 export default function Page() {
-	return <Login />
+	return (
+		// Need a suspense https://nextjs.org/docs/messages/missing-suspense-with-csr-bailout
+		<Suspense>
+			<Login />
+		</Suspense>
+	)
 }
