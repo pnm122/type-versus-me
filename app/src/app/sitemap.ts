@@ -2,7 +2,7 @@ import { getAllUserIds } from '$shared/utils/database/user'
 import { MetadataRoute } from 'next'
 
 // Revalidate every 24 hours
-export const revalidate = 60 * 60 * 24
+export const revalidate = 86400
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 	const { data: allUserIds } = await getAllUserIds()
