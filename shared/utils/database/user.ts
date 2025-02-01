@@ -31,6 +31,32 @@ export async function getUser(
 	}
 }
 
+export async function getAllUserIds(): Promise<{
+	data: string[] | null
+	error: Prisma.PrismaClientKnownRequestError | null
+}> {
+	try {
+		const res = await prisma.user.findMany({
+			select: {
+				id: true
+			}
+		})
+
+		return {
+			data: res.map(({ id }) => id),
+			error: null
+		}
+	} catch (error) {
+		if (error instanceof Prisma.PrismaClientKnownRequestError) {
+			return {
+				data: null,
+				error
+			}
+		}
+		return { data: null, error: null }
+	}
+}
+
 export async function getUserStats(
 	id: string,
 	filter: { category?: RoomSettings['category'][]; minWords?: number; maxWords?: number }
