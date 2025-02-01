@@ -34,6 +34,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 
 	return {
 		title: `${user.username}'s profile`,
+		description: `View ${user.username}'s typing stats and history.`,
 		openGraph: {
 			images: '/opengraph/profile.png',
 			title: 'Check out my typing stats on typevs.me!'
