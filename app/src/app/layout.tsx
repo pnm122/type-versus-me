@@ -9,8 +9,16 @@ import { SessionProvider } from 'next-auth/react'
 import { RoomProvider } from '@/context/Room'
 
 export const metadata: Metadata = {
-	title: 'Typing Race',
-	description: ''
+	title: {
+		default: 'typevs.me',
+		template: '%s | typevs.me'
+	},
+	description: 'Race your friends in head-to-head typing competitions!',
+	icons: ['/favicon.svg'],
+	openGraph: {
+		title: 'Race your friends in head-to-head typing competitions at typevs.me!',
+		images: '/opengraph/home.png'
+	}
 }
 
 export default function RootLayout({
