@@ -8,7 +8,11 @@ export async function generateMetadata(
 	const { roomId } = await props.params
 
 	return {
-		title: `Room ${roomId}`
+		title: `Room ${roomId}`,
+		openGraph: {
+			images: '/opengraph/room.png',
+			title: 'Race me in a typing competition on typevs.me!'
+		}
 	}
 }
 

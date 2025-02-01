@@ -33,7 +33,11 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 	}
 
 	return {
-		title: `${user.username}'s profile`
+		title: `${user.username}'s profile`,
+		openGraph: {
+			images: '/opengraph/profile.png',
+			title: 'Check out my typing stats on typevs.me!'
+		}
 	}
 }
 
