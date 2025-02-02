@@ -12,6 +12,7 @@ import useInterval from '@/hooks/useInterval'
 import { getInitialStats } from '@/utils/typer'
 import { TyperStats } from '@/types/Typer'
 import { useRoom } from '@/context/Room'
+import PixelarticonsAlert from '~icons/pixelarticons/alert'
 
 export default function Game({ ref }: { ref?: RefObject<HTMLDivElement | null> }) {
 	const [startTime, setStartTime] = useState(-1)
@@ -89,14 +90,22 @@ export default function Game({ ref }: { ref?: RefObject<HTMLDivElement | null> }
 
 	return (
 		<div className={styles['game']} ref={ref}>
-			<h1
+			<div
 				className={createClasses({
 					[styles['start-overlay']]: true,
 					[styles['start-overlay--visible']]: timeToStart > 0
 				})}
 			>
-				Game starting in {timeToStart}...
-			</h1>
+				<h1 className={styles['start-overlay__time-to-start']}>
+					Game starting in {timeToStart}...
+				</h1>
+				<div className={styles['reminder']}>
+					<PixelarticonsAlert className={styles['reminder__icon']} />
+					<p className={styles['reminder__text']}>
+						Reminder: you must fix all errors to finish the test!
+					</p>
+				</div>
+			</div>
 			<div className={styles['game__typer']}>
 				<Typer
 					text={room.test}
