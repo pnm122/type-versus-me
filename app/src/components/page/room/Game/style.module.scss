@@ -3,12 +3,22 @@
 .game {
 	display: flex;
 	flex-direction: column;
-	gap: 12px;
+	gap: 6px;
 	position: relative;
+
+	&__typer {
+		padding: 16px 16px 0;
+	}
 
 	&__info {
 		display: flex;
 		justify-content: space-between;
+		padding: 12px 16px;
+
+		&--error {
+			background-color: var(--negative-light);
+			color: var(--negative);
+		}
 
 		.stats {
 			display: flex;
@@ -18,11 +28,6 @@
 			&__typed,
 			&__errors-left {
 				@include font-body(14);
-			}
-
-			&__typed--error,
-			&__errors-left {
-				color: var(--negative);
 			}
 		}
 
@@ -43,6 +48,7 @@
 		color: var(--heading);
 		background-color: var(--surface);
 		display: none;
+		padding: 16px 16px 0;
 
 		&--visible {
 			display: block;

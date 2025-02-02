@@ -57,6 +57,7 @@
 	@include cursor-solid(blue, #0673ff, #c6e9ff);
 	@include cursor-solid(purple, #874dff, #e3deff);
 	@include cursor-solid(pink, #d600d0, #ffd2fe);
+	--negative-light: #fddad7;
 	--negative: #d50323;
 	--negative-contrast: #620000;
 	--positive: #02891b;
@@ -105,6 +106,7 @@
 	@include cursor-solid(blue, #5e9aff, #0a224a);
 	@include cursor-solid(purple, #a481ff, #271a46);
 	@include cursor-solid(pink, #e560de, #381236);
+	--negative-light: #4a1312;
 	--negative: #ff5e5a;
 	--negative-contrast: #feaaa3;
 	--positive: #2bca2b;
