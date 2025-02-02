@@ -13,7 +13,7 @@
 <p align="center">
   <a href="#key-features">Key Features</a> •
   <a href="#tech-stack">Tech Stack</a> •
-  <a href="#how-to-install">How to Install</a> •
+  <a href="#how-to-install-and-run">How to Install and Run</a> •
   <a href="#license">License</a>
 </p>
 
@@ -21,6 +21,7 @@
 
 - Realtime typing races
 - Configurable races (source of words, number of words, length)
+- System for creating, inviting users to, and joining rooms
 - Accounts that track all races played
 - Profile page with statistics
 - A points and levels system with unlockable items
@@ -57,7 +58,72 @@
 | Cloudflare | Domain, DDoS protection, security               |
 | Figma      | Mockups, design iterations, and system diagrams |
 
-## How to Install
+## How to Install and Run
+
+To clone and run this application, you'll need [Git](https://git-scm.com) and [Node.js](https://nodejs.org/en/download/) (which comes with [npm](http://npmjs.com)) installed on your computer. From your command line:
+
+### Installing the repository and dependencies
+
+```bash
+# Clone this repository
+git clone https://github.com/pnm122/type-versus-me
+
+# Go into the repository
+cd type-versus-me
+
+# Install dependencies (because of workspaces, there's no need to run this command in any subfolders)
+npm install
+```
+
+### Enabling authentication
+
+To enable authentication, you will need a Google OAuth 2.0 token and a Postgres database.
+
+- To set up Google OAuth, follow [these instructions](https://developers.google.com/identity/protocols/oauth2#basicsteps)
+- To set up a Postgres database locally, follow [these instructions](https://www.prisma.io/dataguide/postgresql/setting-up-a-local-postgresql-database)
+  - I also use [pgAdmin](https://www.pgadmin.org/) to facilitate interacting with the database, but this is optional.
+
+### `.env` Files
+
+In order to connect pieces of the system together without exposing API keys to GitHub or any deployments, I make use of .env files. This project has 3, with the following configurations:
+
+`/.env`:
+
+```sh
+DATABASE_URL=postgresql://[USER]:[PASSWORD]@[HOST]:[PORT]/[DATABASE]?schema=[SCHEMA] # i.e. DATABASE_URL=postgresql://pnm122:abc123@localhost:5432/typevsme?schema=public
+```
+
+`/app/.env`:
+
+```sh
+NEXT_PUBLIC_DEV_SOCKET_URL="http://localhost:5000" # the Socket.io server is hosted on port 5000 by default
+AUTH_SECRET=[SECRET] # a cryptographically secure random string of at least 32 characters (see https://authjs.dev/getting-started/deployment#auth_secret)
+AUTH_GOOGLE_ID=[GOOGLE_CLIENT_ID]
+AUTH_GOOGLE_SECRET=[GOOGLE_SECRET]
+```
+
+`/realtime/.env`:
+
+```sh
+MODE=development # [OPTIONAL] enables debug logs to the console about events being sent to/from the server
+```
+
+### Running the app
+
+After enabling authentication and setting up all `.env` files as shown, you're ready to run the app locally!
+
+```bash
+# Migrate and generate the Prisma client. This will sync the models described in the app with the structure of your database, as well as generate all the types you need for development.
+npm run prisma:migrate:dev
+
+# Run the Next.js app
+cd app
+npm run dev
+
+# Run the Socket.io server
+cd realtime
+npm run dev
+```
 
 ## License
 
