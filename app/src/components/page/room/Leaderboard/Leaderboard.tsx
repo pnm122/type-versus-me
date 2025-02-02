@@ -24,30 +24,32 @@ export default function Leaderboard() {
 				})}
 			>
 				<div className={styles['divider']} />
-				<button
-					className={styles['expand']}
-					aria-label="Show results"
-					aria-expanded={open}
-					aria-controls="leaderboard-results"
-					onClick={() => setOpen((o) => !o)}
-				>
-					<h1 className={styles['expand__title']}>Results</h1>
-					<PixelarticonsChevronUp className={styles['expand__icon']} />
-				</button>
-				<Collapsible open={open} openDirection="down" id="leaderboard-results">
-					<div className={styles['leaderboard-results-spacer']} />
-					<RaceLeaderboard
-						scores={usersWithLastScore.map((u) => ({
-							user: {
-								id: u.socketId,
-								username: u.username,
-								color: u.color
-							},
-							...u.lastScore!
-						}))}
-						currentUserId={user!.socketId}
-					/>
-				</Collapsible>
+				<div className={styles['leaderboard__content']}>
+					<button
+						className={styles['expand']}
+						aria-label="Show results"
+						aria-expanded={open}
+						aria-controls="leaderboard-results"
+						onClick={() => setOpen((o) => !o)}
+					>
+						<h1 className={styles['expand__title']}>Results</h1>
+						<PixelarticonsChevronUp className={styles['expand__icon']} />
+					</button>
+					<Collapsible open={open} openDirection="down" id="leaderboard-results">
+						<div className={styles['leaderboard-results-spacer']} />
+						<RaceLeaderboard
+							scores={usersWithLastScore.map((u) => ({
+								user: {
+									id: u.socketId,
+									username: u.username,
+									color: u.color
+								},
+								...u.lastScore!
+							}))}
+							currentUserId={user!.socketId}
+						/>
+					</Collapsible>
+				</div>
 			</div>
 		</Collapsible>
 	)

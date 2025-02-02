@@ -2,7 +2,6 @@
 
 .main {
 	background-color: var(--surface);
-	padding: 16px;
 	height: fit-content;
 
 	.top {
@@ -15,5 +14,6 @@
 	&__waiting-text {
 		@include font-body(32);
 		color: var(--placeholder);
+		padding: 16px 16px 0;
 	}
 }

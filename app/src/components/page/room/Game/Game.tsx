@@ -97,24 +97,26 @@ export default function Game({ ref }: { ref?: RefObject<HTMLDivElement | null> }
 			>
 				Game starting in {timeToStart}...
 			</h1>
-			<Typer
-				text={room.test}
-				disabled={finished || timeToStart > 0}
-				startTime={startTime}
-				onChange={onTyperChange}
-				cursors={otherCursors}
-				onFinish={onTyperFinish}
-				ref={typer}
-			/>
-			<div className={styles['game__info']}>
+			<div className={styles['game__typer']}>
+				<Typer
+					text={room.test}
+					disabled={finished || timeToStart > 0}
+					startTime={startTime}
+					onChange={onTyperChange}
+					cursors={otherCursors}
+					onFinish={onTyperFinish}
+					ref={typer}
+				/>
+			</div>
+			<div
+				className={createClasses({
+					[styles['game__info']]: true,
+					[styles['game__info--error']]: stats.errorsLeft > 0
+				})}
+			>
 				<div className={styles['stats']}>
 					<p className={styles['stats__wpm']}>{Math.round(user?.score?.netWPM ?? 0)}wpm</p>
-					<p
-						className={createClasses({
-							[styles['stats__typed']]: true,
-							[styles['stats__typed--error']]: stats.errorsLeft > 0
-						})}
-					>
+					<p className={styles['stats__typed']}>
 						{stats.correctLeft}/{room.test.length}
 					</p>
 					{stats.errorsLeft > 0 && (

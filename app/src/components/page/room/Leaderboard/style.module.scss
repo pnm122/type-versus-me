@@ -2,8 +2,12 @@
 @use '@/scss/breakpoints' as *;
 
 .leaderboard {
+	padding: 16px;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+
 	.divider {
-		margin-block: 16px;
 		height: 2px;
 		background-color: var(--border);
 	}
