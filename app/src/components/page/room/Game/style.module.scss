@@ -41,17 +41,32 @@
 	}
 
 	.start-overlay {
-		@include font-body(32);
 		position: absolute;
 		z-index: var(--z-overlay);
 		inset: 0;
-		color: var(--heading);
 		background-color: var(--surface);
-		display: none;
-		padding: 16px 16px 0;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		gap: 24px;
+		padding: 16px;
+		visibility: hidden;
+
+		&__time-to-start {
+			@include font-body(32);
+			color: var(--heading);
+		}
 
 		&--visible {
-			display: block;
+			visibility: visible;
+		}
+
+		.reminder {
+			@include font-body(14);
+			color: var(--placeholder);
+			display: flex;
+			align-items: center;
+			gap: 8px;
 		}
 	}
 }
