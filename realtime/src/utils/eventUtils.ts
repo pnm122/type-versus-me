@@ -121,7 +121,8 @@ export async function saveScoresToDatabase(roomId: Room['id']) {
 				accuracy: s.accuracy,
 				isWinner: s.isWinner,
 				numWords: state.getRoom(roomId)!.settings.numWords,
-				numUsers: state.getRoom(roomId)!.users.length
+				numUsers: state.getRoom(roomId)!.users.length,
+				category: state.getRoom(roomId)!.settings.category
 			})
 		}))
 
