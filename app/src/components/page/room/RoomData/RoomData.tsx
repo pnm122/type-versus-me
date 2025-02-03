@@ -7,7 +7,7 @@ import PixelarticonsCopy from '~icons/pixelarticons/copy'
 import { MAX_USERS_PER_ROOM } from '$shared/constants'
 import { useNotification } from '@/context/Notification'
 import Checkbox from '@/components/base/Checkbox/Checkbox'
-import { useReducer, useState } from 'react'
+import { useReducer, useRef, useState } from 'react'
 import { User as UserType } from '$shared/types/User'
 import { updateUser } from '@/utils/realtime/user'
 import { useSocket } from '@/context/Socket'
@@ -16,10 +16,11 @@ import { useRouter } from 'next/navigation'
 import Collapsible from '@/components/base/Collapsible/Collapsible'
 import IconButton from '@/components/base/Button/IconButton'
 import PixelarticonsEdit from '~icons/pixelarticons/edit'
-import RoomSettingsPopover from '@/components/page/room/RoomSettingsPopover/RoomSettingsPopover'
 import { RoomSettings } from '$shared/types/Room'
 import { useRoom } from '@/context/Room'
 import getTimeLimitText from '@/utils/getTimeLimitText'
+import Popover from '@/components/base/Popover/Popover'
+import RoomSettingsForm from '@/components/shared/RoomSettingsForm/RoomSettingsForm'
 
 export default function RoomData() {
 	type Settings = RoomSettings & { open: boolean }
@@ -32,6 +33,7 @@ export default function RoomData() {
 	// 'Predict' what state the user will be in before waiting for server
 	// This way, the state changes can feel instantaneous, but still be verified by the server
 	const [predictedUserState, setPredictedUserState] = useState<UserType['state'] | null>(null)
+	const firstFocusableElement = useRef<HTMLButtonElement>(null)
 	const [settings, settingsDispatch] = useReducer(settingsReducer, {
 		category: room!.settings.category,
 		numWords: room!.settings.numWords,
@@ -168,17 +170,24 @@ export default function RoomData() {
 					</Button>
 				</div>
 			</div>
-			<RoomSettingsPopover
+			<Popover
 				open={settings.open}
-				settings={{
-					category: settings.category,
-					numWords: settings.numWords,
-					timeLimit: settings.timeLimit
-				}}
-				onClose={() => settingsDispatch({ key: 'open', value: false })}
-				onChange={(key, value) => settingsDispatch({ key, value })}
-				onSubmit={onSubmitRoomSettings}
-			/>
+				focusOnOpenRef={firstFocusableElement}
+				onBackdropClicked={() => settingsDispatch({ key: 'open', value: false })}
+			>
+				<RoomSettingsForm
+					settings={{
+						category: settings.category,
+						numWords: settings.numWords,
+						timeLimit: settings.timeLimit
+					}}
+					onChange={(key, value) => settingsDispatch({ key, value })}
+					onCancel={() => settingsDispatch({ key: 'open', value: false })}
+					onSubmit={onSubmitRoomSettings}
+					firstFocusableElement={firstFocusableElement}
+					type="save"
+				/>
+			</Popover>
 		</>
 	)
 }

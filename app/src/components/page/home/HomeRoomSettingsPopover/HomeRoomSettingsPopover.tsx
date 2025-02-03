@@ -2,9 +2,10 @@
 
 import { RoomSettings } from '$shared/types/Room'
 import { useRoom } from '@/context/Room'
-import { useReducer, useState } from 'react'
-import RoomSettingsPopover from '@/components/page/room/RoomSettingsPopover/RoomSettingsPopover'
+import { useReducer, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import RoomSettingsForm from '@/components/shared/RoomSettingsForm/RoomSettingsForm'
+import Popover from '@/components/base/Popover/Popover'
 
 interface Props {
 	open: boolean
@@ -22,6 +23,7 @@ export default function HomeRoomSettingsPopover({ open, onClose }: Props) {
 	})
 	const router = useRouter()
 	const { createRoom } = useRoom()
+	const firstFocusableElement = useRef<HTMLButtonElement>(null)
 
 	function settingsReducer<T extends keyof RoomSettings>(
 		state: RoomSettings,
@@ -48,17 +50,20 @@ export default function HomeRoomSettingsPopover({ open, onClose }: Props) {
 	}
 
 	return (
-		<RoomSettingsPopover
-			open={open}
-			settings={{
-				category: settings.category,
-				numWords: settings.numWords,
-				timeLimit: settings.timeLimit
-			}}
-			onClose={onClose}
-			onChange={(key, value) => settingsDispatch({ key, value })}
-			onSubmit={onSubmitRoomSettings}
-			loading={loading}
-		/>
+		<Popover open={open} focusOnOpenRef={firstFocusableElement} onBackdropClicked={() => onClose()}>
+			<RoomSettingsForm
+				settings={{
+					category: settings.category,
+					numWords: settings.numWords,
+					timeLimit: settings.timeLimit
+				}}
+				onChange={(key, value) => settingsDispatch({ key, value })}
+				onCancel={onClose}
+				onSubmit={onSubmitRoomSettings}
+				firstFocusableElement={firstFocusableElement}
+				type="create-room"
+				loading={loading}
+			/>
+		</Popover>
 	)
 }

@@ -7,7 +7,6 @@ import ButtonIcon from '@/components/base/Button/ButtonIcon'
 import PixelarticonsSave from '~icons/pixelarticons/save'
 import PixelarticonsClose from '~icons/pixelarticons/close'
 import PixelarticonsPlus from '~icons/pixelarticons/plus'
-import PixelarticonsArrowLeft from '~icons/pixelarticons/arrow-left'
 
 export interface RoomSettingsFormProps {
 	settings: RoomSettings
@@ -127,17 +126,8 @@ export default function RoomSettingsForm({
 					style="tertiary"
 					onClick={() => (type === 'save' ? onCancel?.() : undefined)}
 				>
-					{type === 'save' ? (
-						<>
-							<ButtonIcon icon={<PixelarticonsClose />} />
-							Cancel
-						</>
-					) : (
-						<>
-							<ButtonIcon icon={<PixelarticonsArrowLeft />} />
-							Go to homepage
-						</>
-					)}
+					<ButtonIcon icon={<PixelarticonsClose />} />
+					Cancel
 				</Button>
 			</div>
 		</form>
