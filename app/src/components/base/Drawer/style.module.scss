@@ -1,0 +1,10 @@
+.drawer {
+	position: absolute;
+	inset: 0;
+	top: unset;
+
+	&__content {
+		background-color: var(--surface);
+		padding: 24px;
+	}
+}
