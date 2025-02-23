@@ -8,9 +8,24 @@
 	inset: 0;
 	z-index: var(--z-overlay);
 	display: grid;
-	place-items: center;
 	visibility: hidden;
 	transition: visibility 0.25s var(--timing);
+
+	&:not(.popover--clear-styles) {
+		place-items: center;
+
+		.popover__content {
+			position: relative;
+			background-color: var(--surface);
+			padding: 12px;
+			@include hidden(var(--_popover-closed-y-offset));
+			@include max-width(400px, 24px);
+		}
+
+		&.popover--open .popover__content {
+			@include visible(var(--_popover-open-y-offset));
+		}
+	}
 
 	&__backdrop {
 		grid-area: 1 / 1;
@@ -26,13 +41,8 @@
 	}
 
 	&__content {
-		grid-area: 1 / 1;
-		position: relative;
 		z-index: 1;
-		background-color: var(--surface);
-		padding: 12px;
-		@include hidden(var(--_popover-closed-y-offset));
-		@include max-width(400px, 24px);
+		grid-area: 1 / 1;
 	}
 
 	&--open {
@@ -41,10 +51,6 @@
 		.popover__backdrop {
 			visibility: visible;
 			opacity: 1;
-		}
-
-		.popover__content {
-			@include visible(var(--_popover-open-y-offset));
 		}
 	}
 }
