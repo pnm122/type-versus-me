@@ -1,8 +1,8 @@
 {
-  "eslint.workingDirectories": [
-    { "directory": "app", "changeProcessCWD": true },
-    { "directory": "realtime", "changeProcessCWD": true }
-  ],
-  "eslint.format.enable": true,
-  "eslint.run": "onType"
+	"eslint.workingDirectories": [
+		{ "directory": "app", "changeProcessCWD": true },
+		{ "directory": "realtime", "changeProcessCWD": true }
+	],
+	"eslint.format.enable": true,
+	"eslint.run": "onType"
 }

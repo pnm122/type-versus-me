@@ -1,5 +1,6 @@
 @use '@/scss/fonts' as *;
 @use '@/scss/mixins' as *;
+@use '@/scss/breakpoints' as *;
 
 .header {
 	@include container;
@@ -12,22 +13,75 @@
 	&__left {
 		display: flex;
 		align-items: center;
-		column-gap: 12px;
-		row-gap: 4px;
-		flex-wrap: wrap;
+		gap: 32px;
 
 		.home {
-			@include font-heading(16);
 			height: 100%;
 			display: flex;
 			align-items: center;
+			gap: 8px;
+
+			&__link {
+				@include font-heading(16);
+				color: var(--heading);
+			}
+
+			&__separator {
+				width: 2px;
+				height: 20px;
+				background-color: var(--border);
+			}
+
+			&__user-count {
+				@include font-body(14);
+				color: var(--placeholder);
+			}
+
+			&__loader {
+				width: 16px;
+				height: 16px;
+				display: grid;
+				place-items: center;
+			}
+		}
+	}
+
+	&__links {
+		margin: 0;
+		padding: 0;
+		display: none;
+		align-items: center;
+		gap: 24px;
+
+		@media screen and (width > $screen-md) {
+			display: flex;
 		}
 	}
 }
 
-.dot {
-	width: 4px;
-	height: 4px;
-	border-radius: 999px;
-	background-color: var(--positive);
+.link {
+	@include font-heading(16);
+	color: var(--heading);
+	display: block;
+
+	&__anchor {
+		height: 32px;
+		position: relative;
+		display: flex;
+		align-items: center;
+
+		&:not([aria-current='page']):hover {
+			color: var(--text);
+		}
+
+		&[aria-current='page']::after {
+			content: '';
+			position: absolute;
+			background-color: var(--primary-light);
+			height: 4px;
+			width: 100%;
+			inset: 0;
+			top: unset;
+		}
+	}
 }
