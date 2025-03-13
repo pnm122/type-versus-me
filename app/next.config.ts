@@ -15,6 +15,15 @@ const nextConfig: NextConfig = {
 	},
 	sassOptions: {
 		silenceDeprecations: ['legacy-js-api']
+	},
+	async redirects() {
+		return [
+			{
+				source: '/leaderboard',
+				destination: '/leaderboard/points',
+				permanent: true
+			}
+		]
 	}
 }
 

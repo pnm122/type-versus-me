@@ -10,11 +10,13 @@ import Loader from '@/components/base/Loader/Loader'
 import { useSocket } from '@/context/Socket'
 import formatNumber from '@/utils/formatNumber'
 import HeaderLink from './HeaderLink'
+import { usePathname } from 'next/navigation'
 
 export default function Header() {
 	const [showLoader, setShowLoader] = useState(false)
 	const activeUserCount = useActiveUserCount()
 	const socket = useSocket()
+	const path = usePathname()
 	const { clearTimeout } = useTimeout(
 		() => {
 			if (socket.state !== 'valid') setShowLoader(true)
@@ -44,7 +46,9 @@ export default function Header() {
 					<div className={styles['home__loader']}>{showLoader && <Loader size={16} />}</div>
 				</div>
 				<ul className={styles['header__links']}>
-					<HeaderLink href="/leaderboard">Leaderboard</HeaderLink>
+					<HeaderLink href="/leaderboard/points" isCurrentPage={path.startsWith('/leaderboard')}>
+						Leaderboard
+					</HeaderLink>
 				</ul>
 			</div>
 			<HeaderDropdown />

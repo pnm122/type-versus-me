@@ -1,0 +1,5 @@
+@use '@/scss/mixins' as *;
+
+.page {
+	@include container;
+}

@@ -6,9 +6,14 @@ import { usePathname } from 'next/navigation'
 
 interface Props {
 	href: string
+	isCurrentPage?: boolean
 }
 
-export default function HeaderLink({ href, children }: React.PropsWithChildren<Props>) {
+export default function HeaderLink({
+	href,
+	isCurrentPage,
+	children
+}: React.PropsWithChildren<Props>) {
 	const path = usePathname()
 
 	return (
@@ -16,7 +21,7 @@ export default function HeaderLink({ href, children }: React.PropsWithChildren<P
 			<Link
 				className={styles['link__anchor']}
 				href={href}
-				aria-current={path.split('?').at(0) === href ? 'page' : undefined}
+				aria-current={(isCurrentPage ?? path.split('?').at(0) === href) ? 'page' : undefined}
 			>
 				{children}
 			</Link>
