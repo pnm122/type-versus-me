@@ -2,7 +2,7 @@
 
 import styles from './style.module.scss'
 import { CursorColor } from '$shared/types/Cursor'
-import Table, { TableColumnsFrom, TableRow } from '@/components/base/Table/Table'
+import Table from '@/components/base/Table/Table'
 import UserAndCursor from '@/components/shared/UserAndCursor/UserAndCursor'
 import { User } from '@prisma/client'
 import LevelIndicator from '@/components/shared/LevelIndicator/LevelIndicator'
@@ -13,6 +13,7 @@ import { MAX_ITEMS_PER_PAGE, MIN_ITEMS_PER_PAGE } from '@/app/leaderboard/points
 import { useTransition } from 'react'
 import { useUpdateParams } from '@/app/leaderboard/points/hooks'
 import formatNumber from '@/utils/formatNumber'
+import { columns, Row } from './utils'
 
 export default function LeaderboardPointsPage({
 	leaderboard,
@@ -28,23 +29,11 @@ export default function LeaderboardPointsPage({
 	const updateParams = useUpdateParams()
 	const [isPending, startTransition] = useTransition()
 
-	type RowData = Pick<User, 'username' | 'points'>
-
-	const rows: TableRow<RowData>[] = leaderboard.map((u) => ({
+	const rows: Row[] = leaderboard.map((u) => ({
 		username: u.username,
 		points: u.points,
 		key: u.id
 	}))
-
-	const columns: TableColumnsFrom<RowData> = {
-		username: {
-			displayName: 'User',
-			width: '250px'
-		},
-		points: {
-			displayName: 'Points'
-		}
-	}
 
 	function onPaginationChange(page: number, itemsPerPage: number) {
 		startTransition(() => {
@@ -73,6 +62,7 @@ export default function LeaderboardPointsPage({
 				<Table
 					rows={rows}
 					columns={columns}
+					loading={isPending ? 'show-data' : undefined}
 					render={{
 						username(value, { points }) {
 							const { cursorColor, id } = leaderboard.find((u) => u.username === value)!
