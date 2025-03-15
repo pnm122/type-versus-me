@@ -1,6 +1,6 @@
 export const MIN_ITEMS_PER_PAGE = 5
-export const MAX_ITEMS_PER_PAGE = 25
-export const DEFAULT_ITEMS_PER_PAGE = 10
+export const MAX_ITEMS_PER_PAGE = 50
+export const DEFAULT_ITEMS_PER_PAGE = 25
 
 export type LeaderboardPointsParams = 'page' | 'itemsPerPage'
 

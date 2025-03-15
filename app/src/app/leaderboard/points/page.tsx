@@ -25,13 +25,20 @@ async function LeaderboardPointsInner({
 }) {
 	const page = transformPageParam(searchParams.page)
 	const itemsPerPage = transformItemsPerPageParam(searchParams.itemsPerPage)
-	const { data: leaderboard, error } = await getTopUsersByPoints(page, itemsPerPage)
+	const { data, error } = await getTopUsersByPoints(page, itemsPerPage)
 
-	if (error || !leaderboard) {
+	if (error || !data) {
 		return <LeaderboardPointsError error={error} />
 	}
 
-	return <LeaderboardPointsPage leaderboard={leaderboard} />
+	return (
+		<LeaderboardPointsPage
+			leaderboard={data.users}
+			totalUserCount={data.totalCount}
+			page={page}
+			itemsPerPage={itemsPerPage}
+		/>
+	)
 }
 
 function LeaderboardPointsLoading() {
