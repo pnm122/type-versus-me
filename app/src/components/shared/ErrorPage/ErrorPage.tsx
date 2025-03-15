@@ -9,13 +9,14 @@ import ButtonIcon from '@/components/base/Button/ButtonIcon'
 
 interface Props {
 	error: Prisma.PrismaClientKnownRequestError | null
+	text: string
 }
 
-export default function ProfileError({ error }: Props) {
+export default function ErrorPage({ error, text }: Props) {
 	return (
 		<main className={styles['page']}>
 			<TyperPreview cursorColor="red" text="Oops!" className={styles['page__heading']} />
-			<p className={styles['page__text']}>There was an error loading your profile.</p>
+			<p className={styles['page__text']}>{text}</p>
 			{error && <p className={styles['page__subtext']}>Error code: &#34;{error.code}&#34;</p>}
 			<Button onClick={() => window.location.reload()} className={styles['page__refresh']}>
 				<ButtonIcon icon={<PixelarticonsReload />} />

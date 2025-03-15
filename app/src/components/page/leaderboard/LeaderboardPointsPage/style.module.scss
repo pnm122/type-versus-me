@@ -1,0 +1,30 @@
+@use '@/scss/fonts' as *;
+
+.username {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+
+	&:hover p {
+		text-decoration: underline;
+	}
+}
+
+.page {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	padding-top: 32px;
+
+	&__heading {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: 16px;
+
+		.title {
+			@include font-heading(32);
+		}
+	}
+}

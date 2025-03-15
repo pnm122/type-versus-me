@@ -24,6 +24,8 @@ type Props = React.PropsWithChildren<{
 	open: boolean
 	/** Element to focus when the popover opens. */
 	focusOnOpenRef?: React.RefObject<any>
+	/** Whether to clear non-essential styling. */
+	clearStyles?: boolean
 }>
 
 export default function Popover({
@@ -33,6 +35,7 @@ export default function Popover({
 	bodyScrollableWhenOpen = false,
 	open,
 	focusOnOpenRef,
+	clearStyles,
 	children
 }: Props) {
 	const [rendered, setRendered] = useState(false)
@@ -54,6 +57,7 @@ export default function Popover({
 			<div
 				className={createClasses({
 					[styles['popover']]: true,
+					[styles['popover--clear-styles']]: !!clearStyles,
 					[styles['popover--open']]: open,
 					[styles['popover--no-scroll']]: !bodyScrollableWhenOpen
 				})}

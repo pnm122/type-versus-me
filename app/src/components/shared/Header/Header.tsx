@@ -2,20 +2,21 @@
 
 import Link from 'next/link'
 import styles from './style.module.scss'
-import Account from '../Account/Account'
-import Pill from '@/components/base/Pill/Pill'
+import HeaderDropdown from '../HeaderDropdown/HeaderDropdown'
 import { useEffect, useState } from 'react'
 import { useActiveUserCount } from '@/hooks/useActiveUserCount'
 import { useTimeout } from '@/hooks/useTimeout'
 import Loader from '@/components/base/Loader/Loader'
 import { useSocket } from '@/context/Socket'
 import formatNumber from '@/utils/formatNumber'
+import HeaderLink from './HeaderLink'
+import { usePathname } from 'next/navigation'
 
 export default function Header() {
-	const [mounted, setMounted] = useState(false)
 	const [showLoader, setShowLoader] = useState(false)
 	const activeUserCount = useActiveUserCount()
 	const socket = useSocket()
+	const path = usePathname()
 	const { clearTimeout } = useTimeout(
 		() => {
 			if (socket.state !== 'valid') setShowLoader(true)
@@ -31,25 +32,26 @@ export default function Header() {
 		}
 	}, [socket.state])
 
-	useEffect(() => {
-		setMounted(true)
-	}, [])
-
 	return (
 		<header className={styles['header']}>
 			<div className={styles['header__left']}>
-				<Link href="/" className={styles['home']}>
-					typevs.me
-				</Link>
-				<Pill
-					text={`${mounted ? formatNumber(activeUserCount, true) : 1} online`}
-					backgroundColor="var(--positive-light)"
-					foregroundColor="var(--positive)"
-					icon={<div className={styles['dot']} />}
-				/>
-				{showLoader && <Loader size={16} />}
+				<div className={styles['home']}>
+					<Link href="/" className={styles['home__link']}>
+						typevs.me
+					</Link>
+					<div className={styles['home__separator']} />
+					<span className={styles['home__user-count']}>
+						{formatNumber(activeUserCount, true)} online
+					</span>
+					<div className={styles['home__loader']}>{showLoader && <Loader size={16} />}</div>
+				</div>
+				<ul className={styles['header__links']}>
+					<HeaderLink href="/leaderboard/points" isCurrentPage={path.startsWith('/leaderboard')}>
+						Leaderboard
+					</HeaderLink>
+				</ul>
 			</div>
-			<Account />
+			<HeaderDropdown />
 		</header>
 	)
 }

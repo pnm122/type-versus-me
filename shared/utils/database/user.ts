@@ -240,6 +240,34 @@ export async function getUserScores(
 	}
 }
 
+export async function getTopUsersByPoints(
+	page: number,
+	itemsPerPage: number
+): Promise<{
+	data: { users: User[]; totalCount: number } | null
+	error: Prisma.PrismaClientKnownRequestError | null
+}> {
+	try {
+		const [users, totalCount] = await prisma.$transaction([
+			prisma.user.findMany({
+				skip: page * itemsPerPage,
+				take: itemsPerPage,
+				orderBy: {
+					points: 'desc'
+				}
+			}),
+			prisma.user.count()
+		])
+
+		return { data: { users, totalCount }, error: null }
+	} catch (error) {
+		if (error instanceof Prisma.PrismaClientKnownRequestError) {
+			return { data: null, error }
+		}
+		return { data: null, error: null }
+	}
+}
+
 export async function updateUser(
 	id: string,
 	{ username, cursorColor }: { username?: string; cursorColor?: CursorColor }
