@@ -1,12 +1,12 @@
 import LeaderboardPointsPage from '@/components/page/leaderboard/LeaderboardPointsPage/LeaderboardPointsPage'
 import { LeaderboardPointsParams, transformItemsPerPageParam, transformPageParam } from './params'
 import { getTopUsersByPoints } from '$shared/utils/database/user'
-import { Prisma } from '@prisma/client'
 import { Suspense } from 'react'
 import pageStyles from '@/components/page/leaderboard/LeaderboardPointsPage/style.module.scss'
 import Pagination from '@/components/base/Pagination/Pagination'
 import Table from '@/components/base/Table/Table'
 import { columns } from '@/components/page/leaderboard/LeaderboardPointsPage/utils'
+import ErrorPage from '@/components/shared/ErrorPage/ErrorPage'
 
 export default async function LeaderboardPoints({
 	searchParams: _searchParams
@@ -34,7 +34,7 @@ async function LeaderboardPointsInner({
 	const { data, error } = await getTopUsersByPoints(page, itemsPerPage)
 
 	if (error || !data) {
-		return <LeaderboardPointsError error={error} />
+		return <ErrorPage error={error} text="There was an error loading the leaderboard." />
 	}
 
 	return (
@@ -68,13 +68,4 @@ function LeaderboardPointsLoading({ page, itemsPerPage }: { page: number; itemsP
 			</div>
 		</div>
 	)
-}
-
-function LeaderboardPointsError({
-	// eslint-disable-next-line
-	error
-}: {
-	error: Prisma.PrismaClientKnownRequestError | null
-}) {
-	return <div>error</div>
 }
