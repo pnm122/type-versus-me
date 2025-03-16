@@ -48,6 +48,8 @@ async function generateQuoteTest(numWords: number) {
 		.replaceAll(/[ ]{2,}/g, ' ')
 		// remove invalid characters
 		.replaceAll(invalidCharacters, '')
+		// remove underscores from italicized words
+		.replaceAll(/_([\x21-\x7F]*)_/g, '$1')
 
 	// Remove the first word, since it'll often be part of a word
 	return formattedData
