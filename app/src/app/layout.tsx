@@ -7,6 +7,7 @@ import { ThemeProvider } from 'next-themes'
 import Header from '@/components/shared/Header/Header'
 import { SessionProvider } from 'next-auth/react'
 import { RoomProvider } from '@/context/Room'
+import { Analytics } from '@vercel/analytics/react'
 
 export const metadata: Metadata = {
 	title: {
@@ -29,6 +30,7 @@ export default function RootLayout({
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<body>
+				<Analytics />
 				<ThemeProvider
 					storageKey="app-theme"
 					themes={['light', 'dark']}

@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.7.4",
+    "@vercel/analytics": "^1.5.0",
     "debounce": "^2.2.0",
     "next": "15.1.6",
     "next-auth": "^5.0.0-beta.25",
