@@ -121,11 +121,7 @@ export default function RoomSettingsForm({
 						</>
 					)}
 				</Button>
-				<Button
-					href={type === 'save' ? undefined : '/'}
-					style="tertiary"
-					onClick={() => (type === 'save' ? onCancel?.() : undefined)}
-				>
+				<Button href={type === 'save' ? undefined : '/'} style="tertiary" onClick={onCancel}>
 					<ButtonIcon icon={<PixelarticonsClose />} />
 					Cancel
 				</Button>
