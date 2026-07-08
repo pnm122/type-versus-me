@@ -4,29 +4,16 @@ import UnpluginIcons from 'unplugin-icons/webpack'
 
 const nextConfig: NextConfig = {
 	webpack(config) {
-		config.plugins.push(
-			UnpluginIcons({
-				compiler: 'jsx',
-				jsx: 'react',
-				autoInstall: true
-			})
-		)
+		config.plugins.push(UnpluginIcons({ compiler: 'jsx', jsx: 'react', autoInstall: true }))
 
 		return config
 	},
-	sassOptions: {
-		silenceDeprecations: ['legacy-js-api']
-	},
+	sassOptions: { silenceDeprecations: ['legacy-js-api'] },
 	async redirects() {
-		return [
-			{
-				source: '/leaderboard',
-				destination: '/leaderboard/points',
-				permanent: true
-			}
-		]
+		return [{ source: '/leaderboard', destination: '/leaderboard/points', permanent: true }]
 	},
-	outputFileTracingRoot: path.join(__dirname, '..')
+	outputFileTracingRoot: path.join(__dirname, '..'),
+	allowedDevOrigins: ['192.168.0.141']
 }
 
 export default nextConfig
