@@ -20,17 +20,6 @@ export default function SelectedBox({ selected, className, zIndex = 0 }: Props) 
 	const [showTransition, setShowTransition] = useState(false)
 	const box = useRef<HTMLDivElement>(null)
 
-	useLayoutEffect(() => {
-		const onResize = debounce(updateBoxPosition, 100)
-
-		updateBoxPosition()
-		window.addEventListener('resize', onResize)
-
-		return () => {
-			window.removeEventListener('resize', onResize)
-		}
-	}, [selected])
-
 	function updateBoxPosition() {
 		if (!box.current || !selected?.current) return
 
@@ -43,6 +32,17 @@ export default function SelectedBox({ selected, className, zIndex = 0 }: Props) 
 			if (!showTransition) setShowTransition(true)
 		})
 	}
+
+	useLayoutEffect(() => {
+		const onResize = debounce(updateBoxPosition, 100)
+
+		updateBoxPosition()
+		window.addEventListener('resize', onResize)
+
+		return () => {
+			window.removeEventListener('resize', onResize)
+		}
+	}, [selected])
 
 	return (
 		<div

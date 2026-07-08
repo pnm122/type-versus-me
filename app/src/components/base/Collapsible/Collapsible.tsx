@@ -54,6 +54,13 @@ export default function Collapsible({
 	const transitioningProperty =
 		openDirection === 'left' || openDirection === 'right' ? 'width' : 'height'
 
+	function revertChanges() {
+		revertTimeout.current = setTimeout(() => {
+			setSize(null)
+			revertTimeout.current = null
+		}, duration + delay)
+	}
+
 	useLayoutEffect(() => {
 		if (!container.current || !content.current) return
 
@@ -92,13 +99,6 @@ export default function Collapsible({
 			if (revertTimeout.current) clearTimeout(revertTimeout.current)
 		}
 	}, [])
-
-	function revertChanges() {
-		revertTimeout.current = setTimeout(() => {
-			setSize(null)
-			revertTimeout.current = null
-		}, duration + delay)
-	}
 
 	return (
 		<div

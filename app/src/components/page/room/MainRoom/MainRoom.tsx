@@ -12,6 +12,21 @@ export default function MainRoom() {
 	const resetHeightTimeout = useRef<NodeJS.Timeout | null>(null)
 	const { room } = useRoom()
 
+	function updateHeight() {
+		if (!room || !topRef.current) return
+
+		if (resetHeightTimeout.current) {
+			clearTimeout(resetHeightTimeout.current)
+			resetHeightTimeout.current = null
+		}
+
+		if (room.state === 'in-progress') {
+			topRef.current.style.height = `${gameRef.current!.getBoundingClientRect().height}px`
+		} else {
+			topRef.current.style.height = `${waitingTextRef.current!.getBoundingClientRect().height}px`
+		}
+	}
+
 	useLayoutEffect(() => {
 		updateHeight()
 		const onResize = debounce(updateHeight, 100)
@@ -27,21 +42,6 @@ export default function MainRoom() {
 			if (resetHeightTimeout.current) clearTimeout(resetHeightTimeout.current)
 		}
 	}, [])
-
-	function updateHeight() {
-		if (!room || !topRef.current) return
-
-		if (resetHeightTimeout.current) {
-			clearTimeout(resetHeightTimeout.current)
-			resetHeightTimeout.current = null
-		}
-
-		if (room.state === 'in-progress') {
-			topRef.current.style.height = `${gameRef.current!.getBoundingClientRect().height}px`
-		} else {
-			topRef.current.style.height = `${waitingTextRef.current!.getBoundingClientRect().height}px`
-		}
-	}
 
 	if (!room) return <></>
 

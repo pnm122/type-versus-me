@@ -33,6 +33,17 @@ export default function Dropdown<T extends React.ElementType>({
 }: DropdownProps<T>) {
 	const dropdown = useRef<HTMLDivElement>(null)
 
+	function handleFocusOut(e: FocusEvent) {
+		// if focus is outside of the settings popup, close it
+		if (!(
+			e.relatedTarget &&
+			(dropdown.current?.contains(e.relatedTarget as HTMLElement) ||
+				toggleButton?.current?.contains(e.relatedTarget as HTMLElement))
+		)) {
+			onClose()
+		}
+	}
+
 	useEffect(() => {
 		const ref = dropdown.current
 
@@ -50,18 +61,6 @@ export default function Dropdown<T extends React.ElementType>({
 		}
 	}, [open])
 
-	function handleFocusOut(e: FocusEvent) {
-		// if focus is outside of the settings popup, close it
-		if (
-			!(
-				e.relatedTarget &&
-				(dropdown.current?.contains(e.relatedTarget as HTMLElement) ||
-					toggleButton?.current?.contains(e.relatedTarget as HTMLElement))
-			)
-		) {
-			onClose()
-		}
-	}
 	return (
 		<Component
 			ref={dropdown}
