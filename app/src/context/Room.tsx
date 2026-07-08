@@ -66,46 +66,6 @@ export function RoomProvider({ children }: React.PropsWithChildren) {
 	const state = { room, setRoom, user, setUser }
 	const context = { socket, notifs, auth }
 
-	useEffect(() => {
-		if (socket.state !== 'valid') return
-
-		const handleJoinRoom = (res: ServerJoinRoomPayload) => onJoinRoom(res, state, context)
-		const handleLeaveRoom = (res: ServerLeaveRoomPayload) => onLeaveRoom(res, state, context)
-		const handleChangeRoomData = (res: ChangeRoomDataPayload) => onChangeRoomData(res, state)
-		const handleChangeAllUserData = (res: ChangeAllUserDataPayload) =>
-			onChangeAllUserData(res, state)
-		const handleChangeUserData = (res: ChangeUserDataPayload) => onChangeUserData(res, state)
-		const handleDatabaseUpdate = (res: DatabaseUpdatePayload) =>
-			onDatabaseUpdate(res, pushPointsUpdateNotification, context)
-		const handleDisconnect = () => setRoom(null)
-
-		socket.value.on('join-room', handleJoinRoom)
-		socket.value.on('leave-room', handleLeaveRoom)
-		socket.value.on('change-room-data', handleChangeRoomData)
-		socket.value.on('change-all-user-data', handleChangeAllUserData)
-		socket.value.on('change-user-data', handleChangeUserData)
-		socket.value.on('database-update', handleDatabaseUpdate)
-		socket.value.on('disconnect', handleDisconnect)
-
-		return () => {
-			socket.value.off('join-room', handleJoinRoom)
-			socket.value.off('leave-room', handleLeaveRoom)
-			socket.value.off('change-room-data', handleChangeRoomData)
-			socket.value.off('change-all-user-data', handleChangeAllUserData)
-			socket.value.off('change-user-data', handleChangeUserData)
-			socket.value.off('database-update', handleDatabaseUpdate)
-			socket.value.off('disconnect', handleDisconnect)
-		}
-	}, [socket, state, context])
-
-	useEffect(() => {
-		const { roomId } = params
-
-		if (!roomId && room) {
-			leaveRoomInternal()
-		}
-	}, [pathname])
-
 	function updateNotifs(x: React.SetStateAction<NotificationProps[]>) {
 		transition(() => setUserNotifs(x))
 	}
@@ -163,6 +123,46 @@ export function RoomProvider({ children }: React.PropsWithChildren) {
 		setRoom(null)
 		setUser(null)
 	}
+
+	useEffect(() => {
+		if (socket.state !== 'valid') return
+
+		const handleJoinRoom = (res: ServerJoinRoomPayload) => onJoinRoom(res, state, context)
+		const handleLeaveRoom = (res: ServerLeaveRoomPayload) => onLeaveRoom(res, state, context)
+		const handleChangeRoomData = (res: ChangeRoomDataPayload) => onChangeRoomData(res, state)
+		const handleChangeAllUserData = (res: ChangeAllUserDataPayload) =>
+			onChangeAllUserData(res, state)
+		const handleChangeUserData = (res: ChangeUserDataPayload) => onChangeUserData(res, state)
+		const handleDatabaseUpdate = (res: DatabaseUpdatePayload) =>
+			onDatabaseUpdate(res, pushPointsUpdateNotification, context)
+		const handleDisconnect = () => setRoom(null)
+
+		socket.value.on('join-room', handleJoinRoom)
+		socket.value.on('leave-room', handleLeaveRoom)
+		socket.value.on('change-room-data', handleChangeRoomData)
+		socket.value.on('change-all-user-data', handleChangeAllUserData)
+		socket.value.on('change-user-data', handleChangeUserData)
+		socket.value.on('database-update', handleDatabaseUpdate)
+		socket.value.on('disconnect', handleDisconnect)
+
+		return () => {
+			socket.value.off('join-room', handleJoinRoom)
+			socket.value.off('leave-room', handleLeaveRoom)
+			socket.value.off('change-room-data', handleChangeRoomData)
+			socket.value.off('change-all-user-data', handleChangeAllUserData)
+			socket.value.off('change-user-data', handleChangeUserData)
+			socket.value.off('database-update', handleDatabaseUpdate)
+			socket.value.off('disconnect', handleDisconnect)
+		}
+	}, [socket, state, context])
+
+	useEffect(() => {
+		const { roomId } = params
+
+		if (!roomId && room) {
+			leaveRoomInternal()
+		}
+	}, [pathname])
 
 	return (
 		<RoomContext.Provider

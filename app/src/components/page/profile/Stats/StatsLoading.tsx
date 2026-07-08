@@ -11,9 +11,9 @@ export default function StatsLoading() {
 				<Skeleton width="150px" height="24px" />
 			</div>
 			<div className={styles['stat-boxes']}>
-				{Object.keys(userStatsDisplayNames).map((key) => (
+				{Object.keys(userStatsDisplayNames).map((key, index) => (
 					<div key={key} className={styles['stat-box']}>
-						<Skeleton width={`${Math.random() * 25 + 50}px`} height="1.65rem" />
+						<Skeleton width={`${(((index * 19) % 17) / 17) * 25 + 50}px`} height="1.65rem" />
 						<h4 className={styles['stat-box__name']}>
 							{userStatsDisplayNames[key as keyof typeof userStatsDisplayNames]}
 						</h4>

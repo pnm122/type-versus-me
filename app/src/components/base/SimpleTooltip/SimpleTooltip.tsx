@@ -8,12 +8,7 @@ type Props = React.PropsWithChildren<{
 	id?: string
 	className?: string
 	position?:
-		| 'top-left'
-		| 'top-center'
-		| 'top-right'
-		| 'bottom-right'
-		| 'bottom-center'
-		| 'bottom-left'
+		'top-left' | 'top-center' | 'top-right' | 'bottom-right' | 'bottom-center' | 'bottom-left'
 }>
 
 export default function SimpleTooltip({ id, className, position = 'top-center', children }: Props) {

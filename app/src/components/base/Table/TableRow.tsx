@@ -90,9 +90,9 @@ export default function TableRow<T extends TableData>({
 			})}
 		>
 			{typeof loading === 'number' ? (
-				Object.keys(columns).map((key) => (
+				Object.keys(columns).map((key, index) => (
 					<td key={key} className={styles['cell']}>
-						<Skeleton height="1.5rem" width={`${Math.random() * 50 + 50}%`} />
+						<Skeleton height="1.5rem" width={`${(((index * 19) % 17) / 17) * 50 + 50}%`} />
 					</td>
 				))
 			) : (

@@ -1,4 +1,5 @@
 import type { NextConfig } from 'next'
+import path from 'path'
 import UnpluginIcons from 'unplugin-icons/webpack'
 
 const nextConfig: NextConfig = {
@@ -24,7 +25,8 @@ const nextConfig: NextConfig = {
 				permanent: true
 			}
 		]
-	}
+	},
+	outputFileTracingRoot: path.join(__dirname, '..')
 }
 
 export default nextConfig

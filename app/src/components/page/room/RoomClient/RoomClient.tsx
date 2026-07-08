@@ -15,6 +15,11 @@ export default function RoomClient() {
 	const socket = useSocket()
 	const auth = useAuthContext()
 
+	async function init() {
+		const res = await joinRoom(roomId)
+		if (res.error) return router.push('/')
+	}
+
 	useEffect(() => {
 		if (
 			socket.state === 'loading' ||
@@ -31,11 +36,6 @@ export default function RoomClient() {
 
 		init()
 	}, [socket, auth, room])
-
-	async function init() {
-		const res = await joinRoom(roomId)
-		if (res.error) return router.push('/')
-	}
 
 	if (!room) {
 		return <LoadingRoom />

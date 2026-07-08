@@ -177,6 +177,7 @@ export default function Typer({
 			errorsLeft: newErrors,
 			correctMade,
 			correctLeft: newCorrect,
+			// eslint-disable-next-line react-hooks/purity
 			netWPM: newCorrect / 5 / ((Date.now() - startTime) / 60000),
 			accuracy: correctMade / (correctMade + errorsMade),
 			cursorPosition: getCursorPosition(newTyped)
@@ -289,7 +290,9 @@ export default function Typer({
 				/>
 				{/* Only the current user's cursor should disappear on disable, so that they can still see where other users are */}
 				{!disabled && <TyperCursor color={cursorColor} position={cursorPosition} typer={typer} />}
-				{cursors?.map((c) => <TyperCursor key={c.id} typer={typer} opponent={true} {...c} />)}
+				{cursors?.map((c) => (
+					<TyperCursor key={c.id} typer={typer} opponent={true} {...c} />
+				))}
 				{/*
           Need extra nested divs:
             * text is the container with a set height and no overflow, sibling to cursor so the cursor isn't cut off
