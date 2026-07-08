@@ -44,6 +44,19 @@ export default function Dropdown<T extends React.ElementType>({
 		}
 	}
 
+	function handleClick(e: MouseEvent) {
+		if (dropdown.current?.contains(e.target as HTMLElement)) return
+		if (toggleButton?.current?.contains(e.target as HTMLElement)) return
+
+		onClose()
+	}
+
+	function handleKeyDown(e: KeyboardEvent) {
+		if (e.key === 'Escape') {
+			onClose()
+		}
+	}
+
 	useEffect(() => {
 		const ref = dropdown.current
 
@@ -53,11 +66,17 @@ export default function Dropdown<T extends React.ElementType>({
 			// Add the event listener after the settings popup has opened, so that the click to open it doesn't close it immediately
 			requestAnimationFrame(() => {
 				ref?.addEventListener('focusout', handleFocusOut)
+				toggleButton?.current?.addEventListener('focusout', handleFocusOut)
+				document.body.addEventListener('click', handleClick)
+				document.body.addEventListener('keydown', handleKeyDown)
 			})
 		}
 
 		return () => {
 			ref?.removeEventListener('focusout', handleFocusOut)
+			toggleButton?.current?.removeEventListener('focusout', handleFocusOut)
+			document.body.removeEventListener('click', handleClick)
+			document.body.removeEventListener('keydown', handleKeyDown)
 		}
 	}, [open])
 
