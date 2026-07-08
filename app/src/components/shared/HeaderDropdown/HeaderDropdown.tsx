@@ -30,6 +30,8 @@ export default function HeaderDropdown() {
 	const toggleButton = useRef<HTMLElement>(null)
 	const { session, user, state, signOut } = useAuthContext()
 
+	const isLoggedIn = !!session && !!user
+
 	useEffect(() => {
 		setExpanded(false)
 	}, [path])
@@ -38,19 +40,97 @@ export default function HeaderDropdown() {
 		setExpanded(!expanded)
 	}
 
-	return state === 'loading' ? (
-		<Skeleton width="100px" height="1.5rem" />
-	) : (
+	if (state === 'loading') {
+		return <Skeleton width="100px" height="1.5rem" />
+	}
+
+	if (!isLoggedIn) {
+		return (
+			<div className={styles['dropdown']}>
+				<IconButton
+					style="tertiary"
+					icon={<PixelarticonsUser />}
+					aria-label="Open menu"
+					aria-expanded={expanded}
+					aria-controls="account-dropdown"
+					onClick={toggleExpanded}
+					ref={toggleButton}
+				/>
+				<Dropdown
+					open={expanded}
+					id="account-dropdown"
+					toggleButton={toggleButton}
+					focusOnOpenRef={firstButton}
+					onClose={() => setExpanded(false)}
+					className={styles['dropdown__dropdown']}
+				>
+					<div className={styles['mobile']}>
+						<ul className={styles['links']}>
+							<li className={styles['links__link']}>
+								<Button
+									ref={firstButton}
+									style="tertiary"
+									href="/leaderboard"
+									aria-current={path.startsWith('/leaderboard') ? 'page' : undefined}
+									className={styles['button']}
+								>
+									<ButtonIcon icon={<PixelarticonsTrophy />} />
+									Leaderboard
+								</Button>
+							</li>
+						</ul>
+					</div>
+					<div className={styles['mobile']}>
+						<hr></hr>
+					</div>
+					<Button ref={firstButton} href="/login">
+						<ButtonIcon icon={<PixelarticonsLogin />} />
+						Login
+					</Button>
+					<ThemeSwitcher />
+				</Dropdown>
+			</div>
+		)
+	}
+
+	return (
 		<>
 			<div className={styles['dropdown']}>
-				{session && user ? (
-					<Button
-						className={styles['dropdown__toggle']}
-						style="tertiary"
-						onClick={toggleExpanded}
-						ref={toggleButton}
-					>
-						<div className={styles['desktop']}>
+				<Button
+					className={styles['dropdown__toggle']}
+					style="tertiary"
+					onClick={toggleExpanded}
+					ref={toggleButton}
+				>
+					<div className={styles['desktop']}>
+						<UserAndCursor
+							size="small"
+							username={user.username}
+							color={user.cursorColor as CursorColor}
+						/>
+						<LevelIndicator
+							level={getLevel(user.points)}
+							size="small"
+							hideOutline
+							unlocked
+							hideItem
+						/>
+					</div>
+					<div className={styles['mobile']}>
+						<PixelarticonsMenu className={styles['toggle-icon']} />
+					</div>
+				</Button>
+
+				<Dropdown
+					open={expanded}
+					id="account-dropdown"
+					toggleButton={toggleButton}
+					focusOnOpenRef={firstButton}
+					onClose={() => setExpanded(false)}
+					className={styles['dropdown__dropdown']}
+				>
+					<div className={styles['mobile']}>
+						<div className={styles['user-info']}>
 							<UserAndCursor
 								size="small"
 								username={user.username}
@@ -64,48 +144,8 @@ export default function HeaderDropdown() {
 								hideItem
 							/>
 						</div>
-						<div className={styles['mobile']}>
-							<PixelarticonsMenu className={styles['toggle-icon']} />
-						</div>
-					</Button>
-				) : (
-					<IconButton
-						style="tertiary"
-						icon={<PixelarticonsUser />}
-						aria-label="Open menu"
-						aria-expanded={expanded}
-						aria-controls="account-dropdown"
-						onClick={toggleExpanded}
-						ref={toggleButton}
-					/>
-				)}
-				<Dropdown
-					open={expanded}
-					id="account-dropdown"
-					toggleButton={toggleButton}
-					focusOnOpenRef={firstButton}
-					onClose={() => setExpanded(false)}
-					className={styles['dropdown__dropdown']}
-				>
-					{session && user && (
-						<div className={styles['mobile']}>
-							<div className={styles['user-info']}>
-								<UserAndCursor
-									size="small"
-									username={user.username}
-									color={user.cursorColor as CursorColor}
-								/>
-								<LevelIndicator
-									level={getLevel(user.points)}
-									size="small"
-									hideOutline
-									unlocked
-									hideItem
-								/>
-							</div>
-							<hr></hr>
-						</div>
-					)}
+						<hr></hr>
+					</div>
 					<ul className={styles['links']}>
 						<div className={styles['mobile']}>
 							<li className={styles['links__link']}>
@@ -121,55 +161,39 @@ export default function HeaderDropdown() {
 								</Button>
 							</li>
 						</div>
-						{session && user && (
-							<>
-								<li className={styles['links__link']}>
-									<Button
-										style="tertiary"
-										href={`/profile/${user.id}`}
-										aria-current={path.startsWith(`/profile/${user.id}`) ? 'page' : undefined}
-										className={styles['button']}
-									>
-										<ButtonIcon icon={<PixelarticonsUser />} />
-										Profile
-									</Button>
-								</li>
-								<li className={styles['links__link']}>
-									<Button
-										style="tertiary"
-										className={styles['button']}
-										onClick={() => setSettingsOpen(true)}
-									>
-										<ButtonIcon icon={<PixelarticonsEdit />} />
-										Settings
-									</Button>
-								</li>
-								<li className={styles['links__link']}>
-									<Button style="tertiary" onClick={() => signOut()} className={styles['button']}>
-										<ButtonIcon icon={<PixelarticonsLogout />} />
-										Logout
-									</Button>
-								</li>
-							</>
-						)}
-					</ul>
-					{!(session && user) && (
-						<>
-							<hr></hr>
-							<Button ref={firstButton} href="/login">
-								<ButtonIcon icon={<PixelarticonsLogin />} />
-								Login
+						<li className={styles['links__link']}>
+							<Button
+								style="tertiary"
+								href={`/profile/${user.id}`}
+								aria-current={path.startsWith(`/profile/${user.id}`) ? 'page' : undefined}
+								className={styles['button']}
+							>
+								<ButtonIcon icon={<PixelarticonsUser />} />
+								Profile
 							</Button>
-						</>
-					)}
-
+						</li>
+						<li className={styles['links__link']}>
+							<Button
+								style="tertiary"
+								className={styles['button']}
+								onClick={() => setSettingsOpen(true)}
+							>
+								<ButtonIcon icon={<PixelarticonsEdit />} />
+								Settings
+							</Button>
+						</li>
+						<li className={styles['links__link']}>
+							<Button style="tertiary" onClick={() => signOut()} className={styles['button']}>
+								<ButtonIcon icon={<PixelarticonsLogout />} />
+								Logout
+							</Button>
+						</li>
+					</ul>
 					<hr></hr>
 					<ThemeSwitcher />
 				</Dropdown>
 			</div>
-			{session && user && (
-				<UserSettingsPopover open={settingsOpen} onClose={() => setSettingsOpen(false)} />
-			)}
+			<UserSettingsPopover open={settingsOpen} onClose={() => setSettingsOpen(false)} />
 		</>
 	)
 }

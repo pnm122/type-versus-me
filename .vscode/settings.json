@@ -4,5 +4,7 @@
 		{ "directory": "realtime", "changeProcessCWD": true }
 	],
 	"eslint.format.enable": true,
-	"eslint.run": "onType"
+	"eslint.run": "onType",
+	"editor.formatOnSave": true,
+	"editor.defaultFormatter": "esbenp.prettier-vscode"
 }
