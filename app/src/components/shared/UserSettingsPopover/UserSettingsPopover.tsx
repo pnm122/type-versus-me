@@ -41,7 +41,7 @@ export default function UserSettingsPopover({ open, onClose }: Props) {
 	}, [open])
 
 	return (
-		<Popover open={open} focusOnOpenRef={inputRef} onBackdropClicked={onClose}>
+		<Popover open={open} focusOnOpenRef={inputRef} onClose={onClose}>
 			<form
 				className={styles['form']}
 				action={async () => {

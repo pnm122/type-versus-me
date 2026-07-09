@@ -11,8 +11,8 @@ type Props = React.PropsWithChildren<{
 	 * @default true
 	 **/
 	hasBackdrop?: boolean
-	/** Callback for clicking the backdrop. */
-	onBackdropClicked?: () => void
+	/** Callback for when the popover should close. */
+	onClose?: () => void
 	/** Class(es) to add to the popover. */
 	className?: string
 	/**
@@ -30,7 +30,7 @@ type Props = React.PropsWithChildren<{
 
 export default function Popover({
 	hasBackdrop = true,
-	onBackdropClicked,
+	onClose,
 	className,
 	bodyScrollableWhenOpen = false,
 	open,
@@ -40,6 +40,12 @@ export default function Popover({
 }: Props) {
 	const [rendered, setRendered] = useState(false)
 
+	function onKeyDown(e: KeyboardEvent) {
+		if (e.key === 'Escape') {
+			onClose?.()
+		}
+	}
+
 	useLayoutEffect(() => {
 		setRendered(true)
 	}, [])
@@ -48,6 +54,12 @@ export default function Popover({
 		if (open) {
 			// Need a small delay presumably because the element is technically not visible yet
 			setTimeout(() => focusOnOpenRef?.current?.focus(), 25)
+
+			window.addEventListener('keydown', onKeyDown)
+		}
+
+		return () => {
+			window.removeEventListener('keydown', onKeyDown)
 		}
 	}, [open])
 
@@ -63,10 +75,7 @@ export default function Popover({
 				})}
 			>
 				{hasBackdrop && (
-					<button
-						className={styles['popover__backdrop']}
-						onClick={() => onBackdropClicked && onBackdropClicked()}
-					/>
+					<button className={styles['popover__backdrop']} onClick={() => onClose && onClose()} />
 				)}
 				<div
 					className={createClasses({

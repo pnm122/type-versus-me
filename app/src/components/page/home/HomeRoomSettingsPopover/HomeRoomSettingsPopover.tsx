@@ -29,10 +29,7 @@ export default function HomeRoomSettingsPopover({ open, onClose }: Props) {
 		state: RoomSettings,
 		{ key, value }: Action<T>
 	) {
-		return {
-			...state,
-			[key]: value
-		}
+		return { ...state, [key]: value }
 	}
 
 	async function onSubmitRoomSettings() {
@@ -50,7 +47,7 @@ export default function HomeRoomSettingsPopover({ open, onClose }: Props) {
 	}
 
 	return (
-		<Popover open={open} focusOnOpenRef={firstFocusableElement} onBackdropClicked={() => onClose()}>
+		<Popover open={open} focusOnOpenRef={firstFocusableElement} onClose={() => onClose()}>
 			<RoomSettingsForm
 				settings={{
 					category: settings.category,

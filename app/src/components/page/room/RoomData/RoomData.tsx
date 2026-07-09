@@ -173,7 +173,7 @@ export default function RoomData() {
 			<Popover
 				open={settings.open}
 				focusOnOpenRef={firstFocusableElement}
-				onBackdropClicked={() => settingsDispatch({ key: 'open', value: false })}
+				onClose={() => settingsDispatch({ key: 'open', value: false })}
 			>
 				<RoomSettingsForm
 					settings={{

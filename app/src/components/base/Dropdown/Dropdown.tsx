@@ -67,16 +67,16 @@ export default function Dropdown<T extends React.ElementType>({
 			requestAnimationFrame(() => {
 				ref?.addEventListener('focusout', handleFocusOut)
 				toggleButton?.current?.addEventListener('focusout', handleFocusOut)
-				document.body.addEventListener('click', handleClick)
-				document.body.addEventListener('keydown', handleKeyDown)
+				window.addEventListener('click', handleClick)
+				window.addEventListener('keydown', handleKeyDown)
 			})
 		}
 
 		return () => {
 			ref?.removeEventListener('focusout', handleFocusOut)
 			toggleButton?.current?.removeEventListener('focusout', handleFocusOut)
-			document.body.removeEventListener('click', handleClick)
-			document.body.removeEventListener('keydown', handleKeyDown)
+			window.removeEventListener('click', handleClick)
+			window.removeEventListener('keydown', handleKeyDown)
 		}
 	}, [open])
 
